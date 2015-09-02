@@ -1,26 +1,22 @@
-# Глава 1: О чём вообще пойдёт речь?
+# Chapter 1: What ever are we doing?
 
-## Вступление
+## Introductions
 
-Привет! Позвольте представиться, меня зовут профессор Франклин Ризби и я собираюсь обучить вас основам функционального программирования. Но хватит уже обо мне, давайте поговорим о вас! Надеюсь, вы знакомы с языком JavaScript и имеете хотя бы небольшой опыт в объектно-ориентированном программировании. Вам не обязательно быть доктором биологических наук, но навык находить и устранять баги вам пригодится.
+Hi I'm Professor Franklin Risby, pleased to make your acquaintance. We'll be spending some time together as I'm supposed to teach you a bit about functional programming. But enough about me, what about you? I'm hoping you're familiar with the JavaScript language, have a teensy bit of Object-Oriented experience, and fancy yourself a working class programmer. You don't need to have a Ph.D in Entomology, you just need to know how to find and kill some bugs.
 
-Я не стану ожидать от вас знания функционального программирования, потому что мы оба знаем, что обычно происходит с ожиданиями. Однако, я надеюсь, что вы попадали в неприятные ситуации, связанные с изменяемым состоянием, неограниченными побочными эффектами и непродуманным дизайном программ.
+I won't assume any previous functional programming knowledge because we both know what happens when you assume, but I will expect you to have run into some of the unfavorable situations that arise from working with mutable state, unrestricted side effects, and unprincipled design. Now that we've been properly introduced, let's get on with it.
 
-Теперь, когда мы закончили со знакомством, предлагаю приступить к делу.
+The purpose of this chapter is to give you a feel for what we're after when we write functional programs. We must have some idea about what makes a program *functional* or we'll find ourselves scribbling aimlessly, avoiding objects at all costs - a clumsy endeavor indeed. We need a bullseye to hurl our code toward, some celestial compass for when the waters get rough.
 
-Цель этой главы — показать истинную цель, лежащую в основе функционального программирования. Мы должны понять, что именно делает программу *функциональной*. Иначе мы просто будем писать код, отчаянно избегая объектов любой ценой, — довольно неуклюжая идея. Нам понадобится идеал, к которому мы будем стремиться, некий компас, укажущий направление.
+Now there are some general programming principles, various acronymic credos that guide us through the dark tunnels of any application: DRY (don't repeat yourself), loose coupling high cohesion, YAGNI (ya ain't gonna need it), principle of least surprise, single responsibility, and so on.
 
-Как вы знаете, существует ряд общих принципов программирования, набор аббревиатур, направляющих нас в процессе работы над любым приложением: DRY (don't repeat yourself — не повторяйся), слабое связывание сильное единство (loose coupling high cohesion), YAGNI (ya ain't gonna need it — тебе это не понадобится), принцип наименьшей неожиданности (principle of least surprise), принцип единственной обязанности (single responsibility) и так далее.
-
-Я не стану перечислять каждую аббревиатуру и руководство, которое я встречал за последние годы... Все они имеют отношение и к функциональному программированию, но к нашей цели они относятся слабо. Сейчас я бы хотел донести до вас мой замысел: машинально стучать по клавиатуре — это не для нас, мы стремися к высшей цели — к функциональной Нирване. 
+I won't belabor listing each and every guideline I've heard throughout the years... the point is that they hold up in a functional setting, though they're merely tangential to our goal. What I'd like you to get a feel for now, before we get any further, is our intention when we poke and prod at the keyboard; our functional Xanadu.
 
 <!--BREAK-->
 
-## Краткое знакомство
+## A brief encounter
 
-Давайте начнём с немного безумного примера. Ниже вы увидите приложение «чайка». Определим два понятия: объединение стай и размножение. Когда стаи чаек объединяются, их количество складывается, а когда размножаются — умножается. 
-
-Я не претендую на хороший объектно-ориентированный код, он здесь только для того чтобы подчеркнуть минусы современного подхода "присваивания". Держитесь крепче:
+Let's start with a touch of insanity. Here is a seagull application. When flocks conjoin they become a larger flock and when they breed they increase by the number of seagulls with whom they're breeding. Now this is not intended to be good Object-Oriented code, mind you, it is here to highlight the perils of our modern, assignment based approach. Behold:
 
 ```js
 var Flock = function(n) {
@@ -45,11 +41,12 @@ var result = flock_a.conjoin(flock_c)
     .breed(flock_b).conjoin(flock_a.breed(flock_b)).seagulls;
 //=> 32
 ```
-Кто вообще мог сотворить такую мерзкую пакость? Неимоверно трудно уследить за меняющимся внутренним состоянием, и, более того, ответ неправильный! Должно было получиться `16`, но `flock_a` была цинично изменена прямо в процессе. Бедняжка `flock_a`. Это какая-то анархия в ИТ! Дикая животная арифметика!
 
-Если вы не поняли этого кода, ничего страшного, я тоже не понял. Мораль в том, что трудно отследить состояние и изменяющиеся значения переменных даже в таком небольшом примере.
+Who on earth would craft such a ghastly abomination? It is unreasonably difficult to keep track of the mutating internal state. And, good heavens, the answer is even incorrect! It should have been `16`, but `flock_a` wound up permanently altered in the process. Poor `flock_a`. This is anarchy in the I.T.! This is wild animal arithmetic!
 
-Давайте попробуем более функциональный подход:
+If you don't understand this program, it's okay, neither do I. The point is that state and mutable values are hard to follow even in such a small example.
+
+Let's try again with a more functional approach:
 
 ```js
 var conjoin = function(flock_x, flock_y) { return flock_x + flock_y };
@@ -65,9 +62,9 @@ var result = conjoin(
 //=>16
 ```
 
-На этот раз ответ получился правильный, к тому же, мы написали гораздо меньше кода (хотя и вложенность функций немного сбивает с толку[^мы справимся с этой проблемой в главе 5]). Уже лучше, но давайте копнём ещё глубже. Вы могли обратить внимание, что на самом деле мы работаем с обычным сложением (`conjoin`) и умножением (`breed`).
+Well, we got the right answer this time. There's much less code. The function nesting is a tad confusing...[^we'll remedy this situation in ch5]. It's better, but let's dig deeper. There are benefits to calling a spade a spade. Had we done so, we might have seen we're just working with simple addition (`conjoin`) and multiplication (`breed`).
 
-И правда, в этих функциях нет ничего особенного, кроме их имён. Давайте же переименуем их, чтобы название отражало содержание.
+There's really nothing special at all about these two functions other than their names. Let's rename our custom functions to reveal their true identity.
 
 ```js
 var add = function(x, y) { return x + y };
@@ -82,47 +79,46 @@ var result = add(
 );
 //=>16
 ```
-
-Вспомним школьную арифметику:
+And with that, we gain the knowledge of the ancients:
 
 ```js
-// сочетательное свойство
+// associative
 add(add(x, y), z) == add(x, add(y, z));
 
-// переместительное свойство
+// commutative
 add(x, y) == add(y, x);
 
-// свойство нейтрального элемента
+// identity
 add(x, 0) == x;
 
-// распределительное свойство
+// distributive
 multiply(x, add(y,z)) == add(multiply(x, y), multiply(x, z));
 ```
 
-Старые добрые математические свойства пришлись здесь как нельзя кстати, не так ли? Не страшно, если вы не смогли их все сразу вспомнить, многие из нас годами никак не использовали эту информацию. Давайте попробуем применить эти свойства, чтобы упростить нашу программу.
+Ah yes, those old faithful mathematical properties should come in handy. Don't worry if you didn't know them right off the top of your head. For a lot of us, it's been a while since we've reviewed this information. Let's see if we can use these properties to simplify our little seagull program.
 
 ```js
-// Первоначальный вариант
+// Original line
 add(multiply(flock_b, add(flock_a, flock_c)), multiply(flock_a, flock_b));
 
-// Применим свойство нейтрального элемента (напомнию: `flock_c == 0`)
+// Apply the identity property to remove the extra add
 // (add(flock_a, flock_c) == flock_a)
 add(multiply(flock_b, flock_a), multiply(flock_a, flock_b));
 
-// Применим распределительное свойство и получим:
+// Apply distributive property to achieve our result
 multiply(flock_b, add(flock_a, flock_a));
 ```
 
-Прекрасно! Нам не понадобилось написать ни строчки кода, только вызвать наши функции. Я включил тела функций `add` и `multiply` в код для полноты, но на самом деле они здесь не нужны, ведь мы можем использовать стороннюю библиотеку, где эти функции уже точно есть.
+Brilliant! We didn't have to write a lick of custom code other than our calling function. We include `add` and `multiply` definitions here for completeness, but there is really no need to write them - we surely have an `add` and `multiply` provided by some previously written library.
 
-Вы можете подумать: «очень хитро с твоей стороны привести такой математичский пример». Или «реальные программы не такие простые и всё вышесказанное к ним не применимо». Я выбрал этот пример, потому что большинство из нас уже знакомы со сложением и умножением, чтобы было легко понять, как математика может помочь нам при программировании.
+You may be thinking "how very strawman of you to put such a mathy example up front". Or "real programs are not this simple and cannot be reasoned about in such a way". I've chosen this example because most of us already know about addition and multiplication so it's easy to see how math can be of use to us here.
 
-Не отчаивайтесь! Для написания приложений, в этой книге мы воспользуемся теориями категорий и множеств, лямбда-исчислением. Все эти методы помогут нам достичь той же простоты, что и в примере с чайками. Вам вовсе не надо быть математиком, чтобы понять примеры из этой книги. На самом деле это почти то же самое, что и использовать обычный фреймворк или API.
+Don't despair, throughout this book, we'll sprinkle in some category theory, set theory, and lambda calculus to write real world examples that achieve the same simplicity and results as our flock of seagulls example. You needn't be a mathematician either, it will feel just like using a normal framework or api.
 
-Возможно вас удивит то, что можно писать прикладные приложения с применением функционального подхода, аналогичного примеру выше. Короткие программы с понятными свойствами, о которых легко рассуждать и просто анализировать. Программы, которые не изобретают велосипед через строчку. Отсутствие чётких законов может быть полезным, если вы преступник, но в этой книге мы будем учиться прислушиваться и следовать строгим законами математики.
+It may come as a surprise to hear that we can write full, everyday applications along the lines of the functional analog above. Programs that have sound properties. Programs that are terse, yet easy to reason about. Programs that don't reinvent the wheel at every turn. Lawlessness is good if you're a criminal, but in this book, we'll want to acknowledge and obey the laws of math.
 
-Мы хотим пользоваться теорией, в которой все части идеально складываются вместе, как пазл. Мы хотим описывать прикладные задачи в терминах обобщённых взаимозаменяемых частей и исследовать их свойства для извлечения максимальной пользы. Это потребует немного больше дисциплины, чем подход «и так сойдёт» императивного программирования [^Я дам точное определение императивного подхода позже в этой книге, но на данный момент это всё, что не является функциональным]. Тем не менее, результат работы в контексте жёстких математических рамок вас поразит.
+We'll want to use the theory where every piece tends to fit together so politely. We'll want to represent our specific problem in terms of generic, composable bits and then exploit their properties for our own selfish benefit. It will take a bit more discipline than the "anything goes" approach of imperative[^We'll go over the precise definition of imperative later in the book, but for now it's anything other than functional programming] programming, but the payoff of working within a principled, mathematical framework will astound you.
 
-Мы уже заметили мерцание нашей функциональной Полярной звезды где-то вдалеке, но перед тем как мы начнем наше путешествие, нам нужно освоить ещё несколько базовых концепций.
+We've seen a flicker of our functional north star, but there are a few concrete concepts to grasp before we can really begin our journey.
 
-[Глава 2: Функции первого класса](ch2.md)
+[Chapter 2: First Class Functions](ch2.md)
