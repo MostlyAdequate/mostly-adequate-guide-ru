@@ -48,7 +48,10 @@ gitbook mobi . ./functional.mobi
 
 # Другие языки
 
-* [English](https://github.com/MostlyAdequate/mostly-adequate-guide)
+* [English (original)](https://github.com/MostlyAdequate/mostly-adequate-guide)
+* [French](https://github.com/MostlyAdequate/mostly-adequate-guide-fr) 
+* [Português](https://github.com/MostlyAdequate/mostly-adequate-guide-pt-BR)
+* [Russian](https://github.com/MostlyAdequate/mostly-adequate-guide-ru)
 * [中文版](https://github.com/llh911001/mostly-adequate-guide-chinese)
 
 
