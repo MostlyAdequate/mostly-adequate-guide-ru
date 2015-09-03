@@ -12,9 +12,9 @@ This is a book on the functional paradigm in general. We'll use the world's most
 
     This makes it possible to practice and apply your acquired knowledge each day on real world programs rather than pet projects on nights and weekends in an esoteric FP language.
 
- * Вы скорее всего и так каждый день используете его в своей работе.
+ * Вы, скорее всего, и так каждый день используете его в своей работе.
 
-     Это открывает возможность воспользоваться полученным знание в реальных прикладных программах, в отличии от тех проектов, которые вы пишите в качестве хобби по выходным на каком-нибудь экзотическом языке.
+     Это открывает возможность воспользоваться полученным знание в реальных прикладных программах, в отличие от тех проектов, которые вы пишите в качестве хобби по выходным на каком-нибудь экзотическом языке.
 
  * We don't have to learn everything up front to start writing programs.
 
