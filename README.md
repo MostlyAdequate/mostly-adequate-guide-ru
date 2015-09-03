@@ -20,9 +20,9 @@ This is a book on the functional paradigm in general. We'll use the world's most
 
     In a pure functional language, you cannot log a variable or read a DOM node without using monads. Here we can cheat a little as we learn to purify our codebase. It's also easier to get started in this language since it's mixed paradigm and you can fall back on your current practices while there are gaps in your knowledge.
 
- * Вам не потребуется учить язык с нуля для того чтобы начать писать программы.
+ * Вам не потребуется учить язык с нуля для того, чтобы начать писать программы.
 
-    В чисто функциональном языке у вас не получится залогировать значение переменной или получить элемент DOM без использования монад, пока не освоили все приёмы функционального программирования JS позволяет нам немного сжульничать. Также, пока мы не заполнили все пробелы в ваших знаниях вы можете воспользоваться уже существующими из ООП, всё благодаря смешанной парадигме JS.
+    В чисто функциональном языке у вас не получится залогировать значение переменной или получить элемент DOM без использования монад. Пока мы не освоили все приёмы функционального программирования, благодаря смешанной парадигме JS можно немного сжульничать и воспользоваться приёмами из ООП.
 
  * The language is fully capable of writing top notch functional code.
 
