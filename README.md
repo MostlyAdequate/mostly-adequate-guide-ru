@@ -34,7 +34,7 @@ This is a book on the functional paradigm in general. We'll use the world's most
 
 That said, typed functional languages will, without a doubt, be the best place to code in the style presented by this book. JavaScript will be our means of learning a paradigm, where you apply it is up to you. Luckily, the interfaces are mathematical and, as such, ubiquitous. You'll find yourself at home with swiftz, scalaz, haskell, purescript, and other mathematically inclined environments.
 
-Учитывая всё вышесказанное, конечно, лучше всего для примеров из этой книги подойдут типизированные функциональные языки. JavaScript поможет нам познакомиться с парадигмой, какой язык использовать для её применения — решать вам. К счастью, все интерефейсы математические и, поэтому, универсальные. Вы будете комфортно себя чувствовать используя swiftz, haskell, purescript, и другие математически-ориентированные языки.
+Учитывая всё вышесказанное, конечно, лучше всего для примеров из этой книги подойдут типизированные функциональные языки. JavaScript поможет нам познакомиться с подходом к программированию функционально, какой язык использовать для его применения — решать вам. К счастью, все интерефейсы математические и, поэтому, универсальные. Вы будете комфортно себя чувствовать, используя swiftz, haskell, purescript и другие математически-ориентированные языки.
 
 
 # Gitbook (на английском)
