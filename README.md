@@ -5,7 +5,7 @@
 
 This is a book on the functional paradigm in general. We'll use the world's most popular functional programming language: JavaScript. Some may feel this is a poor choice as it's against the grain of the current culture which, at the moment, feels predominately imperative. However, I believe it is the best way to learn FP for several reasons:
 
-Эта книга рассказывает о парадигме функционального программирования в общем. Мы будем использовать самый популярный в мире функциональный язык программирования: JavaScript. Некоторые из вас могу сказать, что это не самый удачный выбор, потому что в данный момент в JavaScript преобладают императивные тенденции. Однако, я считаю, что JavaScript — это лучший способ знакомства с функциональным программированием по нескольким причинам:
+Эта книга рассказывает о парадигме функционального программирования в общем. Мы будем использовать самый популярный в мире функциональный язык программирования: JavaScript. Некоторые из вас могут сказать, что это не самый удачный выбор, потому что в данный момент в JavaScript преобладают императивные тенденции. Однако, я считаю, что JavaScript — это лучший способ знакомства с функциональным программированием по нескольким причинам:
 
 
  * You likely use it every day at work.
@@ -30,7 +30,7 @@ This is a book on the functional paradigm in general. We'll use the world's most
 
  * JS отлично подходит для написания первоклассного функционального кода.
 
-    Мы можем легко сымитировать Scala или Haskell с помощью пары библиотек. На данный момент, объектно-ориентированное программирование доминирует в индустрии, но в JS ООП выглядит довольно нелепо — всё равно что бить чечётку в галошах. Нам приходится постоянно использовать `bind` чтобы не потерять контекст `this`, у нас нет классов[^Пока что], мы используем различные костыли, когда мы забыли написать `new`, приватные поля доступны только через замыкания. Многие из нас считаю функциональное программирование более подходящим вариантом для JS.
+    Мы можем легко сымитировать Scala или Haskell с помощью пары библиотек. На данный момент, объектно-ориентированное программирование доминирует в индустрии, но в JS ООП выглядит довольно нелепо — всё равно что бить чечётку в галошах. Нам приходится постоянно использовать `bind` чтобы не потерять контекст `this`, у нас нет классов[^Пока что], мы используем различные костыли, когда мы забыли написать `new`, приватные поля доступны только через замыкания. Многие из нас считают функциональное программирование более подходящим вариантом для JS.
 
 That said, typed functional languages will, without a doubt, be the best place to code in the style presented by this book. JavaScript will be our means of learning a paradigm, where you apply it is up to you. Luckily, the interfaces are mathematical and, as such, ubiquitous. You'll find yourself at home with swiftz, scalaz, haskell, purescript, and other mathematically inclined environments.
 
