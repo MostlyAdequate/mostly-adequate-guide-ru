@@ -30,7 +30,7 @@ This is a book on the functional paradigm in general. We'll use the world's most
 
  * JS отлично подходит для написания первоклассного функционального кода.
 
-    Мы можем легко сымитировать Scala или Haskell с помощью пары библиотек. На данный момент, объектно-ориентированное программирование доминирует в индустрии, но в JS ООП выглядит довольно нелепо — всё равно что бить чечётку в галошах. Нам приходится постоянно использовать `bind` чтобы не потерять контекст `this`, у нас нет классов[^Пока что], мы используем различные костыли, когда мы забыли написать `new`, приватные поля доступны только через замыкания. Многие из нас считают функциональное программирование более подходящим вариантом для JS.
+    В JS у нас есть всё что нужно для имитации Scala или Haskell с помощью парочки небольших библиотек. В данный момент ООП доминирует в индустрии, но он очень неудобен в Javascript’е, примерно также, как пойти с палатками на трассу или танцевать чечётку в сапогах. Чтобы случайно не потерять контекст `this`, мы повсеместно используем `bind`. Забыли написать `new`? Будьте готовы к причудливым ошибкам. В JS пока что нет классов, а приватные поля доступны только через замыкания.  Многие из нас считают функциональное программирование более подходящим вариантом для JS.
 
 That said, typed functional languages will, without a doubt, be the best place to code in the style presented by this book. JavaScript will be our means of learning a paradigm, where you apply it is up to you. Luckily, the interfaces are mathematical and, as such, ubiquitous. You'll find yourself at home with swiftz, scalaz, haskell, purescript, and other mathematically inclined environments.
 
