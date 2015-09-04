@@ -54,41 +54,49 @@ In other words, `hi` is already a function that expects one argument, why place 
 
 It is obnoxiously verbose and, as it happens, bad practice to surround a function with another function merely to delay evaluation. (We'll see why in a moment, but it has to do with maintenance.)
 
+Оборачивать функцию другой функцией просто для того чтобы отложить её вызов — это не только слишком многословно, но ещё и считается плохой практикой (чуть ниже вы поймёте, почему, но намекну: речь идёт о поддержке кода).
+
 A solid understanding of this is critical before moving on, so let's see a few more fun examples excavated from npm modules.
 
+Очень важно, чтобы вы поняли почему это так, прежде чем мы продолжим, поэтому позвольте мне привести несколько забавных примеров, которые я нашёл в существующих npm-пакетах:
+
 ```js
-// ignorant
+// невежа
 var getServerStuff = function(callback){
   return ajaxCall(function(json){
     return callback(json);
   });
 };
 
-// enlightened
+// прозрел!
 var getServerStuff = ajaxCall;
 ```
 
 The world is littered with ajax code exactly like this. Here is the reason both are equivalent:
 
+Мир JavaScript засорён подобным кодом. Вот почему оба примера выше — одно и то же:
+
 ```js
-// this line
+// это строка
 return ajaxCall(function(json){
   return callback(json);
 });
 
-// is the same as this line
+// равносильна этой
 return ajaxCall(callback);
 
-// so refactor getServerStuff
+// перепишем getServerStuff
 var getServerStuff = function(callback){
   return ajaxCall(callback);
 };
 
-// ...which is equivalent to this
-var getServerStuff = ajaxCall; // <-- look mum, no ()'s
+// что эквивалентно следующему
+var getServerStuff = ajaxCall; // <-- смотри, мам, нет ()
 ```
 
 And that, folks, is how it is done. Once more then we'll see why I'm so insistent.
+
+Вот так это делается. Ещё один пример, затем я объясню почему же я так настаиваю.
 
 ```js
 var BlogController = (function() {
@@ -120,6 +128,8 @@ var BlogController = (function() {
 
 This ridiculous controller is 99% fluff. We could either rewrite it as:
 
+Код этого контроллера нелеп на 99%, мы можем легко переписать его:
+
 ```js
 var BlogController = {
   index: Views.index,
@@ -132,11 +142,19 @@ var BlogController = {
 
 ...or scrap it altogether as it does nothing other than bundle our Views and Db together.
 
+...или просто выкинуть его полностью, ведь он не делает ничего кроме объединения наших `Views` и `Db`.
+
 ## Why favor first class?
+
+## Зачем отдавать предподчтение первому классу?
 
 Okay, let's get down to the reasons to favor first class functions. As we saw in the `getServerStuff` and `BlogController` examples, it's easy to add layers of indirection that have no actual value and only increase the amount of code to maintain and search through.
 
+Хорошо, позвольте мне назвать причины использовать именно функции первого класса. Как мы уже видели в примерах с `getServerStuff` и `BlogController`, добавить бесполезный уровень абстакции легко, но зачем? Это только увеличивает количество кода, который необходимо поддерживать и читать.
+
 In addition, if a function we are needlessly wrapping does change, we must also change our wrapper function.
+
+К тому же, если сигнатура внутренней функции поменяется, нам придётся также менять и внешнюю функцию.
 
 ```js
 httpGet('/post/2', function(json){
@@ -145,6 +163,8 @@ httpGet('/post/2', function(json){
 ```
 
 If `httpGet` were to change to send a possible `err`, we would need to go back and change the "glue".
+
+Если вдруг `httpGet` станет принимать новый аргумент `err`, то необходимо отредактировать и «функцию-склейку»
 
 ```js
 // go back to every httpGet call in the application and explicitly pass err
