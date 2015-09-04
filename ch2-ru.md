@@ -167,8 +167,7 @@ If `httpGet` were to change to send a possible `err`, we would need to go back a
 Если вдруг `httpGet` станет принимать новый аргумент `err`, то необходимо отредактировать и «функцию-склейку»
 
 ```js
-// go back to every httpGet call in the application and explicitly pass err
-// along.
+// найти каждый вызов httpGet в приложении и добавить err
 httpGet('/post/2', function(json, err){
   return renderPost(json, err);
 });
@@ -176,24 +175,30 @@ httpGet('/post/2', function(json, err){
 
 Had we written it as a first class function, much less would need to change:
 
+Изменений потребовалось куда меньше, если бы мы с самого начала воспользовались функцией первого класса:
+
 ```js
-// renderPost is called from within httpGet with however many arguments it wants
+// rednerPost вызывается внутри httpGet с любым количеством аргументов
 httpGet('/post/2', renderPost);  
 ```
 
 Besides the removal of unnecessary functions, we must name and reference arguments. Names are a bit of an issue, you see. We have potential misnomers - especially as the codebase ages and requirements change.
 
+Помимо определения лишних функций, нам также приходится придумывать названия аргументам, что само по себе не всегда тривиально, особенно с ростом приложения.
+
 Having multiple names for the same concept is a common source of confusion in projects. There is also the issue of generic code. For instance, these two functions do exactly the same thing, but one feels infinitely more general and reusable:
 
+Одной из частых проблем в проектах является как раз использование разных имён для одних и тех же понятий. Также, стоит упомянуть момент с обобщением имён. Ниже, обе функции делают одно и тоже, но последняя кажется более общей и, от этого, переиспользуемой:
+
 ```js
-// specific to our current blog
+// специфична для нашего конкретного приложения-блога
 var validArticles = function(articles) {
   return articles.filter(function(article){
     return article !== null && article !== undefined;
   });
 };
 
-// vastly more relevant for future projects
+// более общая, легко переиспользовать в другом проекте
 var compact = function(xs) {
   return xs.filter(function(x) {
     return x !== null && x !== undefined;
@@ -203,23 +208,33 @@ var compact = function(xs) {
 
 By naming things, we've seemingly tied ourselves to specific data (in this case `articles`). This happens quite a bit and is a source of much reinvention.
 
+Когда мы даём имена функциям, мы привязываем их к данным (в данным случае к `articles`). Это происходит чаще, чем кажется и является источником изобретения многих «велосипедов». 
+
 I must mention that, just like with Object-Oriented code, you must be aware of `this` coming to bite you in the jugular. If an underlying function uses `this` and we call it first class, we are subject to this leaky abstraction's wrath.
+
+Я должен также умопянуть, что как и при объектно-ориентированном подходе, нужно опасаться того, что `this` подкрадётся и укусит вас за пятку. Если внутренняя функция использует `this`, а мы вызовем её как функцию первого класса, то почувствуем на себе весь гнев утечки абстракции.
 
 ```js
 var fs = require('fs');
 
-// scary
+// страшновато
 fs.readFile('freaky_friday.txt', Db.save);
 
-// less so
+// не так страшно
 fs.readFile('freaky_friday.txt', Db.save.bind(Db));
 
 ```
 
 Having been bound to itself, the `Db` is free to access its prototypical garbage code. I avoid using `this` like a dirty nappy. There's really no need when writing functional code. However, when interfacing with other libraries, you'll have to acquiesce to the mad world around us.
 
+Вызвав `bind` мы даём объекту `Db` возможность использовать мусорный код из его прототипа. Я стараюсь избегать `this` как грязных подгузников, да и в этом нет никакой необходимости, когда пишешь функциональный код. Однако, если вы собираетесь использовать внешние библиотеки, то не забывайте про безумный мир вокруг вас.
+
 Some will argue `this` is necessary for speed. If you are the micro-optimization sort, please close this book. If you cannot get your money back, perhaps you can exchange it for something more fiddly.
+
+Некоторые могут поспорить, утверждая что `this` необходим с точки зрения производительности. Если вы из микро-оптимизаторов, пожалуйста, закройте эту книгу. Если вам не удастся вернуть за неё деньги, я надеюсь вы сможете её обменять на что-нибудь по-сложнее.
 
 And with that, we're ready to move on.
 
-[Chapter 3: Pure Happiness with Pure Functions](ch3.md)
+Теперь же, мы готовы продолжать.
+
+[Глава 3: Чистое счастье с Чистыми функциями](ch3-ru.md)
