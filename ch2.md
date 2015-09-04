@@ -1,16 +1,10 @@
 # Chapter 2: First Class Functions
-# Глава 2: Функции первого класса
 
 ## A quick review
-## Краткий обзор
 
 When we say functions are "first class", we mean they are just like everyone else... so normal class[^coach?]. We can treat functions like any other data type and there is nothing particularly special about them - store them in arrays, pass them around, assign them to variables, what have you.
 
-Когда мы говорим о функциях «первого класса» мы имеем в виду то, что они такие же как и все остальные...[^учитель, поясните!]. С такими функциями можно обращаться также как и с любым другим типом данных, в функциях первого класса нет ничего особенного: их можно хранить в массивах, передавать в функции в качестве аргумента, присваивать переменным — всё, что душе угодно.
-
 That is JavaScript 101, but worth a mention as a quick code search on github will show the collective evasion, or perhaps widespread ignorance of the concept. Shall we go for a feigned example? We shall.
-
-Пример ниже — это азы JavaScript, тем не менее, стоит упомянуть, что немного поискав по коду на github, можно обнаружить, как большинство старательно игнорирует подобный подход. Хотите очередной надуманный пример? Пожалуйста:
 
 ```js
 var hi = function(name){
@@ -24,8 +18,6 @@ var greeting = function(name) {
 
 Here, the function wrapper around `hi` in `greeting` is completely redundant. Why? Because functions are *callable* in JavaScript. When `hi` has the `()` at the end it will run and return a value. When it does not, it simply returns the function stored in the variable. Just to be sure, have a look-see:
 
-Здесь совершенно не нужно оборачивать `hi` в функцию `greeting`. Почему? Потому что в JavaScript функции *вызываемые*. Если написать `hi` и добавить `()` на конце, то функция будет вызвана и вернёт какое-то значение. Если не дописать скобки на конце, то будет возвращена сама функция, сохранённая в переменную. Убедимся в этом:
-
 ```js
 hi;
 // function(name){
@@ -38,8 +30,6 @@ hi("jonas");
 
 Since `greeting` is merely turning around and calling `hi` with the very same argument, we could simply write:
 
-Поскольку `greeting` не делает ничего, кроме вызова `hi` с тем же самым аргументом, то можно написать проще:
-
 ```js
 var greeting = hi;
 
@@ -49,8 +39,6 @@ greeting("times");
 ```
 
 In other words, `hi` is already a function that expects one argument, why place another function around it that simply calls `hi` with the same bloody argument? It doesn't make any damn sense. It's like donning your heaviest parka in the dead of July just to blast the air and demand an ice lolly.
-
-Другими словами, `hi` уже функция с одним аргументом, зачем же оборачивать её в ещё одну функцию, которая будет вызывать ту же `hi` с тем же аргументом? Бессмыслица какая-то. Это всё равно, что надеть самое тёплое пальто в середине июля чтобы ловить каждый порыв ветерка и просить мороженное.
 
 It is obnoxiously verbose and, as it happens, bad practice to surround a function with another function merely to delay evaluation. (We'll see why in a moment, but it has to do with maintenance.)
 
