@@ -10,7 +10,7 @@ When we say functions are "first class", we mean they are just like everyone els
 
 That is JavaScript 101, but worth a mention as a quick code search on github will show the collective evasion, or perhaps widespread ignorance of the concept. Shall we go for a feigned example? We shall.
 
-Пример ниже — это азы JavaScript. Тем не менее, поискав по коду на github легко удостовериться, что большниство старательно игнорирует подобный подход. Соскучились по надуманным примерам? Пожалуйста:
+Пример ниже — это азы JavaScript. Тем не менее, поискав по коду на github, легко удостовериться, что большинство старательно игнорирует подобный подход. Соскучились по надуманным примерам? Пожалуйста:
 
 ```js
 var hi = function(name){
