@@ -1,17 +1,25 @@
 # Chapter 3: Pure Happiness with Pure Functions
+# Глава 3: Чистое счастье с Чистыми функциями
 
 ## Oh to be pure again
+## Как же хорошо снова быть чистым
 
 One thing we need to get straight is the idea of a pure function.
 
+Нам совершенно необходимо чётко понять концепцию чистой функции.
+
 >A pure function is a function that, given the same input, will always return the same output and does not have any observable side effect.
 
+>Чистая функция — это функция, которая при одинаковых аргументах всегда возращает одно и то же значения и не имеет видимых побочных эффектов.
+
 Take `slice` and `splice`. They are two functions that do the exact same thing - in a vastly different way, mind you, but the same thing nonetheless. We say `slice` is *pure* because it returns the same output per input every time, guaranteed. `splice`, however, will chew up its array and spit it back out forever changed which is an observable effect.
+
+Для примера рассмотрим `slice` и `splice`. Эти две функции работают абсолютно одинаково, хотя и делают это совершенно по-разному. Функция `slice` является *чистой*, потому что для одинаковых входных значений она всегда возвращает одни и те же значения на выходе. `splice`, с другой стороны, «съест» кусок массива и вернёт изменённую переменную, что и является побочным эффектом.
 
 ```js
 var xs = [1,2,3,4,5];
 
-// pure
+// чистая
 xs.slice(0,3);
 //=> [1,2,3]
 
@@ -22,7 +30,7 @@ xs.slice(0,3);
 //=> [1,2,3]
 
 
-// impure
+// не чистая
 xs.splice(0,3);
 //=> [1,2,3]
 
@@ -35,10 +43,14 @@ xs.splice(0,3);
 
 In functional programming, we dislike unwieldy functions like `splice` that *mutate* data. This will never do as we're striving for reliable functions that return the same result every time, not functions that leave a mess in their wake like `splice`.
 
+В функциональном программировании мы не любим неуклюжие функции, такие как `splice`, которые изменяют данные. Такое поведение совершенно неприемлимо, потому как мы стремимся к написанию надёжных функций. Таких, которые для одинаковых входных данных возвращают одни и те же выходные. Нам не интересны функции, оставляющие за собой беспорядок в виде испорченных данных, как `splice`.
+
 Let's look at another example.
 
+Приведу ещё один пример.
+
 ```js
-// impure
+// не чистая
 var minimum = 21;
 
 var checkAge = function(age) {
@@ -47,7 +59,7 @@ var checkAge = function(age) {
 
 
 
-// pure
+// чистая
 var checkAge = function(age) {
   var minimum = 21;
   return age >= minimum;
@@ -56,9 +68,15 @@ var checkAge = function(age) {
 
 In the impure portion, `checkAge` depends on the mutable variable `minimum` to determine the result. In other words, it depends on system state which is disappointing because it increases the cognitive load by introducing an external environment.
 
+В не чистом примере, `checkAge` использует изменяемую переменную `minimum`, другими словами, она зависит от состояния системы, что плохо, так как это усложняет понимание функции из-за связанности с внешней средой.
+
 It might not seem like a lot in this example, but this reliance upon state is one of the largest contributors to system complexity[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. This `checkAge` may return different results depending on factors external to input, which not only disqualifies it from being pure, but also puts our minds through the ringer each time we're reasoning about the software.
 
+В данном примере это может показаться мелочью, но зависимость системы от своего состояния — это один из самых важных факторов её сложности[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. Функция `checkAge` может возвращать разные значения, в зависимости от вншнего фактора, что не только исключает её из класса чистых, но ещё и затрудняет её понимание, каждый раз когда мы пытаемся проанализировать код.
+
 Its pure form, on the other hand, is completely self sufficient. We can  also make `minimum` immutable, which preserves the purity as the state will never change. To do this, we must create an object to freeze.
+
+Её чистый вариант, наоборот, полностью самодостаточен. Мы также можем сделать переменную `minimum` неизменяемой, что позволит сохранить чистоту, так как состояние никогда не изменится. Чтобы добиться этого нам потребуется использовать метод `freeze` класса `Object`.
 
 ```js
 var immutableState = Object.freeze({
@@ -67,14 +85,22 @@ var immutableState = Object.freeze({
 ```
 
 ## Side effects may include...
+## Среди побочных эффектов может наблюдаться...
 
 Let's look more at these "side effects" to improve our intuition. So what is this undoubtedly nefarious *side effect* mentioned in the definition of *pure function*? We'll be referring to *effect* as anything that occurs in our computation besides the calculation of a result.
 
+Давайте более подробно разберёмся с этими «побочными эффектами», дабы развить нашу интуицию. Что же за именно скрывается за этими несомненно гнусными *побочными эффектами*, упомянутыми в определении *чистой функции*? Мы будем считать *эффектом* всё, что вызывает какое-либо вычисление, кроме результата самой функции.
+
 There's nothing intrinsically bad about effects and we'll be using them all over the place in the chapters to come. It's that *side* part that bears the negative connotation. Water alone is not an inherent larvae incubator, it's the *stagnant* part that yields the swarms, and I assure you, *side* effects are a similar breeding ground in your own programs.
+
+В эффектах нет ничего «врождённо» плохого, напротив, в будущих главах мы будем использовать их постоянно. Негативную окраску добавляет именно прилагательное «побочный». В слове «вода» нет негативных оттенков, *застоявшаяся* вода — напротив, вызывает ассоциации бактерий и тухлятины. То же самое и с *побочными* эффектами в ваших программах.
 
 >A *side effect* is a change of system state or *observable interaction* with the outside world that occurs during the calculation of a result.
 
+>*Побочный эффект* — это изменение состояния системы или *заметное взаимодействие* с окружающим миром, которое происходит во время вычисления результата.
+
 Side effects may include, but are not limited to
+Побочные эффекты могут включать (но не ограничиваются):
 
   * changing the file system
   * inserting a record into a database
@@ -84,8 +110,21 @@ Side effects may include, but are not limited to
   * obtaining user input
   * querying the DOM
   * accessing system state
+  
+  
+  * изменениями в файловой системе
+  * вставкой записи в базу данных
+  * выполнение http-запроса
+  * мутациями
+  * выводом на экран / записью в лог
+  * получением данных от пользователя
+  * выполнением запроса к DOM
+  * получением доступа к состоянию системы
+  
 
 And the list goes on and on. Any interaction with the world outside of a function is a side effect, which is a fact that may prompt you to suspect the practicality of programming without them. The philosophy of functional programming postulates that side effects are a primary cause of incorrect behavior.
+
+Это далеко не полный список. Любое взаимодействие с миром вне функции уже является побочным эффектом, что может вызвать в вас сомнения в пользе отказа от побочных эффектов в программировании. Философия функционального программирования постулирует, что побочные эффекты являются первопричиной некорректного поведения.
 
 It is not that we're forbidden to use them, rather we want to contain them and run them in a controlled way. We'll learn how to do this when we get to functors and monads in later chapters, but for now, let's try to keep these insidious functions separate from our pure ones.
 
