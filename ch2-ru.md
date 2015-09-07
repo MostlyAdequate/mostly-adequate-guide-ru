@@ -50,11 +50,11 @@ greeting("times");
 
 In other words, `hi` is already a function that expects one argument, why place another function around it that simply calls `hi` with the same bloody argument? It doesn't make any damn sense. It's like donning your heaviest parka in the dead of July just to blast the air and demand an ice lolly.
 
-Другими словами, `hi` уже функция с одним аргументом, зачем же оборачивать её в ещё одну функцию, которая будет вызывать ту же `hi` с тем же аргументом? Бессмыслица какая-то. Это всё равно, что надеть самое тёплое пальто в середине июля чтобы ловить каждый порыв ветерка и просить мороженное.
+Другими словами, `hi` — уже функция с одним аргументом, зачем же оборачивать её в ещё одну функцию, которая будет вызывать ту же `hi` с тем же аргументом? Бессмыслица какая-то. Это всё равно, что надеть самое тёплое пальто в середине июля, чтобы ловить каждый порыв ветерка и просить мороженное.
 
 It is obnoxiously verbose and, as it happens, bad practice to surround a function with another function merely to delay evaluation. (We'll see why in a moment, but it has to do with maintenance.)
 
-Оборачивать функцию другой функцией просто для того чтобы отложить её вызов — это не только слишком многословно, но ещё и считается плохой практикой (чуть ниже вы поймёте, почему, но намекну: речь идёт о поддержке кода).
+Оборачивать функцию другой функцией просто для того, чтобы отложить её вызов — это не только слишком многословно, но ещё и считается плохой практикой (чуть ниже вы поймёте, почему, но намекну: речь идёт о поддержке кода).
 
 A solid understanding of this is critical before moving on, so let's see a few more fun examples excavated from npm modules.
 
@@ -150,7 +150,7 @@ var BlogController = {
 
 Okay, let's get down to the reasons to favor first class functions. As we saw in the `getServerStuff` and `BlogController` examples, it's easy to add layers of indirection that have no actual value and only increase the amount of code to maintain and search through.
 
-Хорошо, позвольте мне назвать причины использовать именно функции первого класса. Как мы уже видели в примерах с `getServerStuff` и `BlogController`, добавить бесполезный уровень абстакции легко, но зачем? Это только увеличивает количество кода, который необходимо поддерживать и читать.
+Хорошо, давайте обсудим причины использования именно функций первого класса. Как мы уже видели в примерах с `getServerStuff` и `BlogController`, добавить бесполезный уровень абстракции легко, но зачем? Это только увеличивает количество кода, который необходимо поддерживать и читать.
 
 In addition, if a function we are needlessly wrapping does change, we must also change our wrapper function.
 
@@ -164,7 +164,7 @@ httpGet('/post/2', function(json){
 
 If `httpGet` were to change to send a possible `err`, we would need to go back and change the "glue".
 
-Если вдруг `httpGet` станет принимать новый аргумент `err`, то необходимо отредактировать и «функцию-склейку»
+Если вдруг `httpGet` станет принимать новый аргумент `err`, то необходимо отредактировать и «функцию-склейку»:
 
 ```js
 // найти каждый вызов httpGet в приложении и добавить err
