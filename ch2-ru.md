@@ -24,7 +24,7 @@ var greeting = function(name) {
 
 Here, the function wrapper around `hi` in `greeting` is completely redundant. Why? Because functions are *callable* in JavaScript. When `hi` has the `()` at the end it will run and return a value. When it does not, it simply returns the function stored in the variable. Just to be sure, have a look-see:
 
-Здесь совершенно не нужно оборачивать `hi` в функцию `greeting`. Почему? Потому что в JavaScript функции *вызываемые*. Если написать `hi` и добавить `()` на конце, то функция будет вызвана и вернёт какое-то значение. Если не дописывать скобки на конце, то будет возвращена сама функция, сохранённая в переменную. Убедимся в этом:
+Здесь совершенно не нужно оборачивать `hi` в функцию `greeting`. Почему? Потому что в JavaScript функции являются *вызываемыми*. Если написать `hi` и добавить `()` на конце, то функция будет вызвана и вернёт какое-то значение. Если не дописывать скобки на конце, то будет возвращена сама функция, сохранённая в переменную. Убедимся в этом:
 
 ```js
 hi;
