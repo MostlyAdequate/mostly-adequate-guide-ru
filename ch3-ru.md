@@ -128,7 +128,11 @@ And the list goes on and on. Any interaction with the world outside of a functio
 
 It is not that we're forbidden to use them, rather we want to contain them and run them in a controlled way. We'll learn how to do this when we get to functors and monads in later chapters, but for now, let's try to keep these insidious functions separate from our pure ones.
 
+Мы не собираемся полностью отказываться от них, лучше ... Мы научимся делать это используя функторы и монады в последующих главах, сейчас же, мы просто будем отделять коварные функции вызывающие побочные эффекты от чистых.
+
 Side effects disqualify a function from being *pure* and it makes sense: pure functions, by definition, must always return the same output given the same input, which is not possible to guarantee when dealing with matters outside our local function.
+
+Побочные эффекты исключают функцию из лиги *чистых* и это имеет свой смысл: чистые функции, по определению, обязаны всегда возвращать одно и то же значение, для одиннаковых входных данных, что невозможно обеспечить, когда имеешь дело с зависимостями вне самой функции.
 
 Let's take a closer look at why we insist on the same output per input. Pop your collars, we're going to look at some 8th grade math.
 
