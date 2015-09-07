@@ -6,11 +6,11 @@
 
 When we say functions are "first class", we mean they are just like everyone else... so normal class[^coach?]. We can treat functions like any other data type and there is nothing particularly special about them - store them in arrays, pass them around, assign them to variables, what have you.
 
-Когда мы говорим о функциях «первого класса» мы имеем в виду то, что они такие же как и все остальные...[^учитель, поясните!]. С такими функциями можно обращаться также как и с любым другим типом данных, в функциях первого класса нет ничего особенного: их можно хранить в массивах, передавать в функции в качестве аргумента, присваивать переменным — всё, что душе угодно.
+Когда мы говорим о функциях «первого класса» мы имеем в виду то, что они такие же как и все остальные...[^учитель, поясните!]. С такими функциями можно обращаться так же, как и с любым другим типом данных, в функциях первого класса нет ничего особенного: их можно хранить в массивах, передавать в функции в качестве аргумента, присваивать переменным — всё, что душе угодно.
 
 That is JavaScript 101, but worth a mention as a quick code search on github will show the collective evasion, or perhaps widespread ignorance of the concept. Shall we go for a feigned example? We shall.
 
-Пример ниже — это азы JavaScript, тем не менее, стоит упомянуть, что немного поискав по коду на github, можно обнаружить, как большинство старательно игнорирует подобный подход. Хотите очередной надуманный пример? Пожалуйста:
+Пример ниже — это азы JavaScript. Тем не менее, поискав по коду на github легко удостовериться, что большниство старательно игнорирует подобный подход. Соскучились по надуманным примерам? Пожалуйста:
 
 ```js
 var hi = function(name){
@@ -24,7 +24,7 @@ var greeting = function(name) {
 
 Here, the function wrapper around `hi` in `greeting` is completely redundant. Why? Because functions are *callable* in JavaScript. When `hi` has the `()` at the end it will run and return a value. When it does not, it simply returns the function stored in the variable. Just to be sure, have a look-see:
 
-Здесь совершенно не нужно оборачивать `hi` в функцию `greeting`. Почему? Потому что в JavaScript функции *вызываемые*. Если написать `hi` и добавить `()` на конце, то функция будет вызвана и вернёт какое-то значение. Если не дописать скобки на конце, то будет возвращена сама функция, сохранённая в переменную. Убедимся в этом:
+Здесь совершенно не нужно оборачивать `hi` в функцию `greeting`. Почему? Потому что в JavaScript функции *вызываемые*. Если написать `hi` и добавить `()` на конце, то функция будет вызвана и вернёт какое-то значение. Если не дописывать скобки на конце, то будет возвращена сама функция, сохранённая в переменную. Убедимся в этом:
 
 ```js
 hi;
