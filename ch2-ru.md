@@ -77,7 +77,7 @@ The world is littered with ajax code exactly like this. Here is the reason both 
 Мир JavaScript засорён подобным кодом. Вот почему оба примера выше — одно и то же:
 
 ```js
-// это строка
+// эта строка
 return ajaxCall(function(json){
   return callback(json);
 });
@@ -188,7 +188,7 @@ Besides the removal of unnecessary functions, we must name and reference argumen
 
 Having multiple names for the same concept is a common source of confusion in projects. There is also the issue of generic code. For instance, these two functions do exactly the same thing, but one feels infinitely more general and reusable:
 
-Одной из частых проблем в проектах является как раз использование разных имён для одних и тех же понятий. Также, стоит упомянуть момент с обобщением имён. Ниже, обе функции делают одно и тоже, но последняя кажется более общей и, от этого, переиспользуемой:
+Одной из частых проблем в проектах является как раз использование разных имён для одних и тех же понятий. Также, стоит упомянуть момент с обобщением имён. Ниже, обе функции делают одно и тоже, но последняя кажется более общей и, от этого, более переиспользуемой:
 
 ```js
 // специфична для нашего конкретного приложения-блога
@@ -212,7 +212,7 @@ By naming things, we've seemingly tied ourselves to specific data (in this case 
 
 I must mention that, just like with Object-Oriented code, you must be aware of `this` coming to bite you in the jugular. If an underlying function uses `this` and we call it first class, we are subject to this leaky abstraction's wrath.
 
-Я должен также умопянуть, что как и при объектно-ориентированном подходе, нужно опасаться того, что `this` подкрадётся и укусит вас за пятку. Если внутренняя функция использует `this`, а мы вызовем её как функцию первого класса, то почувствуем на себе весь гнев утечки абстракции.
+Я должен также умопянуть, что как и при объектно-ориентированном подходе, нужно опасаться того, что `this` подкрадётся сзади и укусит вас за пятку. Если внутренняя функция использует `this`, а мы вызовем её как функцию первого класса, то почувствуем на себе весь гнев утечки абстракции.
 
 ```js
 var fs = require('fs');
@@ -227,7 +227,7 @@ fs.readFile('freaky_friday.txt', Db.save.bind(Db));
 
 Having been bound to itself, the `Db` is free to access its prototypical garbage code. I avoid using `this` like a dirty nappy. There's really no need when writing functional code. However, when interfacing with other libraries, you'll have to acquiesce to the mad world around us.
 
-Вызвав `bind` мы даём объекту `Db` возможность использовать мусорный код из его прототипа. Я стараюсь избегать `this` как грязных подгузников, да и в этом нет никакой необходимости, когда пишешь функциональный код. Однако, если вы собираетесь использовать внешние библиотеки, то не забывайте про безумный мир вокруг вас.
+Вызвав `bind` мы даём объекту `Db` возможность использовать мусорный код из его прототипа. Я стараюсь избегать `this` как грязных подгузников, да и в нём нет никакой необходимости, когда пишешь функциональный код. Однако, если вы собираетесь использовать внешние библиотеки, то не забывайте про безумный мир вокруг вас.
 
 Some will argue `this` is necessary for speed. If you are the micro-optimization sort, please close this book. If you cannot get your money back, perhaps you can exchange it for something more fiddly.
 
