@@ -132,36 +132,57 @@ It is not that we're forbidden to use them, rather we want to contain them and r
 
 Side effects disqualify a function from being *pure* and it makes sense: pure functions, by definition, must always return the same output given the same input, which is not possible to guarantee when dealing with matters outside our local function.
 
-Побочные эффекты исключают функцию из лиги *чистых* и это имеет свой смысл: чистые функции, по определению, обязаны всегда возвращать одно и то же значение, для одиннаковых входных данных, что невозможно обеспечить, когда имеешь дело с зависимостями вне самой функции.
+Побочные эффекты исключают функцию из лиги *чистых* и это имеет свой смысл: чистые функции, по определению, обязаны всегда возвращать одно и то же значение, для одинаковых входных данных, что невозможно обеспечить, когда имеешь дело с зависимостями вне самой функции.
 
 Let's take a closer look at why we insist on the same output per input. Pop your collars, we're going to look at some 8th grade math.
 
-## 8th grade math
+Давайте разберёмся, почему я так наставиваю на одном и том же результате при одинаковых входных данных. Садитесь за парту ровно, я покажу вам немного математики из 8го класса.
+
+## Математика 8го класса
 
 From mathisfun.com:
+
+С сайта mathisfun.com
 
 > A function is a special relationship between values:
 > Each of its input values gives back exactly one output value.
 
+> Фунцкия — это взаимоотношение между величинами:
+> Каждое из входных значений возвращает одно и только одно выходное.
+
 In other words, it's just a relation between two values: the input and the output. Though each input has exactly one output, that output doesn't necessarily have to be unique per input. Below shows a diagram of a perfectly valid function from `x` to `y`;
+
+Другими словами, функция — это всего лишь взаимоотношение между двумя величинами: аргументом и значением. Хотя и каждому аргументу ставится в соответствие единственное значение функции, обратное не верно. Так, функция, вызванная с разными аргументами может возвращать одно и то же значение. На диаграмме ниже изображена вполне законная функция `x` → `y`.
 
 <img src="images/function-sets.gif" />[^http://www.mathsisfun.com/sets/function.html]
 
 To contrast, the following diagram shows a relation that is *not* a function since the input value `5` points to several outputs:
 
+Для сравнения, следующая диаграмма показывает отношение, которое *не* является функцией. Так как для аргумента `5` есть несколько значений:
+
 <img src="images/relation-not-function.gif" />[^http://www.mathsisfun.com/sets/function.html]
 
 Functions can be described as a set of pairs with the position (input, output): `[(1,2), (3,6), (5,10)]`[^It appears this function doubles its input].
 
+Функцию можно описать как набор упорядоченных пар (аргумент, значение): `[(1,2), (3,6), (5,10)]`[^Похоже, что эта функция удваивает аргумент].
+
 Or perhaps a table:
+
+Или в виде таблицы:
 <table> <tr> <th>Input</th> <th>Output</th> </tr> <tr> <td>1</td> <td>2</td> </tr> <tr> <td>2</td> <td>4</td> </tr> <tr> <td>3</td> <td>6</td> </tr> </table>
 
+<table> <tr> <th>Аргумент</th> <th>Значение</th> </tr> <tr> <td>1</td> <td>2</td> </tr> <tr> <td>2</td> <td>4</td> </tr> <tr> <td>3</td> <td>6</td> </tr> </table>
+
 Or even as a graph with `x` as the input and `y` as the output:
+
+Или в виде графика, где по оси `x` отложен аргумент, а по оси `y` — значение:
 
 <img src="images/fn_graph.png" width="300" height="300" />
 
 
 There's no need for implementation details if the input dictates the output. Since functions are simply mappings of input to output, one could simply jot down object literals and run them with `[]` instead of `()`.
+
+Нам совершенно не важны детали реализации механизма функции, если мы знаем, что аргумент диктует значение. Так как функции являются всего лишь отображением аргумента на значение, то мы можем просто-напросто записывать литералы объекта с `[]`, вместо `()`.
 
 ```js
 var toLowerCase = {"A":"a", "B": "b", "C": "c", "D": "d", "E": "e", "D": "d"};
@@ -176,6 +197,8 @@ isPrime[3];
 ```
 
 Of course, you might want to calculate instead of hand writing things out, but this illustrates a different way to think about functions.[^You may be thinking "what about functions with multiple arguments?". Indeed, that presents a bit of an inconvenience when thinking in terms of mathematics. For now, we can bundle them up in an array or just think of the `arguments` object as the input. When we learn about *currying*, we'll see how we can directly model the mathematical definition of a function.]
+
+Согласен, возможно вы захотите вычислять значение функции, а не просто вписывать вручную все возможные пар аргументов-значений.[^Кто-то из вас может заметить: «а как же функции многих переменных?» Действительно, с точки зрения может показаться несколько странным что мы не обговорили этот момент. На данный момент, будем считать несколько аргументов как один аргумент, являющийся массивом. Когда мы изучим *каррирование*, мы сможем легко пользоваться строгим математическим определением функции.]
 
 Here comes the dramatic reveal: Pure functions *are* mathematical functions and they're what functional programming is all about. Programming with these little angels can provide huge benefits. Let's look at some reasons why we're willing to go to great lengths to preserve purity.
 
