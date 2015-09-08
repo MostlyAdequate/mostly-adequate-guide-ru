@@ -202,6 +202,8 @@ Of course, you might want to calculate instead of hand writing things out, but t
 
 Here comes the dramatic reveal: Pure functions *are* mathematical functions and they're what functional programming is all about. Programming with these little angels can provide huge benefits. Let's look at some reasons why we're willing to go to great lengths to preserve purity.
 
+Здесь нас поджидает внезапное открытие: чистые функции *являются* математическими функциями, они явяляются фундаментом функционального программирования. Использование этих маленьких ангелочков таит в себе большое количество плюсов. Давайте посмотрим, зачем так стараться ради сохранения чистоты.
+
 ## The case for purity
 
 ### Cacheable
