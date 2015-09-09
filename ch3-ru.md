@@ -205,10 +205,14 @@ Here comes the dramatic reveal: Pure functions *are* mathematical functions and 
 Здесь нас поджидает внезапное открытие: чистые функции *являются* математическими функциями, они явяляются фундаментом функционального программирования. Использование этих маленьких ангелочков таит в себе большое количество плюсов. Давайте посмотрим, зачем так стараться ради сохранения чистоты.
 
 ## The case for purity
+## Место для чистоты
 
 ### Cacheable
+### Кешируемость
 
 For starters, pure functions can always be cached by input. This is typically done using a technique called memoization:
+
+Начнём с того, что значения чистых функций можно кешировать по аргументу. Обычно это реализуется с помощью техники мемоизации:
 
 ```js
 var squareNumber  = memoize(function(x){ return x*x; });
@@ -216,17 +220,19 @@ var squareNumber  = memoize(function(x){ return x*x; });
 squareNumber(4);
 //=> 16
 
-squareNumber(4); // returns cache for input 4
+squareNumber(4); // возвращает результат из кеша для аргумента 4
 //=> 16
 
 squareNumber(5);
 //=> 25
 
-squareNumber(5); // returns cache for input 5
+squareNumber(5); // возвращает результат из кеша для аргумента 5
 //=> 25
 ```
 
 Here is a simplified implementation, though there are plenty of more robust versions available.
+
+Ниже я написал упрощённую реализацию мемоизации, в интернете вы можете найти более надёжную версию.
 
 ```js
 var memoize = function(f) {
@@ -242,6 +248,8 @@ var memoize = function(f) {
 
 Something to note is that you can transform some impure functions into pure ones by delaying evaluation:
 
+Некоторые функции можно превратить в чистые благодаря отложенному выполнению:
+
 ```js
 var pureHttpCall = memoize(function(url, params){
   return function() { return $.getJSON(url, params); }
@@ -250,22 +258,31 @@ var pureHttpCall = memoize(function(url, params){
 
 The interesting thing here is that we don't actually make the http call - we instead return a function that will do so when called. This function is pure because it will always return the same output given the same input: the function that will make the particular http call given the `url` and `params`.
 
+Интересный момент, мы не делаем http-запрос, вместо него мы возвращаем функцию, которая сделает, когда будет вызвана. Эта функция является чистой, так как всегда для одинакового аргумента возвращает одно и то же значение — функцию, которая сделает http-запрос по заданным `url` и `params`.
+
 Our `memoize` function works just fine, though it doesn't cache the results of the http call, rather it caches the generated function.
+
+Функция `memoize` работает нормально, хотя она и не кеширует результат http-запроса, а кеширует сгенерированную функцию.
 
 This is not very useful yet, but we'll soon learn some tricks that will make it so. The takeaway is that we can cache every function no matter how destructive they seem.
 
+Пока что `memoize` не кажется очень полезной, однако скоро мы изучим некоторые хитрости, которые позволят кешировать любую функцию, вне зависимости от её чистоты.
+
 ### Portable / Self-Documenting
+### Переносимость / Самодокументированность
 
 Pure functions are completely self contained. Everything the function needs is handed to it on a silver platter. Ponder this for a moment... How might this be beneficial? For starters, a function's dependencies are explicit and therefore easier to see and understand - no funny business going on under the hood.
 
+Чистые функцию полностью самодостаточны, всё что им нужно для работы они получают на блюдечке. Вдумайтесь, какие в этом могут быть плюсы? Начнём с зависимостей: они явные и, следовательно, их проще отследить — ничего не скрыто под капотом.
+
 ```js
-//impure
+// не чистая
 var signUp = function(attrs) {
   var user = saveUser(attrs);
   welcomeUser(user);
 };
 
-//pure
+// чистая
 var signUp = function(Db, Email, attrs) {
   return function() {
     var user = saveUser(Db, attrs);
@@ -276,9 +293,15 @@ var signUp = function(Db, Email, attrs) {
 
 The example here demonstrates that the pure function must be honest about its dependencies and, as such, tell us exactly what it's up to. Just from its signature, we know that it will use a `Db`, `Email`, and `attrs` which should be telling to say the least.
 
+Этот пример показывает, что чистая функция должна быть полностью откровенна по отношению к своим зависимостям и, тем самым, иллюстрирует нам своё предназначение. Просто посмотрев на сигнатуру функции мы по меньшей мере можем понять, что она использует `Db`, `Email` и `attrs`.
+
 We'll learn how to make functions like this pure without merely deferring evaluation, but the point should be clear that the pure form is much more informative than its sneaky impure counterpart which is up to God knows what.
 
+Мы научимся писать такие чистые функции, даже без использования отложенного выполнения. Надеюсь, вам уже стало ясно, что чистая функция гораздо более информативна, чем подозрительная нечистая, намерения которой не ясны.
+
 Something else to notice is that we're forced to "inject" dependencies, or pass them in as arguments, which makes our app much more flexible because we've parameterized our database or mail client or what have you[^Don't worry, we'll see a way to make this less tedious than it sounds]. Should we choose to use a different Db we need only to call our function with it. Should we find ourselves writing a new application in which we'd like to reuse this reliable function, we simply give this function whatever `Db` and `Email` we have at the time.
+
+Хочу также отметить, что мы вынуждены «внедрять» зависимости, или передавать их в качестве аргументов, что делает наше приложение куда более гибким, за счёт параметризации вашего приложения-клиента к базе данных или почтового клиента (или что у вас там за приложение?)[^Не волнуйтесь, мы научимся делать это менее скучно, чем это звучит]. Если вы хотите поменять базу данных, то вам всего-навсего потребуется вызвать функцию, передав новую базу в качестве аргумента. Когда вы будете писать новое приложение и захотите переиспользовать нашу надёжную чистую функцию, вы можете просто передать ей те `Db` и `Email`, которые актуальны для вас.
 
 In a JavaScript setting, portability could mean serializing and sending functions over a socket. It could mean running all our app code in web workers. Portability is a powerful trait.
 
