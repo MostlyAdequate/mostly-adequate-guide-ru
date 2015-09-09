@@ -305,13 +305,22 @@ Something else to notice is that we're forced to "inject" dependencies, or pass 
 
 In a JavaScript setting, portability could mean serializing and sending functions over a socket. It could mean running all our app code in web workers. Portability is a powerful trait.
 
+В среде JavaScript портативность может значить сериализацию и отправку функции через сокет или же запуск всего нашего приложения с помощью Web Worker'ов. Портативность — мощная штука.
+
 Contrary to "typical" methods and procedures in imperative programming rooted deep in their environment via state, dependencies, and available effects, pure functions can be run anywhere our hearts desire.
+
+В отличие от «традиционных» методов и процедур в императивном программировании, которые жёстко связаны с состоянием системы, зависимостями и доступными эффектами, чистые функции могут использовать везде, где нашей душе угодно.
 
 When was the last time you copied a method into a new app? One of my favorite quotes comes from Erlang creator, Joe Armstrong: "The problem with object-oriented languages is they’ve got all this implicit environment that they carry around with them. You wanted a banana but what you got was a gorilla holding the banana... and the entire jungle".
 
+Вспомните последний раз, когда вы копировали метод из одного приложения в другое. Давно это было? Одна из моих самых любимых цитат была произнесена создателем языка Erlang, Джое Армстронгом: «Проблема объектно-ориентированных языков в неявной среде, которая их окружает. Вы хотели получить банан, а получили гориллу с бананом... И все джунгли».
+
 ### Testable
+### Тестирумость
 
 Next, we come to realize pure functions make testing much easier. We don't have to mock a "real" payment gateway or setup and assert the state of the world after each test. We simply give the function input and assert output.
+
+Дальше — больше, тестировать чистые функции проще. Вам больше не потребуется симулировать «реальный» платёжный шлюз или настраивать и строить предположения по поводу состояния всего мира во время каждого теста.
 
 In fact, we find the functional community pioneering new test tools that can blast our functions with generated input and assert that properties hold on the output. It's beyond the scope of this book, but I strongly encourage you to search for and try *Quickcheck* - a testing tool that is tailored for a purely functional environment.
 
