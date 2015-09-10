@@ -324,6 +324,9 @@ Next, we come to realize pure functions make testing much easier. We don't have 
 
 In fact, we find the functional community pioneering new test tools that can blast our functions with generated input and assert that properties hold on the output. It's beyond the scope of this book, but I strongly encourage you to search for and try *Quickcheck* - a testing tool that is tailored for a purely functional environment.
 
+# FIXME
+Функциональное сообщество создаёт новые инструменты для тестирования, которые могут очень серьёзно ускорить работу тестов с помощью генерации аргументов и предположений по значению функции. Это вне рамок этой книги, но я крайне рекомендую поискать в интернете и попробовать *Quickcheck* — инструмент для тестирования, написанный как раз для функциональной среды.
+
 ### Reasonable
 
 Many believe the biggest win when working with pure functions is *referential transparency*. A spot of code is referentially transparent when it can be substituted for its evaluated value without changing the behavior of the program.
