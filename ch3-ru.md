@@ -328,10 +328,15 @@ In fact, we find the functional community pioneering new test tools that can bla
 Функциональное сообщество создаёт новые инструменты для тестирования, которые могут очень серьёзно ускорить работу тестов с помощью генерации аргументов и предположений по значению функции. Это вне рамок этой книги, но я крайне рекомендую поискать в интернете и попробовать *Quickcheck* — инструмент для тестирования, написанный как раз для функциональной среды.
 
 ### Reasonable
+### Разумность
 
 Many believe the biggest win when working with pure functions is *referential transparency*. A spot of code is referentially transparent when it can be substituted for its evaluated value without changing the behavior of the program.
 
+Многие считают одним из главных преимуществ чистых функций *прозрачность ссылок*. Участок когда можно считать «ссылочно-прозрачным», когда его можно заменить на вычисленный им результат и при этом поведение программы не изменится.
+
 Since pure functions always return the same output given the same input, we can rely on them to always return the same results and thus preserve referential transparency. Let's see an example.
+
+Поскольку чистые функции всегда возвращают один и тот же результат, для одинаковых аргументов — они сохраняют прозрачность ссылок. Давайте обратимся к примеру.
 
 ```js
 
@@ -360,7 +365,11 @@ punch(jobe, michael);
 
 `decrementHP`, `isSameTeam` and `punch` are all pure and therefore referentially transparent. We can use a technique called *equational reasoning* wherein one substitutes "equals for equals" to reason about code. It's a bit like manually evaluating the code without taking into account the quirks of programmatic evaluation. Using referential transparency, let's play with this code a bit.
 
+Функции `decrementHP`, `isSameTeam` и `punch` являются чистыми и, следовательно, ссылочно-прозрачными. Мы можем воспользоваться техникой *рассуждения о равном*, в которой мы заменяем равное равным, чтобы анализировать код. Это примерно то же самое, что и в уме просчитывать код, не учитывая тонкостей его программной реализации. Давай поиграем с кодом, используя прозрачность ссылкок.
+
 First we'll inline the function `isSameTeam`.
+
+Начнём с того, что встроим функцию `isSameTeam` в `punch`.
 
 ```js
 var punch = function(player, target) {
@@ -374,6 +383,8 @@ var punch = function(player, target) {
 
 Since our data is immutable, we can simply replace the teams with their actual value
 
+Так как наши данные не меняются, то мы просто заменим переменные `team` на их значения.
+
 ```js
 var punch = function(player, target) {
   if("red" === "green") {
@@ -386,6 +397,8 @@ var punch = function(player, target) {
 
 We see that it is false in this case so we can remove the entire if branch
 
+Заметим, что условие всегда ложно и избавимся от него:
+
 ```js
 var punch = function(player, target) {
   return decrementHP(target);
@@ -395,25 +408,38 @@ var punch = function(player, target) {
 
 And if we inline `decrementHP`, we see that, in this case, punch becomes a call to decrement the `hp` by 1.
 
+И, если мы встроим `decrementHP`, мы поймём, что вызов функции `punch` становится вызовом функции по уменьшению ХП на 1 единицу.
+
 ```js
 var punch = function(player, target) {
   return target.set("hp", target.hp-1);
 };
 ```
 
-This ability to reason about code is terrific for refactoring and understanding code in general. In fact, we used this technique to refactor our flock of seagulls program. We used equational reasoning to harness the properties of addition and multiplication. Indeed, we'll be using these techniques throughout the book.
+This ability to reason about code is terrific for refactoring and understanding code in general. In fact, we used this technique to refactor our flock of seagulls program. We used equational reasoning to the properties of addition and multiplication. Indeed, we'll be using these techniques throughout the book.
+
+Способность анализировать код таким образом чрезвычайно удобна для рефакторинга и понимания того, что код на самом деле делает. Мы уже пользовались этой техникой ранее, для рефакторинга нашей программы про стаи чаек (свойства сложения и умножения)
 
 ### Parallel Code
+### Параллелизм
 
 Finally, and here's the coup de grâce, we can run any pure function in parallel since it does not need access to shared memory and it cannot, by definition, have a race condition due to some side effect.
 
+В конце концов, сейчас будет вишнка на торте, мы можем запустить любую чистую функцию параллельно, так как ей не нужен доступ в общую память и она по определению привести к состоянию гонки из-за какого-либо побочного эффекта.
+
 This is very much possible in a server side js environment with threads as well as in the browser with web workers though current culture seems to avoid it due to complexity when dealing with impure functions.
 
+Это вполне применимо к потоковому JS на сервере, как и к браузерному с использованием web workers, хотя их особенно и не используют из-за сложностей, возникающих при работе с нечистыми функциями.
 
 ## In Summary
+## В итоге
 
 We've seen what pure functions are and why we, as functional programmers, believe they are the cat's evening wear. From this point on, we'll strive to write all our functions in a pure way. We'll require some extra tools to help us do so, but in the meantime, we'll try to separate the impure functions from the rest of the pure code.
 
+Мы познакомились с чистыми функциями и поняли, почему мы, как функциональные программисты, считаем их манной небесной. С этого момента мы будем стараться писать все функции чистыми. Нам потребуется ещё несколько инструментов для этого, а пока они не изучены, мы будем отделять чистые функции от остального кода.
+
 Writing programs with pure functions is a tad laborious without some extra tools in our belt. We have to juggle data by passing arguments all over the place, we're forbidden to use state, not to mention effects. How does one go about writing these masochistic programs? Let's acquire a new tool called curry.
 
-[Chapter 4: Currying](ch4.md)
+Писать программы с чистыми функциями нелегко, без использования некоторых инструментов. Нам придётся жонглировать данными, постоянно передавая аргументы, нам запрещено использоваться состояние, не говоря уже об эффектах. Как вы смотрите на такой мазохистский подход? Давайте изучим новый инструмент — каррирование.
+
+[Глава 4: Каррирование](ch4-ru.md)
