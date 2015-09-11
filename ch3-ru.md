@@ -10,7 +10,7 @@ One thing we need to get straight is the idea of a pure function.
 
 >A pure function is a function that, given the same input, will always return the same output and does not have any observable side effect.
 
->Чистая функция — это функция, которая при одинаковых аргументах всегда возращает одно и то же значения и не имеет видимых побочных эффектов.
+>Чистая функция — это функция, которая при одинаковых аргументах всегда возращает одни и то же значения и не имеет видимых побочных эффектов.
 
 Take `slice` and `splice`. They are two functions that do the exact same thing - in a vastly different way, mind you, but the same thing nonetheless. We say `slice` is *pure* because it returns the same output per input every time, guaranteed. `splice`, however, will chew up its array and spit it back out forever changed which is an observable effect.
 
