@@ -43,7 +43,7 @@ xs.splice(0,3);
 
 In functional programming, we dislike unwieldy functions like `splice` that *mutate* data. This will never do as we're striving for reliable functions that return the same result every time, not functions that leave a mess in their wake like `splice`.
 
-В функциональном программировании мы не любим неуклюжие функции, такие как `splice`, которые изменяют данные. Такое поведение совершенно неприемлемо, потому как мы стремимся к написанию надёжных функций. Таких, которые для одинаковых входных данных возвращают одни и те же выходные. Нам не интересны функции, оставляющие за собой беспорядок в виде испорченных данных, как `splice`.
+В функциональном программировании мы не любим неуклюжие функции, такие как `splice`, которые изменяют данные. Такое поведение совершенно неприемлемо, потому как мы стремимся к написанию надёжных функций. Таких, которые для одинаковых входных данных возвращают те же данные на выходе. Нам не интересны функции, оставляющие за собой беспорядок в виде испорченных данных, как `splice`.
 
 Let's look at another example.
 
@@ -72,11 +72,11 @@ In the impure portion, `checkAge` depends on the mutable variable `minimum` to d
 
 It might not seem like a lot in this example, but this reliance upon state is one of the largest contributors to system complexity[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. This `checkAge` may return different results depending on factors external to input, which not only disqualifies it from being pure, but also puts our minds through the ringer each time we're reasoning about the software.
 
-В данном примере это может показаться мелочью, но зависимость системы от своего состояния — это один из самых важных факторов её сложности[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. Функция `checkAge` может возвращать разные значения, в зависимости от вншнего фактора, что не только исключает её из класса чистых, но ещё и затрудняет её понимание, каждый раз когда мы пытаемся проанализировать код.
+В данном примере это может показаться мелочью, но зависимость системы от своего состояния — это один из самых важных факторов её сложности[^http://www.curtclifton.net/storage/papers/MoseleyMarks06a.pdf]. Функция `checkAge` может возвращать разные значения, в зависимости от внешнего фактора, что не только исключает её из класса чистых, но ещё и затрудняет её понимание, каждый раз когда мы пытаемся проанализировать код.
 
 Its pure form, on the other hand, is completely self sufficient. We can  also make `minimum` immutable, which preserves the purity as the state will never change. To do this, we must create an object to freeze.
 
-Её чистый вариант, наоборот, полностью самодостаточен. Мы также можем сделать переменную `minimum` неизменяемой, что позволит сохранить чистоту, так как состояние никогда не изменится. Чтобы добиться этого нам потребуется использовать метод `freeze` класса `Object`.
+Её чистый вариант, наоборот, полностью самодостаточен. Мы также можем сделать переменную `minimum` константой, что позволит сохранить чистоту, так как состояние никогда не изменится. Чтобы добиться этого нам потребуется использовать метод `freeze` класса `Object`.
 
 ```js
 var immutableState = Object.freeze({
@@ -89,7 +89,7 @@ var immutableState = Object.freeze({
 
 Let's look more at these "side effects" to improve our intuition. So what is this undoubtedly nefarious *side effect* mentioned in the definition of *pure function*? We'll be referring to *effect* as anything that occurs in our computation besides the calculation of a result.
 
-Давайте более подробно разберёмся с этими «побочными эффектами», дабы развить нашу интуицию. Что же за именно скрывается за этими несомненно гнусными *побочными эффектами*, упомянутыми в определении *чистой функции*? Мы будем считать *эффектом* всё, что вызывает какое-либо вычисление, кроме результата самой функции.
+Давайте более подробно разберёмся с этими «побочными эффектами», дабы развить нашу интуицию. Что же именно скрывается за этими несомненно гнусными *побочными эффектами*, упомянутыми в определении *чистой функции*? Мы будем считать *эффектом* всё, что вызывает какие-либо вычисления, кроме результата самой функции.
 
 There's nothing intrinsically bad about effects and we'll be using them all over the place in the chapters to come. It's that *side* part that bears the negative connotation. Water alone is not an inherent larvae incubator, it's the *stagnant* part that yields the swarms, and I assure you, *side* effects are a similar breeding ground in your own programs.
 
@@ -118,7 +118,7 @@ Side effects may include, but are not limited to
   * мутациями
   * выводом на экран / записью в лог
   * получением данных от пользователя
-  * выполнением запроса к DOM
+  * выполнение запроса к DOM
   * получением доступа к состоянию системы
   
 
@@ -128,7 +128,7 @@ And the list goes on and on. Any interaction with the world outside of a functio
 
 It is not that we're forbidden to use them, rather we want to contain them and run them in a controlled way. We'll learn how to do this when we get to functors and monads in later chapters, but for now, let's try to keep these insidious functions separate from our pure ones.
 
-Мы не собираемся полностью отказываться от них, лучше ... Мы научимся делать это используя функторы и монады в последующих главах, сейчас же, мы просто будем отделять коварные функции вызывающие побочные эффекты от чистых.
+Мы не собираемся полностью отказываться от них, мы хотим научиться их контрлировать. В этом нам помогут функторы и монады, которые мы изучим в последующих главах, сейчас же, мы просто будем отделять коварные функции вызывающие побочные эффекты от чистых.
 
 Side effects disqualify a function from being *pure* and it makes sense: pure functions, by definition, must always return the same output given the same input, which is not possible to guarantee when dealing with matters outside our local function.
 
@@ -198,7 +198,7 @@ isPrime[3];
 
 Of course, you might want to calculate instead of hand writing things out, but this illustrates a different way to think about functions.[^You may be thinking "what about functions with multiple arguments?". Indeed, that presents a bit of an inconvenience when thinking in terms of mathematics. For now, we can bundle them up in an array or just think of the `arguments` object as the input. When we learn about *currying*, we'll see how we can directly model the mathematical definition of a function.]
 
-Согласен, возможно вы захотите вычислять значение функции, а не просто вписывать вручную все возможные пар аргументов-значений.[^Кто-то из вас может заметить: «а как же функции многих переменных?» Действительно, с точки зрения может показаться несколько странным что мы не обговорили этот момент. На данный момент, будем считать несколько аргументов как один аргумент, являющийся массивом. Когда мы изучим *каррирование*, мы сможем легко пользоваться строгим математическим определением функции.]
+Согласен, возможно вы захотите вычислять значение функции, а не просто вписывать вручную все возможные пары аргументов-значений.[^Кто-то из вас может заметить: «а как же функции многих переменных?» Действительно, с точки зрения может показаться несколько странным что мы не обговорили этот момент. На данный момент, будем считать несколько аргументов как один аргумент, являющийся массивом. Когда мы изучим *каррирование*, мы сможем легко пользоваться строгим математическим определением функции.]
 
 Here comes the dramatic reveal: Pure functions *are* mathematical functions and they're what functional programming is all about. Programming with these little angels can provide huge benefits. Let's look at some reasons why we're willing to go to great lengths to preserve purity.
 
@@ -297,11 +297,11 @@ The example here demonstrates that the pure function must be honest about its de
 
 We'll learn how to make functions like this pure without merely deferring evaluation, but the point should be clear that the pure form is much more informative than its sneaky impure counterpart which is up to God knows what.
 
-Мы научимся писать такие чистые функции, даже без использования отложенного выполнения. Надеюсь, вам уже стало ясно, что чистая функция гораздо более информативна, чем подозрительная нечистая, намерения которой не ясны.
+Мы научимся писать такие чистые функции, даже без использования отложенного выполнения. Надеюсь, вам уже стало ясно, что чистая функция гораздо более информативна, чем подозрительная нечистая, , намерения которой до конца не ясны.
 
 Something else to notice is that we're forced to "inject" dependencies, or pass them in as arguments, which makes our app much more flexible because we've parameterized our database or mail client or what have you[^Don't worry, we'll see a way to make this less tedious than it sounds]. Should we choose to use a different Db we need only to call our function with it. Should we find ourselves writing a new application in which we'd like to reuse this reliable function, we simply give this function whatever `Db` and `Email` we have at the time.
 
-Хочу также отметить, что мы вынуждены «внедрять» зависимости, или передавать их в качестве аргументов, что делает наше приложение куда более гибким, за счёт параметризации вашего приложения-клиента к базе данных или почтового клиента (или что у вас там за приложение?)[^Не волнуйтесь, мы научимся делать это менее скучно, чем это звучит]. Если вы хотите поменять базу данных, то вам всего-навсего потребуется вызвать функцию, передав новую базу в качестве аргумента. Когда вы будете писать новое приложение и захотите переиспользовать нашу надёжную чистую функцию, вы можете просто передать ей те `Db` и `Email`, которые актуальны для вас.
+Хочу также отметить, что мы вынуждены «внедрять» зависимости, или передавать их в качестве аргументов, что делает наше приложение куда более гибким, за счёт параметризации вашего приложения-клиента к базе данных или почтового клиента (или что у вас там за приложение?)[^Не волнуйтесь, мы научимся делать это менее скучно, чем это звучит]. Если вы хотите поменять базу данных, то вам всего-навсего потребуется вызвать функцию, передав новую базу в качестве аргумента. Когда вы будете писать новое приложение и захотите переиспользовать надёжную чистую функцию, вы можете просто передать ей те `Db` и `Email`, которые актуальны для вас.
 
 In a JavaScript setting, portability could mean serializing and sending functions over a socket. It could mean running all our app code in web workers. Portability is a powerful trait.
 
@@ -332,7 +332,7 @@ In fact, we find the functional community pioneering new test tools that can bla
 
 Many believe the biggest win when working with pure functions is *referential transparency*. A spot of code is referentially transparent when it can be substituted for its evaluated value without changing the behavior of the program.
 
-Многие считают одним из главных преимуществ чистых функций *прозрачность ссылок*. Участок когда можно считать «ссылочно-прозрачным», когда его можно заменить на вычисленный им результат и при этом поведение программы не изменится.
+Многие считают одним из главных преимуществ чистых функций *прозрачность ссылок*. Участок кода можно считать «ссылочно-прозрачным», когда его можно заменить на вычисленный им результат и при этом поведение программы не изменится.
 
 Since pure functions always return the same output given the same input, we can rely on them to always return the same results and thus preserve referential transparency. Let's see an example.
 
@@ -408,7 +408,7 @@ var punch = function(player, target) {
 
 And if we inline `decrementHP`, we see that, in this case, punch becomes a call to decrement the `hp` by 1.
 
-И, если мы встроим `decrementHP`, мы поймём, что вызов функции `punch` становится вызовом функции по уменьшению ХП на 1 единицу.
+И, если мы встроим `decrementHP`, мы поймём, что вызов функции `punch` становится вызовом функции по уменьшению `hp` на 1 единицу.
 
 ```js
 var punch = function(player, target) {
@@ -425,11 +425,11 @@ This ability to reason about code is terrific for refactoring and understanding 
 
 Finally, and here's the coup de grâce, we can run any pure function in parallel since it does not need access to shared memory and it cannot, by definition, have a race condition due to some side effect.
 
-В конце концов, сейчас будет вишнка на торте, мы можем запустить любую чистую функцию параллельно, так как ей не нужен доступ в общую память и она по определению привести к состоянию гонки из-за какого-либо побочного эффекта.
+Ну и наконец самое приятное — вишенка на торте: мы можем запустить любую чистую функцию параллельно, так как ей не нужен доступ в общую память и она по определению не может привести к состоянию гонки из-за какого-либо побочного эффекта.
 
 This is very much possible in a server side js environment with threads as well as in the browser with web workers though current culture seems to avoid it due to complexity when dealing with impure functions.
 
-Это вполне применимо к потоковому JS на сервере, как и к браузерному с использованием web workers, хотя их особенно и не используют из-за сложностей, возникающих при работе с нечистыми функциями.
+Это вполне применимо как к потоковому JS на сервере, так и к браузерному, с использованием web workers, хотя их особенно и не используют из-за сложностей, возникающих при работе с нечистыми функциями.
 
 ## In Summary
 ## В итоге
@@ -440,6 +440,6 @@ We've seen what pure functions are and why we, as functional programmers, believ
 
 Writing programs with pure functions is a tad laborious without some extra tools in our belt. We have to juggle data by passing arguments all over the place, we're forbidden to use state, not to mention effects. How does one go about writing these masochistic programs? Let's acquire a new tool called curry.
 
-Писать программы с чистыми функциями нелегко, без использования некоторых инструментов. Нам придётся жонглировать данными, постоянно передавая аргументы, нам запрещено использоваться состояние, не говоря уже об эффектах. Как вы смотрите на такой мазохистский подход? Давайте изучим новый инструмент — каррирование.
+Писать программы с чистыми функциями нелегко, без использования некоторых инструментов. Нам придётся жонглировать данными, постоянно передавая аргументы, нам запрещено использовать состояние, не говоря уже об эффектах. Как вы смотрите на такой мазохистский подход? Давайте изучим новый инструмент — каррирование.
 
 [Глава 4: Каррирование](ch4-ru.md)
