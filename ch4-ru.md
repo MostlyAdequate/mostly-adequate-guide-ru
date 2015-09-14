@@ -1,9 +1,16 @@
 # Chapter 4: Currying
+# Глава 4: Каррирование
 
 ## Can't live if livin' is without you
+## Без тебя мне жизнь не мила
+
 My Dad once explained how there are certain things one can live without until one acquires them. A microwave is one such thing. Smart phones, another. The older folks among us will remember a fulfilling life sans internet. For me, currying is on this list.
 
+Мой отец однажды рассказал мне про то, что есть вещи, без которых легко живёшь, пока у тебя их нет. Например, микроволновка или смартфон. Люди постарше вполне счастливо жили и без интернета. Для меня каррирование — одна из таких вещей.
+
 The concept is simple: You can call a function with fewer arguments than it expects. It returns a function that takes the remaining arguments.
+
+Идея очень простая: вы можете вызвать функцию с меньшим количеством аргументов, чем она принимает, в ответ вы получите функцию, которая принмает оставшиеся аргументы.
 
 You can choose to call it all at once or simply feed in each argument piecemeal.
 
