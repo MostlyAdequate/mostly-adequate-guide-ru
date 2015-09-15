@@ -14,6 +14,8 @@ The concept is simple: You can call a function with fewer arguments than it expe
 
 You can choose to call it all at once or simply feed in each argument piecemeal.
 
+Вы можете как вызвать функцию со всем аргументами сразу, так и с любым меньшим количеством.
+
 ```js
 var add = function(x) {
   return function(y) {
@@ -33,7 +35,11 @@ addTen(2);
 
 Here we've made a function `add` that takes one argument and return a function. By calling it, the returned function remembers the first argument from then on via the closure. Calling it with both arguments all at once is a bit of a pain, however, so we can use a special helper function called `curry` to make defining and calling functions like this easier.
 
+В этом примере мы определили функцию `add`, которая принимает один аргумент и возвращает функцию. Если мы вызовем функцию `add`, то она сохранит первый аргумент с помощью замыкания. Для того, чтобы определять и вызывать подобные функции было проще, мы воспользуемся функцией `curry`.
+
 Let's setup a few curried functions for our enjoyment.
+
+Давайте же определим несколько каррированных функций в своё удовольствие.
 
 ```js
 var curry = require('lodash.curry');
@@ -56,6 +62,8 @@ var map = curry(function(f, ary) {
 ```
 
 The pattern I've followed is a simple, but important one. I've strategically positioned the data we're operating on (String, Array) as the last argument. It will become clear as to why upon use.
+
+В определении всех этих функций я придерживался простого, но очень важного правила: я записывал последним аргументом переменную, содержащую данные, которыми мы собираемся оперировать. Пойзже вы поймёте, зачем я это сделал.
 
 ```js
 match(/\s+/g, "hello world");
@@ -94,7 +102,11 @@ censored("Chocolate Rain");
 
 What's demonstrated here is the ability to "pre-load" a function with an argument or two in order to receive a new function that remembers those arguments.
 
+Здесь я продемонстрировал способность «предзагрузки» функции с аргументом или парой для того, чтобы получить новую функцию, которая запомнит эти аргументы.
+
 I encourage you to `npm install lodash`, copy the code above and have a go at it in the repl. You can also do this in a browser where lodash or ramda is available.
+
+Советую вам запустить `npm install lodash` в консоли, скопировать код выше и...
 
 ## More than a pun / special sauce
 
