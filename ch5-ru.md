@@ -1,8 +1,10 @@
-# Chapter 5: Coding by Composing
+# Пишем код с использованием композиции
 
-## Functional husbandry
+## Функциональное скрещивание
 
 Here's `compose`:
+
+Пример `композиции`:
 
 ```js
 var compose = function(f,g) {
@@ -14,7 +16,11 @@ var compose = function(f,g) {
 
 `f` and `g` are functions and `x` is the value being "piped" through them.
 
+`f` и `g` — функции, а `x` — значение, которое «пробрасывается» через них.
+
 Composition feels like function husbandry. You, breeder of functions, select two with traits you'd like to combine and mash them together to spawn a brand new one. Usage is as follows:
+
+Композиция напоминает скрещивание функций. Вы, как биолог, выбираете 2 функции с нужными вам характеристиками, скрещиваете их чтобы получить новый «вид». Вот как можно использовать функцию `compose`:
 
 ```js
 var toUpperCase = function(x) { return x.toUpperCase(); };
@@ -27,7 +33,11 @@ shout("send in the clowns");
 
 The composition of two functions returns a new function. This makes perfect sense: composing two units of some type (in this case function) should yield a new unit of that very type. You don't plug two legos together and get a lincoln log. There is a theory here, some underlying law that we will discover in due time.
 
+Композиция двух функций возвращает новую функцию. В этом есть смысл: композиция двух элементов одного типа (в данном случае функций) должна вернуть новый элемент того же типа. Вы же не ждёте, что соединив две части лего у вас получится матрёшка? Композицией управляет закон, с которым мы познакомимся в своё время.
+
 In our definition of `compose`, the `g` will run before the `f`, creating a right to left flow of data. This is much more readable than nesting a bunch of function calls. Without compose, the above would read:
+
+В нашем опеределении `compose`, функция `g` выполнится первой, а затем `f`. Таким образом, данные передаются в функции справа налево. Этот вариант написания функций читается куда лучше, чем несколько вложенных. Без композиции предыдущий код выглядел бы так:
 
 ```js
 var shout = function(x){
@@ -36,6 +46,8 @@ var shout = function(x){
 ```
 
 Instead of inside to outside, we run right to left, which I suppose is a step in the left direction[^boo]. Let's look at an example where sequence matters:
+
+Вместо изнутри наружу, мы читаем код справа налево, что, по-моему, шаг в левом направлении[^ха-ха]. Давайте взглянем на пример, где порядок имеет значение:
 
 ```js
 var head = function(x) { return x[0]; };
