@@ -20,7 +20,7 @@ var compose = function(f,g) {
 
 Composition feels like function husbandry. You, breeder of functions, select two with traits you'd like to combine and mash them together to spawn a brand new one. Usage is as follows:
 
-Композиция напоминает скрещивание функций. Вы, как биолог, выбираете 2 функции с нужными вам характеристиками, скрещиваете их чтобы получить новый «вид». Вот как можно использовать функцию `compose`:
+Композиция напоминает скрещивание функций. Вы, как биолог, выбираете 2 функции с нужными вам характеристиками и скрещиваете их, чтобы получить новый «вид». Вот как можно использовать функцию `compose`:
 
 ```js
 var toUpperCase = function(x) { return x.toUpperCase(); };
