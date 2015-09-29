@@ -60,7 +60,7 @@ last(['jumpkick', 'roundhouse', 'uppercut']);
 
 `reverse` will turn the list around while `head` grabs the initial item. This results in an effective, albeit inefficient, `last` function. The sequence of functions in the composition should be apparent here. We could define a left to right version, however, we mirror the mathematical version much more closely as it stands. That's right, composition is straight from the math books. In fact, perhaps it's time to look at a property that holds for any composition.
 
-Функция `reverse` вернёт список в обратном порядке, а `head` — первый элемент. Их композиция представляет из себя рабочую, хотя и не эффективную функцию `last`. В данном случае важен порядок функций в композиции. Мы могли бы определить и версию, которая работала бы слева направо, но мы хотим оставаться строгими в отношении математического определения композиции. Так и есть, наша композиция как будто сошла со страниц учебника по математики. Давайте же посмотрим, какие свойства математичскомй композиции мы можем применить.
+Функция `reverse` перевернёт массив, а `head` — вернёт его первый элемент. Их композиция представляет из себя рабочую, хотя и не эффективную функцию `last`. В данном случае важен порядок функций в композиции. Мы могли бы определить и версию, которая работала бы слева направо, но мы хотим оставаться строгими в отношении математического определения композиции. Так и есть, наша композиция как будто сошла со страниц учебника по математики. Давайте же посмотрим, какие свойства математичскомй композиции мы можем применить.
 
 ```js
 // ассоциативность
