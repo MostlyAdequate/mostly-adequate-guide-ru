@@ -37,7 +37,7 @@ The composition of two functions returns a new function. This makes perfect sens
 
 In our definition of `compose`, the `g` will run before the `f`, creating a right to left flow of data. This is much more readable than nesting a bunch of function calls. Without compose, the above would read:
 
-В нашем опеределении `compose`, функция `g` выполнится первой, а затем `f`. Таким образом, данные передаются в функции справа налево. Этот вариант написания функций читается куда лучше, чем несколько вложенных. Без композиции предыдущий код выглядел бы так:
+В нашем определении `compose`, функция `g` выполнится перед `f`. Таким образом, данные передаются в функции справа налево. Этот вариант написания функций читается куда лучше, чем несколько вложенных. Без композиции предыдущий код выглядел бы так:
 
 ```js
 var shout = function(x){
