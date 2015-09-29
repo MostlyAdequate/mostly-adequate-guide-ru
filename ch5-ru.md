@@ -60,22 +60,28 @@ last(['jumpkick', 'roundhouse', 'uppercut']);
 
 `reverse` will turn the list around while `head` grabs the initial item. This results in an effective, albeit inefficient, `last` function. The sequence of functions in the composition should be apparent here. We could define a left to right version, however, we mirror the mathematical version much more closely as it stands. That's right, composition is straight from the math books. In fact, perhaps it's time to look at a property that holds for any composition.
 
+Функция `reverse` вернёт список в обратном порядке, а `head` — первый элемент. Их композиция представляет из себя рабочую, хотя и не эффективную функцию `last`. В данном случае важен порядок функций в композиции. Мы могли бы определить и версию, которая работала бы слева направо, но мы хотим оставаться строгими в отношении математического определения композиции. Так и есть, наша композиция как будто сошла со страниц учебника по математики. Давайте же посмотрим, какие свойства математичскомй композиции мы можем применить.
+
 ```js
-// associativity
+// ассоциативность
 var associative = compose(f, compose(g, h)) == compose(compose(f, g), h);
 // true
 ```
 
 Composition is associative, meaning it doesn't matter how you group two of them. So, should we choose to uppercase the string, we can write:
 
+Композиция ассоциативна, это значит, что порядок её применения не важен (в случае вложенной композиции). Если, например, мы хотим заменить все символы в строке на заглавные, то мы можем написать:
+
 ```js
 compose(toUpperCase, compose(head, reverse));
 
-// or
+// или
 compose(compose(toUpperCase, head), reverse);
 ```
 
 Since it doesn't matter how we group our calls to `compose`, the result will be the same. That allows us to write a variadic compose and use it as follows:
+
+Так как порядок группировки функций внутри `compose` не важен, результат будет один и тот же. Это свойство позволяет нам написать `compose` с переменным числом аргументов:
 
 ```js
 // previously we'd have to write two composes, but since it's associative, we can give compose as many fn's as we like and let it decide how to group them.
