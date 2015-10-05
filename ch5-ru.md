@@ -85,6 +85,7 @@ Since it doesn't matter how we group our calls to `compose`, the result will be 
 
 ```js
 // previously we'd have to write two composes, but since it's associative, we can give compose as many fn's as we like and let it decide how to group them.
+// раньше, нам пришлось бы написать две композиции, но, так как композиция ассоциативна, мы можем передать в `compose` сколько угодно функций и позволить ей решать как сгруппировать их
 var lastUpper = compose(toUpperCase, head, reverse);
 
 lastUpper(['jumpkick', 'roundhouse', 'uppercut']);
@@ -99,24 +100,30 @@ loudLastUpper(['jumpkick', 'roundhouse', 'uppercut']);
 
 Applying the associative property gives us this flexibility and peace of mind that the result will be equivalent. The slightly more complicated variadic definition is included with the support libraries for this book and is the normal definition you'll find in libraries like [lodash][lodash-website], [underscore][underscore-website], and [ramda][ramda-website].
 
+Применение свойства ассоциативности обеспечивает гибкость, при эквивалентном результате. В библиотеках вроде [lodash][lodash-website], [underscore][underscore-website], и [ramda][ramda-website] вы найдёте немного более сложное определение композиции функции многих переменных, это нормально.
+
 One pleasant benefit of associativity is that any group of functions can be extracted and bundled together in their very own composition. Let's play with refactoring our previous example:
+
+Одним из приятных аспектов композиции является то, что из любого набора функций можно сделать композицию. Давайте поиграемся с рефакторингом предыдущего примера:
 
 ```js
 var loudLastUpper = compose(exclaim, toUpperCase, head, reverse);
 
-// or
+// или
 var last = compose(head, reverse);
 var loudLastUpper = compose(exclaim, toUpperCase, last);
 
-// or
+// или
 var last = compose(head, reverse);
 var angry = compose(exclaim, toUpperCase);
 var loudLastUpper = compose(angry, last);
 
-// more variations...
+// и ещё множество вариантов...
 ```
 
 There's no right or wrong answers - we're just plugging our legos together in whatever way we please. Usually it's best to group things in a reusable way like `last` and `angry`. If familiar with Fowler's "[Refactoring][refactoring-book]", one might recognize this process as "[extract method][extract-method-refactor]"...except without all the object state to worry about.
+
+Мы просто соединяем части лего так, как мы того хотим, здесь нет какого-либо правильного или не правильного подхода. Обычно, лучше группировать функции так, чтобы их можно было переиспользовать, как `last` и `angry`. Если вы знакомы с Рефаторингом Фаулера «[Refactoring][refactoring-book]», вы можете узнать этот процесс как извлечение метода «[extract method][extract-method-refactor]», за исключением того, что в нашем случае нет состояния объекта, о котором пришлось бы беспокоиться.
 
 ## Pointfree
 
