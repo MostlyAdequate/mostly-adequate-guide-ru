@@ -127,29 +127,38 @@ There's no right or wrong answers - we're just plugging our legos together in wh
 
 ## Pointfree
 
+## Отсутствие ссылок
+
 Pointfree style means never having to say your data. Excuse me. It means functions that never mention the data upon which they operate. First class functions, currying, and composition all play well together to create this style.
 
+Под отсутствием ссылок я подразумеваю стиль написания кода, при котором мы никогда не ссылаемся на данные. Прошу прощения, я имел в виду функции, которые никогда не упоминают данные, над которыми работают. Для написания кода в таком стиле нам пригодятся функции первого класса, каррирование и композиция.
+
 ```js
-//not pointfree because we mention the data: word
+// not pointfree because we mention the data: word
+// не в стиле отсутствия ссылок, так как мы упоминаем данные: word
 var snakeCase = function (word) {
   return word.toLowerCase().replace(/\s+/ig, '_');
 };
 
-//pointfree
+// в стиле отсутствия ссылок
 var snakeCase = compose(replace(/\s+/ig, '_'), toLowerCase);
 ```
 
 See how we partially applied `replace`? What we're doing is piping our data through each function of 1 argument. Currying allows us to prepare each function to just take its data, operate on it, and pass it along. Something else to notice is how we don't need the data to construct our function in the pointfree version, whereas in the pointful one, we must have our `word` available before anything else.
 
+Заметили, как мы частично применили `replace`? Здесь мы передаём данные от функции к функции, каждая из которых принимает по 1 аргументу. Каррирования позволяет нам подготовить каждую функцию так, чтобы она принимала нужные ей данные, проводила с ними операции и передавала их дальше. Хочу также отметить, что в первом примере нам не нужны данные, чтобы сконструировать нашу функцию, тогда как во втором примере нам требуется `word`, чтобы сделать хоть что-то.
+
 Let's look at another example.
 
+Давайте взглянем на ещё один пример.
+
 ```js
-//not pointfree because we mention the data: name
+// не в стиле отсутствия ссылок, так как мы упоминаем данные: name
 var initials = function (name) {
   return name.split(' ').map(compose(toUpperCase, head)).join('. ');
 };
 
-//pointfree
+// в стиле отсутствия ссылок
 var initials = compose(join('. '), map(compose(toUpperCase, head)), split(' '));
 
 initials("hunter stockton thompson");
