@@ -167,8 +167,15 @@ initials("hunter stockton thompson");
 
 Pointfree code can again, help us remove needless names and keep us concise and generic. Pointfree is a good litmus test for functional code as it let's us know we've got small functions that take input to output. One can't compose a while loop, for instance. Be warned, however, pointfree is a double edge sword and can sometimes obfuscate intention. Not all functional code is pointfree and that is O.K. We'll shoot for it where we can and stick with normal functions otherwise.
 
+Код, написанный в стиле отсутствия ссылок, остаётся кратким и общим, а также позволяет избавиться от ненужных имён. Код в таком стиле является лакмусовой бумажкой для функционального кода, позволяющей нам оценить, действительно ли мы пишем небольшие функции, отображающие входные данные на выходные. К примеру, написать цикл `while` с использованием композиции не получится. Однако, имейте в виду, что такой код — это всегда палка о двух концах: иногда он может замаскировать намерения. Не весь функциональный код написан в стиле отстутвия ссылок и это нормально. Мы будем стараться писать так, когда можем, в других случаях будем пользоваться обычными функциями.
+
 ## Debugging
+
+## Дебаггинг
+
 A common mistake is to compose something like `map`, a function of two arguments, without first partially applying it.
+
+Частой ошибкой является попытка использовать композицию с функцией двух аргументов вроде `map`, забыв сперва частично применить её:
 
 ```js
 //wrong - we end up giving angry an array and we partially applied map with god knows what.
