@@ -196,6 +196,8 @@ latin(["frog", "eyes"]);
 
 If you are having trouble debugging a composition, we can use this helpful, but impure trace function to see what's going on.
 
+Если у вас возникнут проблемы с отладкой композиций, то вы можете воспользоваться следующей полезной (хотя и не чистой) функцией.
+
 ```js
 var trace = curry(function(tag, x){
   console.log(tag, x);
@@ -210,12 +212,16 @@ dasherize('The world is a vampire');
 
 Something is wrong here, let's `trace`
 
+Что-то здесь не так, давайте воспользуемся `trace`:
+
 ```js
 var dasherize = compose(join('-'), toLower, trace("after split"), split(' '), replace(/\s{2,}/ig, ' '));
 // after split [ 'The', 'world', 'is', 'a', 'vampire' ]
 ```
 
 Ah! We need to `map` this `toLower` since it's working on an array.
+
+Точно! Нам нужно обернуть `toLomer` в `map`, так как мы имеем дело с массивом.
 
 ```js
 var dasherize = compose(join('-'), map(toLower), split(' '), replace(/\s{2,}/ig, ' '));
@@ -227,10 +233,15 @@ dasherize('The world is a vampire');
 
 The `trace` function allows us to view the data at a certain point for debugging purposes. Languages like haskell and purescript have similar functions for ease of development.
 
+Функция `trace` позволяет нам в целях отладки вывести данные в консоль. Для упрощения разработки, похожие функции уже реализованы в стандартных библиотеках таких языков как Haskell и Purescript.
+
 Composition will be our tool for constructing programs and, as luck would have it, is backed by a powerful theory that ensures things will work out for us. Let's examine this theory.
 
+Композиция послужит нам хорошим инструментом, и хорошо, что она стоит на фундаменте серьёзной теории, которая гарантирует, что она будет работать. Давайте поговорим об этой теории.
 
 ## Category theory
+
+## 
 
 Category theory is an abstract branch of mathematics that can formalize concepts from several different branches such as set theory, type theory, group theory, logic, and more. It primarily deals with objects, morphisms, and transformations, which mirrors programming quite closely. Here is a chart of the same concepts as viewed from each separate theory.
 
