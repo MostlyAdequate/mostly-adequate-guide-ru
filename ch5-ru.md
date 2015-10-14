@@ -178,14 +178,16 @@ A common mistake is to compose something like `map`, a function of two arguments
 Частой ошибкой является попытка использовать композицию с функцией двух аргументов вроде `map`, забыв сперва частично применить её:
 
 ```js
-//wrong - we end up giving angry an array and we partially applied map with god knows what.
+// wrong - we end up giving angry an array and we partially applied map with god knows what.
+// не верно — мы передаём массив в функцию angry и бог знает что в map
 var latin = compose(map, angry, reverse);
 
 latin(["frog", "eyes"]);
-// error
+// ошибка
 
 
 // right - each function expects 1 argument.
+// правильно — в каждую функцию передаётся по одному аргументу
 var latin = compose(map(angry), reverse);
 
 latin(["frog", "eyes"]);
