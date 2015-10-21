@@ -247,7 +247,7 @@ Category theory is an abstract branch of mathematics that can formalize concepts
 
 Теория категорий — это абстрактный раздел математики, который формализует понятия из других разделов, таких как: теория множеств, теория типов, теория типов, логика и других. В первую очередь в теории категорий рассматриваются объекты, морфизмы и отображения, эти понятия довольно точно дублируются и в программировании. Ниже представлена таблица одинаковых понятий из разных теорий.
 
-<img src="images/cat_theory.png" />
+<img src="images/cat_theory_ru.png" />
 
 Sorry, I didn't mean to frighten you. I don't expect you to be intimately familiar with all these concepts. My point is to show you how much duplication we have so you can see why category theory aims to unify these things.
 
