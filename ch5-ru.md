@@ -241,9 +241,11 @@ Composition will be our tool for constructing programs and, as luck would have i
 
 ## Category theory
 
-## 
+## Теория категорий
 
 Category theory is an abstract branch of mathematics that can formalize concepts from several different branches such as set theory, type theory, group theory, logic, and more. It primarily deals with objects, morphisms, and transformations, which mirrors programming quite closely. Here is a chart of the same concepts as viewed from each separate theory.
+
+Теория категорий — это абстрактный раздел математики, который формализует понятия из других разделов, таких как: теория множеств, теория типов, теория типов, логика и других. В первую очередь в теории категорий рассматриваются объекты, морфизмы и отображения, эти понятия довольно точно дублируются и в программировании. Ниже представлена таблица одинаковых понятий из разных теорий.
 
 <img src="images/cat_theory.png" />
 
