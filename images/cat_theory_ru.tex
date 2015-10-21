@@ -1,0 +1,35 @@
+% compile with xelatex {filename}.tex
+
+\documentclass{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\setmainlanguage{russian} 
+\setotherlanguage{english}
+
+\newfontfamily\russianfont[Script=Cyrillic]{Linux Libertine O}
+
+\begin{document}
+
+  \bgroup
+  \def\arraystretch{1.5}%
+    \begin{tabular}{ l l l l }
+      \hline
+      \textbf{Типы} & \textbf{Логика} & \textbf{Множества} & \textbf{Гомотопия} \\
+      \hline
+      \(A\) & гипотеза & множество & пространство \\
+      \(a : A\) & доказательство & элемент & точка \\
+      \(B(x)\) & предикат & семейство элементов & расслоение \\
+      \(b(x) : B(x)\) & условное доказательство & семейство элементов & секция \\
+      \(\textbf{0, 1}\) & \(\bot, \top\) & \(\varnothing, \{\varnothing\}\) & \(\varnothing, *\) \\
+      \(A + B\) & \(A \vee B\) & несвязное объединение & коумножение \\
+      \(A \times B\) & \(A \wedge B\) & множество пар & произведение пространств \\
+      \(A \to B\) & \(A \Rightarrow B\) & множество функций & пространство функций \\
+      \(\sum_{(x:A)} B(x)\) & \(\exists_{x:A} B(x)\) & несвязная сумма & общее пространство \\
+      \(\prod_{(x:A)} B(x)\) & \(\forall_{x:A} B(x)\) & умножение & пространство секций \\
+      \(Id_A\) & равенство = & \(\{ (x,x) \ | \ x \in A \}\) & пространство путей \(A^I\) \\
+    \end{tabular}
+  \egroup
+
+\end{document}
