@@ -251,31 +251,57 @@ Category theory is an abstract branch of mathematics that can formalize concepts
 
 Sorry, I didn't mean to frighten you. I don't expect you to be intimately familiar with all these concepts. My point is to show you how much duplication we have so you can see why category theory aims to unify these things.
 
+Прошу прощения, я не хотел вас испугать. Я не ожидаю того, что вы тщательно разбираетесь в каждой из теорий, представленных выше. Этой иллюстрацией я хотел всего лишь показать, как много понятий дублируются между различными теориями и почему теория категорий стремиться их объединить.
+
 In category theory, we have something called... a category. It is defined as a collection with the following components:
+
+В теории категорий мы оперируем понятием... категории. Категория определяется как коллекция со следующими свойствами:
 
   * A collection of objects
   * A collection of morphisms
   * A notion of composition on the morphisms
   * A distinguished morphism called identity
 
+  * коллекция объектов
+  * коллекция морфизмов
+  * для пары морфизмов определена композиция
+  * для каждого объекта задан тождественный морфизм
+
 Category theory is abstract enough to model many things, but let's apply this to types and functions, which is what we care about at the moment.
+
+Теория категорий достаточно абстрактна, чтобы смоделировать многие вещи, однако давайте применим её к тому, что волнует нас больше всего: к типам и функциям.
 
 **A collection of objects**
 The objects will be data types. For instance, ``String``, ``Boolean``, ``Number``, ``Object``, etc. We often view data types as sets of all the possible values. One could look at ``Boolean`` as the set of `[true, false]` and ``Number`` as the set of all possible numeric values. Treating types as sets is useful because we can use set theory to work with them. 
 
+**Коллекция объектов**
+
+Объектами будут типы данных, такие как: ``String``, ``Boolean``, ``Number``, ``Object``. Мы часто рассматриваем тип данных как набор возможных значенй, например, тип данных ``Boolean`` как множество значений `[true, false]` или ``Number`` как множество всех возможных числовых значений. Такой подход будет как нельзя кстати для применения теории множеств.
 
 **A collection of morphisms**
 The morphisms will be our standard every day pure functions.
 
+**Коллекция морфизмов**
+
+Морфизмами будут наши любимые чистые функции.
+
 **A notion of composition on the morphisms**
 This, as you may have guessed, is our brand new toy - `compose`. We've discussed that our `compose` function is associative which is no coincidence as it is a property that must hold for any composition in category theory.
 
+**Для пары морфизмов определена композиция**
+
+Как вы могли догадаться, здесь речь пойдёт о новомодной `композиции`. Не случайно мы обсуждали, что наша функция `compose` ассоциативна, так как это свойство любой композиции в теории категорий.
+
 Here is an image demonstrating composition:
+
+Демонстрация работы композиции:
 
 <img src="images/cat_comp1.png" />
 <img src="images/cat_comp2.png" />
 
 Here is a concrete example in code:
+
+Пример композиции в коде:
 
 ```js
 var g = function(x){ return x.length; };
@@ -286,11 +312,16 @@ var isFourLetterWord = compose(f, g);
 **A distinguished morphism called identity**
 Let's introduce a useful function called `id`. This function simply takes some input and spits it back at you. Take a look:
 
+**Для каждого объекта задан тождественный морфизм**
+Давайте объявим функцию `id`, которая будет принимать аргумент и просто возвращать его:
+
 ```js
 var id = function(x){ return x; };
 ```
 
 You might ask yourself "What in the bloody hell is that useful for?". We'll make extensive use of this function in the following chapters, but for now think of it as a function that can stand in for our value - a function masquerading as every day data.
+
+Вы можете задать вопрос: «На кой чёрт вообще нужна эта функция?». Мы будем часто пользоваться этой функций в будущих главах, а пока просто воспринимайте её как замену значения — функцию, маскирующуюся под обычные данные.
 
 `id` must play nicely with compose. Here is a property that always holds for every unary[^unary: a one argument function] function f:
 
