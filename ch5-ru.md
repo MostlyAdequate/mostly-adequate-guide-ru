@@ -172,7 +172,7 @@ var dasherize = compose(join('-'), toLower, trace("after split"), split(' '), re
 // after split [ 'The', 'world', 'is', 'a', 'vampire' ]
 ```
 
-Точно! Нам нужно обернуть `toLomer` в `map`, так как мы имеем дело с массивом.
+Точно! Нам нужно обернуть `toLower` в `map`, так как мы имеем дело с массивом.
 
 ```js
 var dasherize = compose(join('-'), map(toLower), split(' '), replace(/\s{2,}/ig, ' '));
