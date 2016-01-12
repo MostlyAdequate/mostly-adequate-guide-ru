@@ -83,9 +83,9 @@ gitbook mobi . ./functional.mobi
   * [Дебаггинг](ch5-ru.md#Дебаггинг)
   * [Теория категорий](ch5-ru.md#Теория-категорий)
   * [Итог](ch5-ru.md#Итог)
-* [Chapter 6: Example Application](ch6.md)
-  * [Declarative Coding](ch6.md#declarative-coding)
-  * [A flickr of functional programming](ch6.md#a-flickr-of-functional-programming)
+* [Глава 6: Пример приложения](ch6.md)
+  * [Декларативное программирование](ch6.md#Декларативное-программирование)
+  * [Функционально запрограммированный flickr](ch6.md#Функционально-запрограммированный-flickr)
   * [A Principled Refactor](ch6.md#a-principled-refactor)
   * [In Summary](ch6.md#in-summary)
 
