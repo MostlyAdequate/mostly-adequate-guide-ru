@@ -107,9 +107,9 @@ var Impure = {
 };
 ```
 
-Here we've simply wrapped jQuery's methods to be curried and we've swapped the arguments to a more favorable position. I've namespaced them with `Impure` so we know these are dangerous functions. In a future example, we will make these two functions pure.
+Тут мы просто оборачиваем методы jQuery, чтобы они были каррируемыми и переставляем аргументы в более удобном порядке. Я выделил эти функции в отдельное пространство имён `Impure`, чтобы мы сразу замечали, что это опасные функции. В последующих примерах мы сделаем эти функции чистыми.
 
-Next we must construct a url to pass to our `Impure.getJSON` function.
+Далее мы должны собрать url-адрес, который му будем передавать нашей функции `Impure.getJSON`.
 
 ```js
 var url = function (term) {
@@ -118,9 +118,9 @@ var url = function (term) {
 };
 ```
 
-There are fancy and overly complex ways of writing `url` pointfree using monoids[^we'll learn about these later] or combinators. We've chosen to stick with a readable version and assemble this string in the normal pointful fashion.
+Существуют различные причудливые и черезчур сложные методы написания функции `url` в стлие отсутствия ссылок используя моноиды[^Мы изучим их позже] или комбинаторы. Наш выбор – читаемая версия, собирающая эту строку в в обычном ссылочном стиле.
 
-Let's write an app function that makes the call and places the contents on the screen.
+Давайте напишем функцию `app`, которая делает вызов и выводит данные на экран.
 
 ```js
 var app = _.compose(Impure.getJSON(trace("response")), url);
@@ -128,13 +128,13 @@ var app = _.compose(Impure.getJSON(trace("response")), url);
 app("cats");
 ```
 
-This calls our `url` function, then passes the string to our `getJSON` function, which has been partially applied with `trace`. Loading the app will show the response from the api call in the console.
+Этот код вызывает функцию `url`, затем передает полученную строку в функцию `getJSON`, которая частично применяется с `trace`. В результате загрузки приложения, в консоли будет выведен ответ на api вызов.
 
 <img src="images/console_ss.png"/>
 
-We'd like to construct images out of this json. It looks like the srcs are buried in `items` then each `media`'s `m` property.
+Мы хотим получить изображения из этого json-объекта. Похоже, что их адреса запрятаны в элементах `items`, а конкретно – в каждом свойсте `m` объекта `media`.
 
-Anyhow, to get at these nested properties we can use a nice universal getter function from ramda called `_.prop()`. Here's a homegrown version so you can see what's happening:
+Во всяком случае, для получения этих значений мы можем использовать замечательную универсальную функцию чтения из ramda, с именем `_.prop()`. Ниже представлена оригинальная версия метода:
 
 ```js
 var prop = _.curry(function(property, object){
@@ -142,7 +142,7 @@ var prop = _.curry(function(property, object){
 });
 ```
 
-It's quite dull actually. We just use `[]` syntax to access a property on whatever object. Let's use this to get at our srcs.
+Она достаточно скучная. Мы просто используем синтаксис квадратных скобок, чтобы получить доступ к свойству какого-либо объекта. Давайте используем её и получим адреса изображений.
 
 ```js
 var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
@@ -150,16 +150,16 @@ var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
 ```
 
-Once we gather the `items`, we must `map` over them to extract each media url. This results in a nice array of srcs. Let's hook this up to our app and print them on the screen.
+Как только мы собрали элементы `items`, мы проходимся по ним функцией `map`, чтобы получить адрес каждого изображения. На выходе – замечательный массив адресов. Давайте зацепим его к нашему приложению, чтобы выводить картинки прямо на экран.
 
 ```js
 var renderImages = _.compose(Impure.setHtml("body"), srcs);
 var app = _.compose(Impure.getJSON(renderImages), url);
 ```
 
-All we've done is make a new composition that will call our `srcs` and set the body html with them. We've replaced the `trace` call with `renderImages` now that we have something to render besides raw json. This will crudely display our srcs directly in the body.
+Всё, что мы сделали – это очередная композиция функций, которая будет вызывать конструктор массива адресов `srcs` и заполнять ими содержимое `body` в нашей разметке. Мы заменили `trace` функцией `renderImages` и теперь мы выводим не только чистый json. Мы просто выводим ссылки на изображения прямо в тело приложения.
 
-Our final step is to turn these srcs into bonafide images. In a bigger application, we'd use a template/dom library like Handlebars or React. For this application though, we only need an img tag so let's stick with jQuery.
+Последним шагом необходимо преобразовать эти ссылки в настоящие картинки. Если бы приложение было большим, мы бы использовали шаблонизатор и библиотеку для работы с DOM, например, Handlebars и React. В нашем же приложении, нам нужен только тег img, поэтому давайте обойдемся jQuery.
 
 ```js
 var img = function (url) {
@@ -167,7 +167,7 @@ var img = function (url) {
 };
 ```
 
-jQuery's `html()` method will accept an array of tags. We only have to transform our srcs into images and send them along to `setHtml`.
+jQuery-метод `html()` принимает массив тегов. Нам нужно только вставить адреса изображений в теги и пустить их дальше в функцию `setHtml`.
 
 ```js
 var images = _.compose(_.map(img), srcs);
@@ -175,11 +175,11 @@ var renderImages = _.compose(Impure.setHtml("body"), images);
 var app = _.compose(Impure.getJSON(renderImages), url);
 ```
 
-And we're done!
+И мы закончили!
 
 <img src="images/cats_ss.png" />
 
-Here is the finished script:
+Ниже представлен полный скрипт:
 ```js
 requirejs.config({
   paths: {
@@ -236,7 +236,7 @@ require([
   });
 ```
 
-Now look at that. A beautifully declarative specification of what things are, not how they come to be. We now view each line as an equation with properties that hold. We can use these properties to reason about our application and refactor.
+А теперь посмотрите на это. Красивая декларативная спецификация, показывающая, чем являются элементы, а не то как они стали такими(?). Сейчас мы воспринимаем каждую строку, как уравнение, с параметрами, которые они используют(?). Мы можем использовать эти параметры, для обсуждения нашего приложения и рефакторинга.
 
 ## A Principled Refactor
 

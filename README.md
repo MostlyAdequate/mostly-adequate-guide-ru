@@ -49,7 +49,7 @@ gitbook mobi . ./functional.mobi
 # Другие языки
 
 * [English (original)](https://github.com/MostlyAdequate/mostly-adequate-guide)
-* [French](https://github.com/MostlyAdequate/mostly-adequate-guide-fr) 
+* [French](https://github.com/MostlyAdequate/mostly-adequate-guide-fr)
 * [Português](https://github.com/MostlyAdequate/mostly-adequate-guide-pt-BR)
 * [Russian](https://github.com/MostlyAdequate/mostly-adequate-guide-ru)
 * [中文版](https://github.com/llh911001/mostly-adequate-guide-chinese)
@@ -85,7 +85,7 @@ gitbook mobi . ./functional.mobi
   * [Итог](ch5-ru.md#Итог)
 * [Глава 6: Пример приложения](ch6.md)
   * [Декларативное программирование](ch6.md#Декларативное-программирование)
-  * [Функционально запрограммированный flickr](ch6.md#Функционально-запрограммированный-flickr)
+  * [Flickr, написанный в функциональном стиле](ch6.md#Flickr,-написанный-в-функциональном-стиле)
   * [A Principled Refactor](ch6.md#a-principled-refactor)
   * [In Summary](ch6.md#in-summary)
 
