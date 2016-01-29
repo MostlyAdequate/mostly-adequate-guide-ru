@@ -46,7 +46,7 @@ var authenticate = compose(logIn, toUser);
 
 По причине того, что мы не определяем порядок выполнения, декларативное программирование подходит для параллельных вычислений. Объеденив этот подход с чистыми функциями, мы получаем функциональное программирование как хороший вариант для использования в асинхронных вычислениях, нам не нужно делать что-то особенное, чтобы получить параллельные или асинхронно выполняющие код системы.
 
-## Flickr, написанный в функциональном стиле
+## Flickr в функциональном стиле
 
 Сейчас мы построим пример приложения декларативным, компонуемым способом. Пока что мы схитрим и будем использовать побочные эффекты, но мы будем использовать их по-минимуму и отделять от чистого кода. Мы собираемся написать виджет для браузера, который парсит изображения из flckr и выводит их на экран. Начнем с каркаса приложения. Это HTML нашего приложения:
 
@@ -238,7 +238,7 @@ require([
 
 А теперь посмотрите на это. Красивая декларативная спецификация, показывающая, чем являются элементы, а не то как они стали такими(?). Сейчас мы воспринимаем каждую строку, как уравнение, с параметрами, которые они используют(?). Мы можем использовать эти параметры, для обсуждения нашего приложения и рефакторинга.
 
-## A Principled Refactor
+## Принципиональный рефакторинг
 
 There is an optimization available - we map over each item to turn it into a media url, then we map again over those srcs to turn them into img tags. There is a law regarding map and composition:
 
@@ -286,7 +286,7 @@ var mediaToImg = _.compose(img, mediaUrl);
 var images = _.compose(_.map(mediaToImg), _.prop('items'));
 ```
 
-## In Summary
+## Итог
 
 We have seen how to put our new skills into use with a small, but real world app. We've used our mathematical framework to reason about and refactor our code. But what about error handling and code branching? How can we make the whole application pure instead of merely namespacing destructive functions? How can we make our app safer and more expressive? These are the questions we will tackle in part 2.
 

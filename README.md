@@ -85,9 +85,9 @@ gitbook mobi . ./functional.mobi
   * [Итог](ch5-ru.md#Итог)
 * [Глава 6: Пример приложения](ch6-ru.md)
   * [Декларативное программирование](ch6-ru.md#Декларативное-программирование)
-  * [Flickr, написанный в функциональном стиле](ch6-ru.md#Flickr,-написанный-в-функциональном-стиле)
-  * [A Principled Refactor](ch6.md#a-principled-refactor)
-  * [In Summary](ch6.md#in-summary)
+  * [Flickr, написанный в функциональном стиле](ch6-ru.md#Flickr-в-функциональном-стиле)
+  * [A Principled Refactor](ch6-ru.md#Принципиональный-рефакторинг)
+  * [In Summary](ch6-ru.md#Итог)
 
 ## Часть 2
 
