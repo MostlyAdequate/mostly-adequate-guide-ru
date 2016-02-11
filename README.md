@@ -49,7 +49,7 @@ gitbook mobi . ./functional.mobi
 # Другие языки
 
 * [English (original)](https://github.com/MostlyAdequate/mostly-adequate-guide)
-* [French](https://github.com/MostlyAdequate/mostly-adequate-guide-fr) 
+* [French](https://github.com/MostlyAdequate/mostly-adequate-guide-fr)
 * [Português](https://github.com/MostlyAdequate/mostly-adequate-guide-pt-BR)
 * [Russian](https://github.com/MostlyAdequate/mostly-adequate-guide-ru)
 * [中文版](https://github.com/llh911001/mostly-adequate-guide-chinese)
@@ -83,11 +83,11 @@ gitbook mobi . ./functional.mobi
   * [Дебаггинг](ch5-ru.md#Дебаггинг)
   * [Теория категорий](ch5-ru.md#Теория-категорий)
   * [Итог](ch5-ru.md#Итог)
-* [Chapter 6: Example Application](ch6.md)
-  * [Declarative Coding](ch6.md#declarative-coding)
-  * [A flickr of functional programming](ch6.md#a-flickr-of-functional-programming)
-  * [A Principled Refactor](ch6.md#a-principled-refactor)
-  * [In Summary](ch6.md#in-summary)
+* [Глава 6: Пример приложения](ch6-ru.md)
+  * [Декларативное программирование](ch6-ru.md#Декларативное-программирование)
+  * [Flickr, написанный в функциональном стиле](ch6-ru.md#Flickr-в-функциональном-стиле)
+  * [A Principled Refactor](ch6-ru.md#Принципиональный-рефакторинг)
+  * [In Summary](ch6-ru.md#Итог)
 
 ## Часть 2
 
