@@ -1,12 +1,18 @@
 # Tupperware
+# Контейнер
 
 ## The Mighty Container
+## О, священный контейнер
 
 <img src="images/jar.jpg" alt="http://blog.dwinegar.com/2011/06/another-jar.html" />
 
 We've seen how to write programs which pipe data through a series of pure functions. They are declarative specifications of behaviour. But what about control flow, error handling, asynchronous actions, state and, dare I say, effects?! In this chapter, we will discover the foundation upon which all of these helpful abstractions are built.
 
+Мы уже научились писать программы, в которых данные «протекают» сквозь чистые функций, словно сквозь трубы. Эти программы представляют собой декларативное описания поведения, но как насчёт управления порядком исполнения, обработки ошибок, асинхронности, состояния, и, позволю себе спросить, эффектов?! В этой главе мы познакомимся с фундаметном, на основе которого мы и будем строить эти полезные абстракции.
+
 First we will create a container. This container must hold any type of value; a ziplock that holds only tapioca pudding is rarely useful. It will be an object, but we will not give it properties and methods in the OO sense. No, we will treat it like a treasure chest - a special box that cradles our valuable data.
+
+Для начала создадим контейнер. Контейнер должен уметь хранить значение любого типа, согласитесь: коробка, в которую можно положить только кота вряд ли сильно пригодится в хозяйстве. Контейнер – это объект, но мы не будем создавать на нём каких-либо методов или свойств в объектно-ориентированном смысле. Отнюдь, мы будем обращаться с нашим контейнером как с сокровищницей - специальной коробкой, которая хранит наши данные.
 
 ```js
 var Container = function(x) {
@@ -18,7 +24,11 @@ Container.of = function(x) { return new Container(x); };
 
 Here is our first container. We've thoughtfully named it `Container`. We will use `Container.of` as a constructor which saves us from having to write that god awful `new` keyword all over the place. There's more to the `of` function than meets the eye, but for now, think of it as the proper way to place values into our container.
 
+Вот он, наш первый контейнер. Мы поступили вполне логично, назвав его `Container`. Мы будем использовать функцию `Container.of` в качестве конструктора для нашего контейнера, чтобы избавиться от необходимости всё время писать мерзкий `new`. На самом деле, за использованием `of` скрывается чуть больше тайн, но всему своё время, пока что будем думать об `of` как о правильном способе разместить что-либо в контейнере.
+
 Let's examine our brand new box...
+
+Давайте исследовать наш новый ящик...
 
 ```js
 Container.of(3)
@@ -35,19 +45,34 @@ Container.of(Container.of({name: "yoda"}))
 
 If you are using node, you will see `{__value: x}` even though we've got ourselves a `Container(x)`. Chrome will output the type properly, but no matter; as long as we understand what a `Container` looks like, we'll be fine. In some environments you can overwrite the `inspect` method if you'd like, but we will not be so thorough. For this book, we will write the conceptual output as if we'd overwritten `inspect` as it's much more instructive than `{__value: x}` for pedagogical as well as aesthetic reasons.
 
+Если вы используете node, то вы увидите `{__value: x}`, несмотря на то, что на самом деле у нас `Container(x)`. Chrome покажет всё как надо, но не в этом суть, главное, чтобы мы хорошо понимали что из себя представляет наш `Container`. В некоторых средах выполнения JS мы могли бы просто написать свой вариант функции `inspect`, но мы не будем настолько щепетильными. В этой книге я буду указывать концептуальный вывод содержимого контейнера, как если бы мы на самом деле переписали функцию `inspect`. Для нас это будет намного полезнее, чем видеть просто `{__value: x}` и с образовательной, и с эстетической точек зрения.
+
 Let's make a few things clear before we move on:
+
+Давайте проясним несколько вещей перед тем как продолжим:
 
 * `Container` is an object with one property. Lots of containers just hold one thing, though they aren't limited to one. We've arbitrarily named its property `__value`.
 
+* `Container` – это объект с одним свойством. Во множестве контейнеров мы будем хранить всего одну вещь, хотя можем хранить и больше. Мы назвали это свойство `__value`.
+
 * The `__value` cannot be one specific type or our `Container` would hardly live up to the name.
+
+* Свойство `__value` не может быть определённого типа, в этом случае название `Container` не имело бы смысла.
 
 * Once data goes into the `Container` it stays there. We *could* get it out by using `.__value`, but that would defeat the purpose.
 
+* Как только данные попадают в `Container` они там и остаются. Мы *могли бы* получить к ним доступ, обратившись к свойству `.__value`, но это идёт в разрез с принципами контейнера
+
 The reasons we're doing this will become clear as a mason jar, but for now, bear with me.
 
+Совсем скоро причины подобных свойств контейнера станут ясны как день, пока что я прошу вас немного потерпеть.
+
 ## My First Functor
+## Мой первый функтор
 
 Once our value, whatever it may be, is in the container, we'll need a way to run functions on it.
+
+После того как мы положили данные в контейнер, мы хотели бы иметь способ работать с ними.
 
 ```js
 // (a -> b) -> Container a -> Container b
@@ -57,6 +82,8 @@ Container.prototype.map = function(f){
 ```
 
 Why, it's just like Array's famous `map`, except we have `Container a` instead of `[a]`. And it works essentially the same way:
+
+Выглядит совсем как давно известная нам функция `map`, за одним только исключением: вместо `[a]` у нас `Container a`. Но работает она абсолютно также:
 
 ```js
 Container.of(2).map(function(two){ return two + 2 })
@@ -167,7 +194,7 @@ var withdraw = curry(function(amount, account) {
 });
 
 //  finishTransaction :: Account -> String
-var finishTransaction = compose(remainingBalance, updateLedger);  // <- these composed functions are hypothetical, not implemented here... 
+var finishTransaction = compose(remainingBalance, updateLedger);  // <- these composed functions are hypothetical, not implemented here...
 
 //  getTwenty :: Account -> Maybe(String)
 var getTwenty = compose(map(finishTransaction), withdraw(20));
