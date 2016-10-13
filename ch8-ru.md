@@ -100,19 +100,31 @@ Container.of("bombs").map(_.concat(' away')).map(_.prop('length'))
 
 We can work with our value without ever having to leave the `Container`. This is a remarkable thing. Our value in the `Container` is handed to the `map` function so we can fuss with it and afterward, returned to its `Container` for safe keeping. As a result of never leaving the `Container`, we can continue to `map` away, running functions as we please. We can even change the type as we go along as demonstrated in the latter of the three examples.
 
+Стоит отметить одну важную вещь: мы можем работать со значением вообще не покидая `Container`. Значение в контейнере используется функцией `map`, и сразу после этого возвращается в контейнер на хранение. В результате того, что значение всегда остаётся внутри контейнера мы можем продолжать использовать `map` с любыми функциями по желанию: можно даже сменить тип значения, как в последнем примере выше.
+
 Wait a minute, if we keep calling `map`, it appears to be some sort of composition! What mathematical magic is at work here? Well chaps, we've just discovered *Functors*.
 
+Подождите-ка, все эти вызовы `map` напоминают композицию! Что за математическое волшебство? Что ж, мы с вами только что познакомились с *функторами*
+
 > A Functor is a type that implements `map` and obeys some laws
+> Функтор – это тип, который реализует функцию `map` и подчиняется некоторым законам
 
 Yes, *Functor* is simply an interface with a contract. We could have just as easily named it *Mappable*, but now, where's the *fun* in that? Functors come from category theory and we'll look at the maths in detail toward the end of the chapter, but for now, let's work on intuition and practical uses for this bizarrely named interface.
 
+Да, функтор – это всего навсего интерфейс, который можно было бы легко назвать *Mappable*, но это было бы слишком скучно. Функторы определяются в теории категорий и мы познакомимся с их математическим смыслом ближе к концу этой главы, сейчас же давайте воспользуемся интуицией и посмотрим как можно применять этот интерфейс со странным названием.
+
 What reason could we possibly have for bottling up a value and using `map` to get at it? The answer reveals itself if we choose a better question: What do we gain from asking our container to apply functions for us? Well, abstraction of function application. When we `map` a function, we ask the container type to run it for us. This is a very powerful concept, indeed.
 
+Какие вообще могут быть причины оборачивать значение и использовать `map` для работы с ним? Ответ может стать более очевидным, если задать правильный вопрос: В чём наша выгода от того, что мы просим контейнер применять функции за нас? Хм, наверное абстрагирование приминения функции. Когда мы `map`'им функцию мы просим тип контейнера вызвать её. На самом деле это очень важная концепция.
+
 ## Schrödinger's Maybe
+## Maybe Шрёдингера
 
 <img src="images/cat.png" alt="cool cat, need reference" />
 
 `Container` is fairly boring. In fact, it is usually called `Identity` and has about the same impact as our `id` function[^again there is a mathematical connection we'll look at when the time is right]. However, there are other functors, that is, container-like types that have a proper `map` function, which can provide useful behaviour whilst mapping. Let's define one now.
+
+Слово `Container` звучит скучно. По правде говоря, обычно мы называем его `Identity` и у него примерно та же роль, как и у функции `id`[^опять же, соответствующую математическую теорию мы рассмотрим чуть позже]. Тем не менее, существуют и другие функторы, то есть другие типы, похожие на контейнер, на которых определена функция `map` и которые добавляют ещё щепотку логики при вызове `map`, давйте же определим один из них:
 
 ```js
 var Maybe = function(x) {
@@ -134,6 +146,8 @@ Maybe.prototype.map = function(f) {
 
 Now, `Maybe` looks a lot like `Container` with one minor change: it will first check to see if it has a value before calling the supplied function. This has the effect of side stepping those pesky nulls as we `map`[^Note that this implementation is simplied for teaching].
 
+Итак, `Maybe` очень похож на `Container` с одним незначительным изменением: `Maybe` сначала проверяет есть ли значение перед вызовом функции. Этот момент позволяет нам обойти проблемы с `null`, когда мы вызываем `map`[^Обратите внимание, что в целях обучения я специально упростил реализацию].
+
 ```js
 Maybe.of("Malkovich Malkovich").map(match(/a/ig));
 //=> Maybe(['a', 'a'])
@@ -150,7 +164,11 @@ Maybe.of({name: "Dinah", age: 14}).map(_.prop("age")).map(add(10));
 
 Notice our app doesn't explode with errors as we map functions over our null values. This is because `Maybe` will take care to check for a value each and every time it applies a function.
 
+Обратите внимание, что наше приложение не рушится из-за ошибок, когда мы пытаемся вызвать `map` на нулевых значениях. Всё потому, что `Maybe` каждый раз проверяет есть ли значение и только потом вызывает функцию, переданную в `map`.
+
 This dot syntax is perfectly fine and functional, but for reasons mentioned in Part 1, we'd like to maintain our pointfree style. As it happens, `map` is fully equipped to delegate to whatever functor it receives:
+
+Вызов функций через `.` работает вполне нормально, но по причинам, которые я упомянал в первой части этой книги мы бы хотели писать код в стиле отсутствия ссылок на данные. ...
 
 ```js
 //  map :: Functor f => (a -> b) -> f a -> f b
