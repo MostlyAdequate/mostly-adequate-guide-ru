@@ -168,7 +168,7 @@ Notice our app doesn't explode with errors as we map functions over our null val
 
 This dot syntax is perfectly fine and functional, but for reasons mentioned in Part 1, we'd like to maintain our pointfree style. As it happens, `map` is fully equipped to delegate to whatever functor it receives:
 
-Вызов функций через `.` работает вполне нормально, но по причинам, которые я упомянал в первой части этой книги мы бы хотели писать код в стиле отсутствия ссылок на данные. ...
+Вызов функций через `.` работает вполне нормально, но по причинам, которые я упомянал в первой части этой книги мы бы хотели писать код в стиле отсутствия ссылок на данные. Получается, что `map` полностью готова к тому, чтобы делегировать вызов функции любому функтору, который мы ей передадим:
 
 ```js
 //  map :: Functor f => (a -> b) -> f a -> f b
@@ -179,9 +179,14 @@ var map = curry(function(f, any_functor_at_all) {
 
 This is delightful as we can carry on with composition per usual and `map` will work as expected. This is the case with ramda's `map` as well. We'll use dot notation when it's instructive and the pointfree version when it's convenient. Did you notice that? I've sneakily introduced extra notation into our type signature. The `Functor f =>` tells us that `f` must be a Functor. Not that difficult, but I felt I should mention it.
 
+Мы можем продолжать использовать композицию и `map` будет работать так, как мы этого ожидаем, и это замечательно. Так же работает и функция `map` из библиотеки rambda. Иногда, в образовательных целях, мы будем использовать вызов через `.`, для удобства же будем пользоваться стилем отсутствия ссылок на данные. Кстати, вы заметили? Я незаметно ввёл новую нотацию для описания сигнатуры функции: `Functor f =>` говорит о том, что `f` должна быть функтором. Не то что бы это было не очевидно, но я просто решил упомянуть об этом.
+
 ## Use cases
+## Примеры
 
 In the wild, we'll typically see `Maybe` used in functions which might fail to return a result.
+
+На практике, мы будем встречать `Maybe` в функциях, которые могут не вернуть никакого значения.
 
 ```js
 //  safeHead :: [a] -> Maybe(a)
@@ -200,8 +205,11 @@ streetName({addresses: [{street: "Shady Ln.", number: 4201}]});
 
 `safeHead` is like our normal `_.head`, but with added type safety. A curious thing happens when `Maybe` is introduced into our code; we are forced to deal with those sneaky `null` values. The `safeHead` function is honest and up front about its possible failure - there's really nothing to be ashamed of - and so it returns a `Maybe` to inform us of this matter. We are more than merely *informed*, however, because we are forced to `map` to get at the value we want since it is tucked away inside the `Maybe` object. Essentially, this is a `null` check enforced by the `safeHead` function itself. We can now sleep better at night knowing a `null` value won't rear its ugly, decapitated head when we least expect it. Apis like this will upgrade a flimsy application from paper and tacks to wood and nails. They will guarantee safer software.
 
+`safeHead` очень похожа на обычную функцию `head`, но с проверкой на безопасность. Как только мы добавляем `Maybe` в наш код, происходит очень интересная вещь: мы вынуждены иметь дело с нулевыми (`null`) значениеями. Функция `safeHead` честна с нами и предупреждает заранее, что может не вернуть значение (тем фактом, что она возвращает `Maybe`). Вообще говоря, проверка на `null` «зашита» в саму функцию `safeHead`. Теперь мы можем спать спокойно и не бояться, что `null` высунет свою страшную отрубленную голову тогда, когда мы меньше всего ожидаем этого. Подобные функции позволяют нам совершить переход нашего приложения от сделанного из бумаги и заклёпок к дереву и гвоздям. Подобный подход гарантирует более надёжный код.
 
 Sometimes a function might return a `Maybe(null)` explicitly to signal failure. For instance:
+
+Иногад функция может вернуть `Maybe(null)` специально чтобы сообщить об ошибке, например:
 
 ```js
 //  withdraw :: Number -> Account -> Maybe(Account)
@@ -212,7 +220,7 @@ var withdraw = curry(function(amount, account) {
 });
 
 //  finishTransaction :: Account -> String
-var finishTransaction = compose(remainingBalance, updateLedger);  // <- these composed functions are hypothetical, not implemented here...
+var finishTransaction = compose(remainingBalance, updateLedger);  // <- эти функции для примера, мы не реализуем их в этом коде
 
 //  getTwenty :: Account -> Maybe(String)
 var getTwenty = compose(map(finishTransaction), withdraw(20));
@@ -227,6 +235,8 @@ getTwenty({ balance: 10.00});
 ```
 
 `withdraw` will tip its nose at us and return `Maybe(null)` if we're short on cash. This function also communicates its fickleness and leaves us no choice, but to `map` everything afterwards. The difference is that the `null` was intentional here. Instead of a `Maybe(String)`, we get the `Maybe(null)` back to signal failure and our application effectively halts in its tracks. This is important to note: if the `withdraw` fails, then `map` will sever the rest of our computation since it doesn't ever run the mapped functions, namely `finishTransaction`. This is precisely the intended behaviour as we'd prefer not to update our ledger or show a new balance if we hadn't successfully withdrawn funds.
+
+`withdraw` ...
 
 ## Releasing the value
 
