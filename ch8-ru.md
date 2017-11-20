@@ -209,7 +209,7 @@ streetName({addresses: [{street: "Shady Ln.", number: 4201}]});
 
 Sometimes a function might return a `Maybe(null)` explicitly to signal failure. For instance:
 
-Иногад функция может вернуть `Maybe(null)` специально чтобы сообщить об ошибке, например:
+Иногда функция может вернуть `Maybe(null)` специально чтобы сообщить об ошибке, например:
 
 ```js
 //  withdraw :: Number -> Account -> Maybe(Account)
@@ -236,15 +236,23 @@ getTwenty({ balance: 10.00});
 
 `withdraw` will tip its nose at us and return `Maybe(null)` if we're short on cash. This function also communicates its fickleness and leaves us no choice, but to `map` everything afterwards. The difference is that the `null` was intentional here. Instead of a `Maybe(String)`, we get the `Maybe(null)` back to signal failure and our application effectively halts in its tracks. This is important to note: if the `withdraw` fails, then `map` will sever the rest of our computation since it doesn't ever run the mapped functions, namely `finishTransaction`. This is precisely the intended behaviour as we'd prefer not to update our ledger or show a new balance if we hadn't successfully withdrawn funds.
 
-`withdraw` начнёт крутить носом и вернёт `Maybe(null)`, если у нас заночатся деньги
+`withdraw` начнёт крутить носом и вернёт `Maybe(null)` если у нас закончатся деньги. Эта функция также сообщает о своей ненадёжности и не оставляет нам выбора, кроме как `map`-ить всё что она вернёт. Разница в том, что `null` здесь использован умышленно. Вместо `Maybe(String)`, мы получаем `Maybe(null)` для того, чтобы сигнализировать об ошибке и эффективно остановить наше приложение. Важно отметить: если вызов `withdraw` не будет успешным, тогда `map` прервёт оставшуюся часть наших вычислений, т.к. переданная функция не будет запущена, а именно `finishTransaction`. Это именно то поведение которое и задумывалось, поскольку мы предпочли бы не обновлять наш леджер(`updateLedger`) или отображать новый баланс(`remainingBalance`), если вычет средств не был успешным.
 
 ## Releasing the value
 
+## Высвобождая значение
+
 One thing people often miss is that there will always be an end of the line; some effecting function that sends JSON along, or prints to the screen, or alters our filesystem, or what have you. We cannot deliver the output with `return`, we must run some function or another to send it out into the world. We can phrase it like a Zen Buddhist koan: "If a program has no observable effect, does it even run?". Does it run correctly for its own satisfaction? I suspect it merely burns some cycles and goes back to sleep...
+
+Одна вещь, которую люди часто упускают, — это то, что когда-нибудь наступит конец пути; какая-либо функция с эффектами, отправляющая JSON, или выводящая данные на экран, или изменяющая нашу файловую систему, или что-нибудь ещё. Мы не можем отдавать результат с помощью `return`, мы должны запустить одну или несколько функций для того, чтобы передать наш результат миру. Можно сформулировать это как Дзен-буддистский коан: "Если у программы нет наблюдаемого эффекта, работает ли она вообще?". Работает ли она корректно только для своего удовлетворения? Подозреваю, что она просто сжигает пару циклов и возвращается ко сну...
 
 Our application's job is to retrieve, transform, and carry that data along until it's time to say goodbye and the function which does so may be mapped, thus the value needn't leave the warm womb of its container. Indeed, a common error is to try to remove the value from our `Maybe` one way or another as if the possible value inside will suddenly materialize and all will be forgiven. We must understand it may be a branch of code where our value is not around to live up to its destiny.  Our code, much like Schrödinger's cat, is in two states at once and should maintain that fact until the final function. This gives our code a linear flow despite the logical branching.
 
+Работа нашего приложения заключается в том, чтобы получить, преобразовать и хранить данные до тех пор, пока не наступит время с ними попрощаться, и функция, которая сделает это, будет передана в `map`, поэтому нашему значению не придётся покидать тёплое лоно своего контейнера. На самом деле, частой ошибкой является попытка каким-либо образом извлечь наше значение из `Maybe`, будто бы возможное значение внезапно материализуется и всё будет прощено. Мы должны понимать, что это может быть ветвь кода, в которой наше значение так и не воплотится в жизнь. Наш код, как и кот Шрёдингера, находится в двух состояниях одновременно, и этот факт не должен изменяться до самой последней функции. Это делает наш код линейным, несмотря на логическое ветвление.
+
 There is, however, an escape hatch. If we would rather return a custom value and continue on, we can use a little helper called `maybe`.
+
+Однако, у нас есть один аварийный люк. Если мы предпочли бы вернуть кастомное значение и продолжить, то мы могли бы воспользоваться небольшим помощником под названием `maybe`.
 
 ```js
 //  maybe :: b -> (a -> b) -> Maybe a -> b
@@ -267,17 +275,29 @@ getTwenty({ balance: 10.00});
 
 We will now either return a static value (of the same type that `finishTransaction` returns) or continue on merrily finishing up the transaction sans `Maybe`. With `maybe`, we are witnessing the equivalent of an `if/else` statement whereas with `map`, the imperative analog would be: `if(x !== null) { return f(x) }`.
 
+Теперь мы либо вернём статическое значение (того же типа, что и возвращает `finishTransaction`), либо продолжим, весело завершая транзакцию без `Maybe`. Используя `maybe`, мы наблюдаем эквивалент оператора `if/else`, тогда как с `map`, императивным аналогом было бы: `if(x !== null) { return f(x) }`.
+
 The introduction of `Maybe` can cause some initial discomfort. Users of Swift and Scala will know what I mean as it's baked right into the core libraries under the guise of `Option(al)`. When pushed to deal with `null` checks all the time (and there are times we know with absolute certainty the value exists), most people can't help, but feel it's a tad laborious. However, with time, it will become second nature and you'll likely appreciate the safety. After all, most of the time it will prevent cut corners and save our hides.
+
+Знакомство с `Maybe` может вызвать некоторый начальный дискомфорт. Пользователи Swift и Scala знают, что я имею ввиду, т.к. это запечатано во встроенные библиотеки в виде `Option(al)`. Когда приходится всё время иметь дело с проверкой на `null` (а иногда бывает, что мы абсолютно уверены в том, что значение есть), многие люди не могут избавиться от ощущения, что это слегка трудоёмко. Хотя, со временем, это станет второй натурой и вы, вероятно, оцените такую страховку. В конце концов, большую часть времени это убережёт от острых углов и спасёт наши шкуры.
 
 Writing unsafe software is like taking care to paint each egg with pastels before hurling it into traffic; like building a retirement home with materials warned against by three little pigs. It will do us well to put some safety into our functions and `Maybe` helps us do just that.
 
+Написание небезопасных программ, это как, например, старательно разукрашивать яйца перед тем как швырнуть их на дорогу; это как строить дом престарелых из материалов которыми строили три поросёнка. Будет хорошо, если мы вложим некоторую безопасность в наши функции и `Maybe` помогает нам именно в этом.
+
 I'd be remiss if I didn't mention that the "real" implementation will split `Maybe` into two types: one for something and the other for nothing. This allows us to obey parametricity in `map` so values like `null` and `undefined` can still be mapped over and the universal qualification of the value in a functor will be respected. You'll often see types like `Some(x) / None` or `Just(x) / Nothing` instead of a `Maybe` that does a `null` check on its value.
 
+Было бы упущением с моей стороны не упомянуть, что "настоящая" реализация делит `Maybe` на два типа: один для любых данных, а второй для их отсутствия. Это позволяет нам подчиняться параметричности в `map`, и благодаря этому, такие значения как `null` и `undefined` так же могут быть обработаны и универсальная квалификация значения в функторе будет соблюдена. Вы часто будете видеть такие типы как `Some(x) / None` или `Just(x) / Nothing` вместо `Maybe`, который производит проверку на `null` своего значения.
+
 ## Pure Error Handling
+
+## Чистая обработка ошибок
 
 <img src="images/fists.jpg" alt="pick a hand... need a reference" />
 
 It may come as a shock, but `throw/catch` is not very pure. When an error is thrown, instead of returning an output value, we sound the alarms! The function attacks, spewing thousands of 0's and 1's like shields & spears in an electric battle against our intruding input. With our new friend `Either`, we can do better than to declare war on input, we can respond with a polite message. Let's take a look:
+
+Это может стать шоком, но операторы `throw/catch` не очень то и чистые. Когда брошено исключение, вместо того, чтобы вернуть значение, мы бьём тревогу! Функция атакует, извергая тысячи нулей и единиц, как щиты и копья в электрической битве против вторгающегося ввода данных. С нашим новым другом `Either`, мы можем сделать лучше, чем объявлять войну вводу, мы можем ответить вежливым сообщением. Давайте взглянем:
 
 ```js
 var Left = function(x) {
@@ -307,6 +327,8 @@ Right.prototype.map = function(f) {
 
 `Left` and `Right` are two subclasses of an abstract type we call `Either`. I've skipped the ceremony of creating the `Either` superclass as we won't ever use it, but it's good to be aware. Now then, there's nothing new here besides the two types. Let's see how they act:
 
+`Left` и `Right` — это два подкласса от абстрактного типа, который мы называем `Either`. Я пропустил церемонию создания суперкласса `Either`, т.к. мы никогда не будем его использовать, но хорошо быть в курсе о нём. Итак, здесь нет ничего нового, кроме двух типов. Давайте посмотрим как они работают:
+
 ```js
 Right.of("rain").map(function(str){ return "b"+str; });
 // Right("brain")
@@ -323,7 +345,11 @@ Left.of("rolls eyes...").map(_.prop("host"));
 
 `Left` is the teenagery sort and ignores our request to `map` over it. `Right` will work just like `Container` (a.k.a Identity). The power comes from the ability to embed an error message within the `Left`.
 
+`Left`, как подросток, игнорирует наши просьбы обработать значение через `map`. `Right` работает так же как и `Container` (он же Identity). Мощь заключается в возможности встраивать сообщение об ошибке внутри `Left`.
+
 Suppose we have a function that might not succeed. How about we calculate an age from a birth date. We could use `Maybe(null)` to signal failure and branch our program, however, that doesn't tell us much. Perhaps, we'd like to know why it failed. Let's write this using `Either`.
+
+Предположим у нас есть функция, которая может завершиться с ошибкой. Например, вычисление возраста по дате рождения. Мы можем воспользоваться `Maybe(null)`, чтобы сигнализировать об ошибке и перенаправить нашу программу, хотя, это мало о чём нам скажет. Возможно, мы бы хотели знать, почему произошла ошибка. Давайте реализуем это используя `Either`.
 
 ```js
 var moment = require('moment');
