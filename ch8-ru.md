@@ -270,3 +270,61 @@ class Right extends Either {
 
 const left = x => new Left(x);
 ```
+
+Классы `Left` и `Right` являются наследниками абстрактного класса `Either`, я нарочно пропустил реализацию класса `Either`, так как она нам не понадобится. Давайте же посмотрим на два новых класса в действии:
+
+```js
+Either.of('rain').map(str => `b${str}`); 
+// Right('brain')
+
+left('rain').map(str => `It's gonna ${str}, better bring your umbrella!`); 
+// Left('rain')
+
+Either.of({ host: 'localhost', port: 80 }).map(prop('host'));
+// Right('localhost')
+
+left('rolls eyes...').map(prop('host'));
+// Left('rolls eyes...')
+```
+
+`Left` напоминает капризного ребёнка и попросту игнорирует все наши попытки вызвать `map`, тогда как `Right` работает в точности как `Container` (также известный как `Identity`). `Left` очень удобен для хранения сообщения об ошибке.
+
+Допустим, что мы пишем функцию, которая может «упасть» — к примеру, будет возвращать возраст, принимая дату рождения. Для этого можно было бы использовать `Nothing`, чтобы дать понять программе, что что-то пошло не по плану и использовать ветвление, однако это не слишком информативно. Было бы совсем не лишним знать, что именно пошло не так, давайте попробуем написать это используя `Either`:
+
+```js
+const moment = require('moment');
+
+// getAge :: Date -> User -> Either(String, Number)
+const getAge = curry((now, user) => {
+  const birthDate = moment(user.birthDate, 'YYYY-MM-DD');
+
+  return birthDate.isValid()
+    ? Either.of(now.diff(birthDate, 'years'))
+    : left('Birth date could not be parsed');
+});
+
+getAge(moment(), { birthDate: '2005-12-12' });
+// Right(9)
+
+getAge(moment(), { birthDate: 'July 4, 2001' });
+// Left('Birth date could not be parsed')
+```
+
+Как и в случае с `Nothing`, мы прерываем выполнение, когда возвращаем `Left`, разница в том, что в случае с `Left` сохраняется сообщение об ошибке. Стоит отметить, что функция возвращает `Either(String, Number)`, а именно строку слева, а число справа. Такое определение типа слегка неформально, так как мы так и не реализовали класс `Either`, однако такая сообщает, что функция возвращает число, либо сообщение об ошибке.
+
+```js
+// fortune :: Number -> String
+const fortune = compose(concat('If you survive, you will be '), toString, add(1));
+
+// zoltar :: User -> Either(String, _)
+const zoltar = compose(map(console.log), map(fortune), getAge(moment()));
+
+zoltar({ birthDate: '2005-12-12' });
+// 'If you survive, you will be 10'
+// Right(undefined)
+
+zoltar({ birthDate: 'balloons!' });
+// Left('Birth date could not be parsed')
+```
+
+Если дата рождения задана корректно, то программа выведет на экран таинственное пророчество, в противном случае мы получим экземляр класса `Left` с сообщением об ошибке внутри контейнера. Логика поведения такая же, как с выбросом исключения, но в более спокойной и взвешенной манере.
