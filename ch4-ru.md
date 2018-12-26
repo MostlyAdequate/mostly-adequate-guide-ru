@@ -9,20 +9,12 @@
 Вы можете вызвать функцию как со всеми аргументами сразу, так и с любым меньшим количеством.
 
 ```js
-var add = function(x) {
-  return function(y) {
-    return x + y;
-  };
-};
+const add = x => y => x + y;
+const increment = add(1);
+const addTen = add(10);
 
-var increment = add(1);
-var addTen = add(10);
-
-increment(2);
-// 3
-
-addTen(2);
-// 12
+increment(2); // 3
+addTen(2); // 12
 ```
 
 В этом примере мы определили функцию `add`, которая принимает один аргумент и возвращает функцию. Если мы её вызовем, то она запомнит первый аргумент (при помощи замыкания). Для того чтобы определять и вызывать подобные функции было проще, мы воспользуемся функцией `curry`.
@@ -30,60 +22,29 @@ addTen(2);
 Давайте же определим несколько каррированных функций.
 
 ```js
-var curry = require('lodash.curry');
-
-var match = curry(function(what, str) {
-  return str.match(what);
-});
-
-var replace = curry(function(what, replacement, str) {
-  return str.replace(what, replacement);
-});
-
-var filter = curry(function(f, ary) {
-  return ary.filter(f);
-});
-
-var map = curry(function(f, ary) {
-  return ary.map(f);
-});
+const match = curry((what, s) => s.match(what));
+const replace = curry((what, replacement, s) => s.replace(what, replacement));
+const filter = curry((f, xs) => xs.filter(f));
+const map = curry((f, xs) => xs.map(f));
 ```
 
 При определении этих функций я придерживался простого, но очень важного правила: я записывал последним аргументом переменную, содержащую данные, которыми мы собираемся оперировать. Позже вы поймёте, зачем я это сделал.
 
 ```js
-match(/\s+/g, "hello world");
-// [ ' ' ]
+match(/r/g, 'hello world'); // [ 'r' ]
 
-match(/\s+/g)("hello world");
-// [ ' ' ]
+const hasLetterR = match(/r/g); // x => x.match(/r/g)
+hasLetterR('hello world'); // [ 'r' ]
+hasLetterR('just j and s and t etc'); // null
 
-var hasSpaces = match(/\s+/g);
-// function(x) { return x.match(/\s+/g) }
+filter(hasLetterR, ['rock and roll', 'smooth jazz']); // ['rock and roll']
 
-hasSpaces("hello world");
-// [ ' ' ]
+const removeStringsWithoutRs = filter(hasLetterR); // xs => xs.filter(x => x.match(/r/g))
+removeStringsWithoutRs(['rock and roll', 'smooth jazz', 'drum circle']); // ['rock and roll', 'drum circle']
 
-hasSpaces("spaceless");
-// null
-
-filter(hasSpaces, ["tori_spelling", "tori amos"]);
-// ["tori amos"]
-
-var findSpaces = filter(hasSpaces);
-// function(xs) { return xs.filter(function(x) { return x.match(/\s+/g) }) }
-
-findSpaces(["tori_spelling", "tori amos"]);
-// ["tori amos"]
-
-var noVowels = replace(/[aeiou]/ig);
-// function(replacement, x) { return x.replace(/[aeiou]/ig, replacement) }
-
-var censored = noVowels("*");
-// function(x) { return x.replace(/[aeiou]/ig, "*") }
-
-censored("Chocolate Rain");
-// 'Ch*c*l*t* R**n'
+const noVowels = replace(/[aeiou]/ig); // (r,x) => x.replace(/[aeiou]/ig, r)
+const censored = noVowels('*'); // x => x.replace(/[aeiou]/ig, '*')
+censored('Chocolate Rain'); // 'Ch*c*l*t* R**n'
 ```
 
 Здесь я продемонстрировал способность «предзагрузки» функции с аргументом или несколькими для того, чтобы получить новую функцию, которая запомнит эти аргументы.
@@ -97,19 +58,14 @@ censored("Chocolate Rain");
 Мы также можем преобразовать любую функцию, которая принимает один аргумент, в функцию, принимающую массив. Для этого нам нужно просто обернуть её в `map`:
 
 ```js
-var getChildren = function(x) {
-  return x.childNodes;
-};
-
-var allTheChildren = map(getChildren);
+const getChildren = x => x.childNodes;
+const allTheChildren = map(getChildren);
 ```
 
 Вызов функции с меньшим количеством аргументов, чем она принимает, называется *частичным применением*. Используя частичное применение мы можем избавиться от большого количества ненужного кода. Давайте посмотрим как могла бы выглядеть функция `allTheChildren` с некаррированной версией `map` из библиотеки lodash[^обратите внимание, аргументы передаются в другом порядке]:
 
 ```js
-var allTheChildren = function(elements) {
-  return _.map(elements, getChildren);
-};
+const allTheChildren = elements => map(elements, getChildren);
 ```
 
 Обычно, мы не объявляем функции, которые принимают массив в качестве аргумента, потому что мы можем просто написать `map(getChildren)`. То же самое и с функциями `sort`, `filter` и другими функциями высшего порядка[^Функция высшего порядка — это функция, которая принимает в качестве аргумента или возвращает функцию.]
@@ -126,7 +82,7 @@ var allTheChildren = function(elements) {
 
 Давайте познакомимся с новым инструментом — `композицией`.
 
-[Глава 5: Пишем код с использованием композиции](ch5-ru.md)
+[Глава 05: Пишем код с использованием композиции](ch5-ru.md)
 
 ## Упражнения
 
@@ -139,60 +95,33 @@ var allTheChildren = function(elements) {
 
 Ответы на упражнения лежат в [репозитории](https://github.com/DrBoolean/mostly-adequate-guide/tree/master/code/part1_exercises/answers)
 
-```js
-var _ = require('ramda');
+### Давайте попрактикуемся!
 
+#### Упражнение A
 
-// Упражнение 1
-//==============
-// Проведите рефакторинг и избавьтесь от всех аргументов путём частичного применения функции.
+Проведите рефакторинг и избавьтесь от всех аргументов путём частичного применения функции. 
+  
+```js  
+const words = str => split(' ', str);  
+```  
 
-var words = function(str) {
-  return _.split(' ', str);
-};
+#### Упражнение B
 
-// Упражнение 1a
-//==============
-// Воспользуйтесь функцией map, чтобы создать новую функцию words, которая будет работать с массивами строк.
+Проведите рефакторинг и избавьтесь от всех аргументов путём частичного применения функции. 
 
-var sentences = undefined;
+```js  
+const filterQs = xs => filter(x => match(/q/i, x), xs);
+```  
+  
+#### Упражнение C
 
+Воспользуйтесь функцией `keepHighest`:
 
-// Упражнение 2
-//==============
-// Проведите рефакторинг и избавьтесь от всех аргументов путём частичного применения функции.
-
-var filterQs = function(xs) {
-  return _.filter(function(x){ return match(/q/i, x);  }, xs);
-};
-
-
-// Упражнение 3
-//==============
-// Воспользуйтесь функцией _keepHighest чтобы отрефакторить функцию max.
-// Функция max не должна принимать аргументов.
-
-// Не меняйте:
-var _keepHighest = function(x,y){ return x >= y ? x : y; };
-
-// Проведите рефакторинг:
-var max = function(xs) {
-  return _.reduce(function(acc, x){
-    return _keepHighest(acc, x);
-  }, -Infinity, xs);
-};
-
-
-// Бонус 1:
-// ============
-// оберните метод slice так, чтобы он стал функциональным и каррируемым
-// //[1,2,3].slice(0, 2)
-var slice = undefined;
-
-
-// Бонус 2:
-// ============
-// используйте метод slice, чтобы объявить функцию "take", которая возвращает n первых символов строки. Сделайте её каррируемой
-var take = undefined;
-// Пример: для значений "Something", n = 4, функция должна вернуть "Some"
-```
+```js  
+const keepHighest = (x, y) => (x >= y ? x : y);  
+```  
+Проведите рефакторинг функции `max` таким образом, чтобы она не нуждалась упоминании аргументов.
+  
+```js  
+const max = xs => reduce((acc, x) => (x >= acc ? x : acc), -Infinity, xs);  
+```  
