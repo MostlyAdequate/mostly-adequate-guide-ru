@@ -6,7 +6,7 @@
 
 Идея проста: вы можете вызвать функцию с меньшим количеством аргументов, чем она ожидает, в ответ вы получите функцию, которая принимает оставшиеся аргументы. *(Всё неправда - прим.пер.)*
 
-За вами остается выбор, вызывать ли функцию со всеми аргументами сразу, или же передавать аргументы по частям.
+Таким образом, вы можете передавать функции как все аргументы сразу, так и отдельные аргументы в разные моменты времени.
 
 ```js
 const add = x => y => x + y;
@@ -17,9 +17,9 @@ increment(2); // 3
 addTen(2); // 12
 ```
 
-В этом примере мы определили функцию `add`, которая принимает один аргумент и возвращает функцию. Если мы её вызовем, то она запомнит первый аргумент (при помощи замыкания). Для того чтобы определять и вызывать подобные функции было проще, мы воспользуемся функцией `curry`.
+В этом примере мы определили функцию `add`, которая принимает один аргумент и возвращает новую функцию. Новая функция принимает второй аргумент (y), а также через замыкание для неё будет известен первый аргумент (x). Чтобы определять подобные функции было проще, мы воспользуемся вспомогательной функцией `curry`. *(При необходимости, читайте [подробнее о работе замыканий в JavaScript](https://developer.mozilla.org/ru/docs/Web/JavaScript/Closures) - прим.пер.)*.
 
-Давайте же определим несколько каррированных функций.
+Давайте подготовим для себя несколько каррированных функций. С этого момента мы будем подразумевать, что `curry` - это та функция, которая определена для нас в [Приложении A - Вспомогательные функции](appendix_a.md).
 
 ```js
 const match = curry((what, s) => s.match(what));
@@ -28,7 +28,9 @@ const filter = curry((f, xs) => xs.filter(f));
 const map = curry((f, xs) => xs.map(f));
 ```
 
-При определении этих функций я придерживался простого, но очень важного правила: я записывал последним аргументом переменную, содержащую данные, которыми мы собираемся оперировать. Позже вы поймёте, зачем я это сделал.
+При определении этих функций я придерживался простого, но важного принципа: Набор данных, с которым мы работаем (к примеру, строка или массив) я специально расположил последним аргументом. Вскоре станет ясно, почему я так сделал.
+
+(Синтаксис `/r/g` - это регулярное выражение, которое _соответствует каждой букве 'r'_. Прочитайте [подробнее о регулярных выражениях](https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Regular_Expressions), если интересно.)
 
 ```js
 match(/r/g, 'hello world'); // [ 'r' ]
@@ -86,14 +88,40 @@ const allTheChildren = elements => map(elements, getChildren);
 
 ## Упражнения
 
-Небольшое замечание. Мы будем использовать библиотеку *ramda*, которая каррирует каждую функцию по умолчанию. В качестве альтернативы вы можете использовать *lodash-fp*, которая делает то же самое. Она написана (и поддерживается) создателем lodash. Обе библиотеки подходят для наших нужд, выбирайте какая вам больше нравится.
+    Небольшое замечание. Мы будем использовать библиотеку *ramda*, которая каррирует каждую функцию по умолчанию. В качестве альтернативы вы можете использовать *lodash-fp*, которая делает то же самое. Она написана (и поддерживается) создателем lodash. Обе библиотеки подходят для наших нужд, выбирайте какая вам больше нравится.
 
-[ramda](http://ramdajs.com)
-[lodash-fp](https://github.com/lodash/lodash-fp)
+    [ramda](http://ramdajs.com)
+    [lodash-fp](https://github.com/lodash/lodash-fp)
 
-Вы можете [тестировать](https://github.com/DrBoolean/mostly-adequate-guide/tree/master/code/part1_exercises) упражнения в процессе написания или просто копипастить их в среду интерактивного выполнения и проверять — делайте как вам удобно.
+    Вы можете [тестировать](https://github.com/DrBoolean/mostly-adequate-guide/tree/master/code/part1_exercises) упражнения в процессе написания или просто копипастить их в среду интерактивного выполнения и проверять — делайте как вам удобно.
 
-Ответы на упражнения лежат в [репозитории](https://github.com/DrBoolean/mostly-adequate-guide/tree/master/code/part1_exercises/answers)
+    Ответы на упражнения лежат в [репозитории](https://github.com/DrBoolean/mostly-adequate-guide/tree/master/code/part1_exercises/answers)
+
+#### Note about Exercises
+
+Throughout the book, you might encounter an 'Exercises' section like this one. Exercises can be
+done directly in-browser provided you're reading from [gitbook](https://mostly-adequate.gitbooks.io/mostly-adequate-guide) (recommended).
+
+Note that, for all exercises of the book, you always have a handful of helper functions
+available in the global scope. Hence, anything that is defined in [Appendix A](./appendix_a.md),
+[Appendix B](./appendix_b.md) and [Appendix C](./appendix_c.md) is available for you! And, as
+if it wasn't enough, some exercises will also define functions specific to the problem
+they present; as a matter of fact, consider them available as well.
+
+> Hint: you can submit your solution by doing `Ctrl + Enter` in the embedded editor!
+
+#### Running Exercises on Your Machine (optional)
+
+Should you prefer to do exercises directly in files using your own editor:
+
+- clone the repository (`git clone git@github.com:MostlyAdequate/mostly-adequate-guide.git`)
+- go in the *exercises* section (`cd mostly-adequate-guide/exercises`)
+- install the necessary plumbing using [npm](https://docs.npmjs.com/getting-started/installing-node) (`npm install`)
+- complete answers by modifying the files named *exercises\_\** in the corresponding chapter's folder 
+- run the correction with npm (e.g. `npm run ch04`)
+
+Unit tests will run against your answers and provide hints in case of mistake. By the by, the
+answers to the exercises are available in files named *answers\_\**.
 
 ### Давайте попрактикуемся!
 

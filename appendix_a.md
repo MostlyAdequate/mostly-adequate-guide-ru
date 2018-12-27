@@ -1,4 +1,4 @@
-# Appendix A: Essential Functions Support
+# Приложение A: Вспомогательные функции
 
 In this appendix, you'll find some basic JavaScript implementations of various functions
 described in the book. Keep in mind that these implementations may not be the fastest or the
