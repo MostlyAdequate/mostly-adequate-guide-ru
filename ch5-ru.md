@@ -324,7 +324,7 @@ const fastestCar = (cars) => {
 ```  
 
 [lodash-website]: https://lodash.com/
-[underscore-website]: http://underscorejs.org/
-[ramda-website]: http://ramdajs.com/
-[refactoring-book]: http://martinfowler.com/books/refactoring.html
+[underscore-website]: https://underscorejs.org/
+[ramda-website]: https://ramdajs.com/
+[refactoring-book]: https://martinfowler.com/books/refactoring.html
 [extract-function-refactor]: https://refactoring.com/catalog/extractFunction.html
