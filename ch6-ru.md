@@ -12,13 +12,13 @@
 
 ```js
 // императивная парадигма
-var makes = [];
-for (i = 0; i < cars.length; i++) {
+const makes = [];
+for (let i = 0; i < cars.length; i += 1) {
   makes.push(cars[i].make);
 }
 
 // декларативная парадигма
-var makes = cars.map(function(car){ return car.make; });
+const makes = cars.map(car => car.make);
 ```
 
 Императивный цикл сначала инициализирует массив. Интерпретатор должен выполнить это выражение перед тем как двигаться дальше. Затем он непосредственно проходит по списку автомобилей, вручную увеличивая счетчик, открыто показывая нам каждую часть итерации.
@@ -33,13 +33,13 @@ var makes = cars.map(function(car){ return car.make; });
 
 ```js
 // императивная парадигма
-var authenticate = function(form) {
-  var user = toUser(form);
+const authenticate = (form) => {
+  const user = toUser(form);
   return logIn(user);
 };
 
 // декларативная парадигма
-var authenticate = compose(logIn, toUser);
+const authenticate = compose(logIn, toUser);
 ```
 
 Хотя в императивной версии и нет чего-то явно неправильного, это по-прежнему объединение пошаговых команд. Выражение с `compose` просто утверждает факт: аутентификация — это композиция функций `toUser` и `logIn`. Опять же, это оставляет нам пространство для манёвра в поддержке изменений кода и оставляет результаты работы нашего приложения конкретными.
@@ -51,37 +51,31 @@ var authenticate = compose(logIn, toUser);
 Сейчас мы построим пример приложения декларативным, компонуемым способом. Пока что мы схитрим и будем использовать побочные эффекты, но мы будем использовать их по-минимуму и отделять от чистого кода. Мы собираемся написать виджет для браузера, который парсит изображения из flickr и выводит их на экран. Начнем с каркаса приложения. Это HTML нашего приложения:
 
 ```html
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
-    <script src="flickr.js"></script>
+    <meta charset="utf-8">
+    <title>Flickr App</title>
   </head>
-  <body></body>
+  <body>
+    <main id="js-main" class="main"></main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
+    <script src="main.js"></script>
+  </body>
 </html>
 ```
 
 А это основа flickr.js:
 
 ```js
-requirejs.config({
-  paths: {
-    ramda: 'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min',
-    jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'
-  }
-});
+const CDN = s => `https://cdnjs.cloudflare.com/ajax/libs/${s}`;
+const ramda = CDN('ramda/0.21.0/ramda.min');
+const jquery = CDN('jquery/3.0.0-rc1/jquery.min');
 
-require([
-    'ramda',
-    'jquery'
-  ],
-  function (_, $) {
-    var trace = _.curry(function(tag, x) {
-      console.log(tag, x);
-      return x;
-    });
-    // код приложения
-  });
+requirejs.config({ paths: { ramda, jquery } });
+requirejs(['jquery', 'ramda'], ($, { compose, curry, map, prop }) => {
+  // код приложения
+});
 ```
 
 Мы выбираем [ramda](http://ramdajs.com) вместо lodash или других вспомогательных библиотек. Она содержит `compose`, `curry` и другие методы. Я использую requirejs, который может показаться излишним, но мы будем использовать его и в дальнейшем, а постоянство это ключ к успеху. Также я начал с объявления прекрасной функции `trace` для облегчения отладки.
@@ -96,14 +90,10 @@ require([
 Выше упомянуты 2 нечистых действия. Вы их видите? Получение данных с помощью api вызова и вывод их на экран. Давайте напишем их первыми, чтобы сразу отделить их.
 
 ```js
-var Impure = {
-  getJSON: _.curry(function(callback, url) {
-    $.getJSON(url, callback);
-  }),
-
-  setHtml: _.curry(function(sel, html) {
-    $(sel).html(html);
-  })
+const Impure = {
+  getJSON: curry((callback, url) => $.getJSON(url, callback)),
+  setHtml: curry((sel, html) => $(sel).html(html)),
+  trace: curry((tag, x) => { console.log(tag, x); return x; }),
 };
 ```
 
@@ -112,10 +102,10 @@ var Impure = {
 Далее мы должны собрать url-адрес, который му будем передавать функции `Impure.getJSON`.
 
 ```js
-var url = function (term) {
-  return 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' +
-    term + '&format=json&jsoncallback=?';
-};
+const host = 'api.flickr.com';
+const path = '/services/feeds/photos_public.gne';
+const query = t => `?tags=${t}&format=json&jsoncallback=?`;
+const url = t => `https://${host}${path}${query(t)}`;
 ```
 
 Существуют различные причудливые и чересчур сложные методы написания функции `url` в стиле отсутствия ссылок используя моноиды[^Мы изучим их позже] или комбинаторы. Наш выбор – читаемая версия, собирающая эту строку в обычном ссылочном стиле.
@@ -123,38 +113,34 @@ var url = function (term) {
 Давайте напишем функцию `app`, которая делает вызов и выводит данные на экран.
 
 ```js
-var app = _.compose(Impure.getJSON(trace("response")), url);
-
-app("cats");
+const app = compose(Impure.getJSON(Impure.trace('response')), url);
+app('cats');
 ```
 
 Этот код вызывает функцию `url`, затем передает полученную строку в функцию `getJSON`, которая частично применяется с `trace`. В результате загрузки приложения, в консоли будет выведен ответ на api вызов.
 
-<img src="images/console_ss.png"/>
+<img src="images/console_ss.png" alt="console response" />
 
 Мы хотим получить изображения из этого json-объекта. Похоже, что их адреса запрятаны в элементах `items`, а конкретно – в каждом свойстве `m` объекта `media`.
 
 Во всяком случае, для получения этих значений мы можем использовать замечательную универсальную функцию чтения из ramda, с именем `_.prop()`. Ниже представлена оригинальная версия метода:
 
 ```js
-var prop = _.curry(function(property, object){
-  return object[property];
-});
+const prop = curry((property, object) => object[property]);
 ```
 
 Она достаточно скучная. Мы просто воспользуемся `[]`, для получения доступа к свойству какого-либо объекта. Давайте используем её и получим адреса изображений.
 
 ```js
-var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-
-var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
+const mediaUrl = compose(prop('m'), prop('media'));
+const mediaUrls = compose(map(mediaUrl), prop('items'));
 ```
 
 Как только мы собрали элементы `items`, мы проходимся по ним функцией `map`, чтобы получить адрес каждого изображения. На выходе – замечательный массив адресов. Давайте используем этот массив в приложении, чтобы вывести изображения на экран.
 
 ```js
-var renderImages = _.compose(Impure.setHtml("body"), srcs);
-var app = _.compose(Impure.getJSON(renderImages), url);
+const render = compose(Impure.setHtml('#js-main'), mediaUrls);
+const app = compose(Impure.getJSON(render), url);
 ```
 
 Мы всего-навсего написали очередную композицию функций, которая вызовет `srcs` и заполнит `<body>` нашего html. Заменив `trace` на `renderImages`, мы можем отобразить что-то помимо чистого json — сейчас это просто ссылки на изображения.
@@ -162,79 +148,24 @@ var app = _.compose(Impure.getJSON(renderImages), url);
 Последним шагом необходимо преобразовать эти ссылки в настоящие картинки. Если бы приложение было большим, мы бы использовали шаблонизатор и библиотеку для работы с DOM, например, Handlebars или React. В нашем же приложении, нам нужен только тег img, поэтому давайте обойдемся jQuery.
 
 ```js
-var img = function (url) {
-  return $('<img />', { src: url });
-};
+const img = src => $('<img />', { src });
 ```
 
 jQuery-метод `html()` принимает массив тегов. Нам нужно только вставить адреса изображений в теги и передать их дальше в функцию `setHtml`.
 
 ```js
-var images = _.compose(_.map(img), srcs);
-var renderImages = _.compose(Impure.setHtml("body"), images);
-var app = _.compose(Impure.getJSON(renderImages), url);
+const images = compose(map(img), mediaUrls);
+const render = compose(Impure.setHtml('#js-main'), images);
+const app = compose(Impure.getJSON(render), url);
 ```
 
 Вот и всё!
 
-<img src="images/cats_ss.png" />
+<img src="images/cats_ss.png" alt="cats grid" />
 
 Ниже представлен полный скрипт:
-```js
-requirejs.config({
-  paths: {
-    ramda: 'https://cdnjs.cloudflare.com/ajax/libs/ramda/0.13.0/ramda.min',
-    jquery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min'
-  }
-});
-
-require([
-    'ramda',
-    'jquery'
-  ],
-  function (_, $) {
-    ////////////////////////////////////////////
-    // Utils
-
-    var Impure = {
-      getJSON: _.curry(function(callback, url) {
-        $.getJSON(url, callback);
-      }),
-
-      setHtml: _.curry(function(sel, html) {
-        $(sel).html(html);
-      })
-    };
-
-    var img = function (url) {
-      return $('<img />', { src: url });
-    };
-
-    var trace = _.curry(function(tag, x) {
-      console.log(tag, x);
-      return x;
-    });
-
-    ////////////////////////////////////////////
-
-    var url = function (t) {
-      return 'http://api.flickr.com/services/feeds/photos_public.gne?tags=' +
-        t + '&format=json&jsoncallback=?';
-    };
-
-    var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-
-    var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
-
-    var images = _.compose(_.map(img), srcs);
-
-    var renderImages = _.compose(Impure.setHtml("body"), images);
-
-    var app = _.compose(Impure.getJSON(renderImages), url);
-
-    app("cats");
-  });
-```
+[include](./exercises/ch06/main.js)
+<!-- Add exercises directory -->
 
 Полюбуйтесь на получившийся код. Чудесная декларативная конструкция, описывающая то, что мы хотим получить, а не как. Сейчас, мы можем рассматривать каждую строку как уравнение, свойства которого строго соблюдаются. Теперь мы можем пользоваться этими свойствами для размышлений о нашем приложении и рефакторинга.
 
@@ -244,45 +175,44 @@ require([
 
 ```js
 // Закон композиции отображений
-var law = compose(map(f), map(g)) == map(compose(f, g));
+compose(map(f), map(g)) === map(compose(f, g));
 ```
 
 Мы можем использовать это свойство для оптимизации кода. Давайте начнём принципиальный рефакторинг.
 
 ```js
 // Текущий код
-var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-
-var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
-
-var images = _.compose(_.map(img), srcs);
+const mediaUrl = compose(prop('m'), prop('media'));
+const mediaUrls = compose(map(mediaUrl), prop('items'));
+const images = compose(map(img), mediaUrls);
 
 ```
 
 Давайте объединим методы, использующие map. Мы можем поочерёдно выполнять `srcs` и `images`, благодаря эквивалентности и отсутствия побочных эффектов в этих функциях.
 
 ```js
-var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-
-var images = _.compose(_.map(img), _.map(mediaUrl), _.prop('items'));
+const mediaUrl = compose(prop('m'), prop('media'));
+const images = compose(map(img), map(mediaUrl), prop('items'));
 ```
 
 Теперь, когда мы выстроили отображения в ряд, можно применить закон композиции.
 
 ```js
-var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
+/*
+compose(map(f), map(g)) === map(compose(f, g));
+compose(map(img), map(mediaUrl)) === map(compose(img, mediaUrl));
+*/
 
-var images = _.compose(_.map(_.compose(img, mediaUrl)), _.prop('items'));
+const mediaUrl = compose(prop('m'), prop('media'));
+const images = compose(map(compose(img, mediaUrl)), prop('items'));
 ```
 
 Теперь интерпретатор будет выполнять только один цикл по преобразованию элементов json в изображения, готовые к выводу на экран. Напоследок, сделаем код более читаемым, вынеся одну функцию.
 
 ```js
-var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-
-var mediaToImg = _.compose(img, mediaUrl);
-
-var images = _.compose(_.map(mediaToImg), _.prop('items'));
+const mediaUrl = compose(prop('m'), prop('media'));
+const mediaToImg = compose(img, mediaUrl);
+const images = compose(map(mediaToImg), prop('items'));
 ```
 
 ## Итог
