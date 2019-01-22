@@ -5,3 +5,8 @@ Gruntfile.js
 npm-debug.log
 .DS_Store
 .vscode
+*.md#*
+_book
+/book.pdf
+/book.epub
+exercises/index.js
