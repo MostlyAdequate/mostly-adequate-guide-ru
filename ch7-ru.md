@@ -15,13 +15,10 @@ JavaScript — динамический язык, но это не означа�
 С пыльных страниц математических томов, сквозь глубокое море белых листов, посреди обыкновенных записей в блогах по субботним утрам, приближаясь всё ближе к исходному коду, мы находим сигнатуры типов Хиндли-Милнера. Система довольно проста, но гарантирует быстрое объяснение и некоторые практики, которые полностью покрывают небольшой язык.
 
 ```js
-//  capitalize :: String -> String
-var capitalize = function(s){
-  return toUpperCase(head(s)) + toLowerCase(tail(s));
-}
+// capitalize :: String -> String
+const capitalize = s => toUpperCase(head(s)) + toLowerCase(tail(s));
 
-capitalize("smurf");
-//=> "Smurf"
+capitalize('smurf'); // 'Smurf'
 ```
 
 Здесь `capitalize` принимает `String` и возвращает тоже `String`. Не думайте о реализации, нас интересует сигнатура типов. 
@@ -31,25 +28,17 @@ capitalize("smurf");
 Давайте посмотрим еще на несколько сигнатур:
 
 ```js
-//  strLength :: String -> Number
-var strLength = function(s){
-  return s.length;
-}
+// strLength :: String -> Number
+const strLength = s => s.length;
 
-//  join :: String -> [String] -> String
-var join = curry(function(what, xs){
-  return xs.join(what);
-});
+// join :: String -> [String] -> String
+const join = curry((what, xs) => xs.join(what));
 
-//  match :: Regex -> String -> [String]
-var match = curry(function(reg, s){
-  return s.match(reg);
-});
+// match :: Regex -> String -> [String]
+const match = curry((reg, s) => s.match(reg));
 
-//  replace :: Regex -> String -> String -> String
-var replace = curry(function(reg, sub, s){
-  return s.replace(reg, sub);
-});
+// replace :: Regex -> String -> String -> String
+const replace = curry((reg, sub, s) => s.replace(reg, sub));
 ```
 
 В `strLength` та же идея, что и прежде. Мы берем тип `String` и возвращаем тип `Number`.
@@ -59,28 +48,23 @@ var replace = curry(function(reg, sub, s){
 Для `match` мы можем сгруппировать сигнатуры следующим образом:
 
 ```js
-//  match :: Regex -> (String -> [String])
-var match = curry(function(reg, s){
-  return s.match(reg);
-});
+// match :: Regex -> (String -> [String])
+const match = curry((reg, s) => s.match(reg));
 ```
 
 Ах да, группировка последней части в круглые скобки предоставляет нам больше сведений. Теперь мы видим ее как функцию, которая принимает `Regex` и возвращает функцию из `String` в `[String]`. Вот что происходит на самом деле из-за каррирования: передавая функции `Regex` мы получаем другую функцию, которая ожидает в качестве аргумента `String`. Конечно, нам не обязательно думать в таком ключе каждый раз, но полезно понимать откуда и как возвращается последний тип.
 
 ```js
-//  match :: Regex -> (String -> [String])
-
-//  onHoliday :: String -> [String]
-var onHoliday = match(/holiday/ig);
+// match :: Regex -> (String -> [String])
+// onHoliday :: String -> [String]
+const onHoliday = match(/holiday/ig);
 ```
 
 Каждый аргумент берётся с левого края сигнатуры. `onHoliday` — это `match` у которого уже есть `Regex`.
 
 ```js
-//  replace :: Regex -> (String -> (String -> String))
-var replace = curry(function(reg, sub, s){
-  return s.replace(reg, sub);
-});
+// replace :: Regex -> (String -> (String -> String))
+const replace = curry((reg, sub, s) => s.replace(reg, sub));
 ```
 
 Как вы можете видеть, все эти круглые скобки в `replace` являются слегка трудными для чтения и кажутся излишними, так что мы просто опустим их. Мы можем взять все аргументы сразу, если решим, что проще думать о них так: `replace` принимает  `Regex`, `String`, другой `String` и в конце возвращает `String`.
@@ -88,13 +72,11 @@ var replace = curry(function(reg, sub, s){
 Еще пару штук, напоследок:
 
 ```js
-//  id :: a -> a
-var id = function(x){ return x; }
+// id :: a -> a
+const id = x => x;
 
-//  map :: (a -> b) -> [a] -> [b]
-var map = curry(function(f, xs){
-  return xs.map(f);
-});
+// map :: (a -> b) -> [a] -> [b]
+const map = curry((f, xs) => xs.map(f));
 ```
 
 Функция `id` принимает любой тип `a` и возвращает что-то того же типа `a`. Мы можем использовать переменные любых типов в коде вроде этого. Имена переменных, такие как `a` и `b` — это соглашение, но они произвольны и могут быть заменены на переменные с любым именем, каким вы захотите. Если это одни и те же переменные, то у них должен быть один и тот же тип. Это важное правило, так что давайте повторим: `a` -> `b` — может быть любого типа `a` и любого типа `b`, но `a -> a` означает, что это это один и тот же тип. Например, `id` может быть `String -> String` или `Number -> Number`, но не `String -> Bool`.
@@ -108,18 +90,14 @@ var map = curry(function(f, xs){
 Вот еще немного, просто чтобы посмотреть, сможете ли вы расшифровать их сами.
 
 ```js
-//  head :: [a] -> a
-var head = function(xs){ return xs[0]; }
+// head :: [a] -> a
+const head = xs => xs[0];
 
-//  filter :: (a -> Bool) -> [a] -> [a]
-var filter = curry(function(f, xs){
-  return xs.filter(f);
-});
+// filter :: (a -> Bool) -> [a] -> [a]
+const filter = curry((f, xs) => xs.filter(f));
 
-//  reduce :: (b -> a -> b) -> b -> [a] -> b
-var reduce = curry(function(f, x, xs){
-  return xs.reduce(f, x);
-});
+// reduce :: (b -> a -> b) -> b -> [a] -> b
+const reduce = curry((f, x, xs) => xs.reduce(f, x));
 ```
 
 Возможно, `reduce` — самый выразительный из них. Он довольно запутан, поэтому не комплексуйте, если вам придётся попотеть.
@@ -150,10 +128,10 @@ var reduce = curry(function(f, x, xs){
 
 ```js
 // head :: [a] -> a
-compose(f, head) == compose(head, map(f));
+compose(f, head) === compose(head, map(f));
 
 // filter :: (a -> Bool) -> [a] -> [a]
-compose(map(f), filter(compose(p, f))) == compose(filter(p), map(f));
+compose(map(f), filter(compose(p, f))) === compose(filter(p), map(f));
 ```
 
 Вам не нужен какой-либо код, чтобы получить эти правила, они следуют прямо из типов. Первое говорит нам, что если мы имеем `head` для массива, затем применяем некую функцию `f` к ней, то это эквивалентно (и между прочим, намного быстрее) тому, как если бы мы сначала исполнили `map(f)` на каждом элементе массива, а затем бы применили `head` к результату.
@@ -163,6 +141,31 @@ compose(map(f), filter(compose(p, f))) == compose(filter(p), map(f));
 Правило для `filter` выглядит знакомым. Оно говорит, что если мы создаем композицию из `f` и `p`, чтобы отфильтровать необходимое, то на самом деле мы применяем `f` с помощью `map` (помните, что `filter` не меняет элементы, его сигнатура говорит о том, что `a` не будет тронуто), и это всегда эквивалентно преобразованию с помощью `f`, а затем фильтрации результата с помощью предиката `p`.
 
 Это просто два примера. Но вы можете применить этот тип рассуждений к любой полиморфной сигнатуре, и это будет работать. В JavaScript есть несколько доступных инструментов, чтобы объявлять переиспользуемые правила. Можно также сделать это с помощью функции `compose`. Возможности безграничны.
+
+## Constraints
+
+One last thing to note is that we can constrain types to an interface.
+
+```js
+// sort :: Ord a => [a] -> [a]
+```
+
+What we see on the left side of our fat arrow here is the statement of a fact: `a` must be an `Ord`. Or in other words, `a` must implement the `Ord` interface. What is `Ord` and where did it come from? In a typed language it would be a defined interface that says we can order the values. This not only tells us more about the `a` and what our `sort` function is up to, but also restricts the domain. We call these interface declarations *type constraints*.
+
+```js
+// assertEqual :: (Eq a, Show a) => a -> a -> Assertion
+```
+
+Here, we have two constraints: `Eq` and `Show`. Those will ensure that we can check equality of our `a`s and print the difference if they are not equal.
+
+```
+// then :: Promise p => (a -> b) -> p a -> p b
+const then = curry((f, anyPromise) => anyPromise.then(f));
+```
+
+Finally for `then`, the `Promise p =>` tells us that `p` must be a Promise, which means that `p a` and `p b` will be promises holding `a` and `b` respectively. The same goes for other standard built-in objects such as Array.
+
+We'll see more examples of constraints and the idea should take more shape in later chapters.
 
 ## В итоге 
 
