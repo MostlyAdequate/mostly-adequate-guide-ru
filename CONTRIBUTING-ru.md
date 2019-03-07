@@ -11,7 +11,7 @@ Errata and basic clarifications will be accepted if we agree that they improve t
 
 ## Questions or Clarifications
 
-Please, have a look at the [FAQ](FAQ.md) before you open an issue. Your question may already
+Please, have a look at the [FAQ](FAQ-ru.md) before you open an issue. Your question may already
 have been answered. Should you still need to ask something? Feel free to open an issue and to
 explain yourself.
 

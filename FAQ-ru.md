@@ -56,7 +56,7 @@ let maybeNumber = map(f, maybeString) // Maybe(6)
 > see [#77], [#192]
 
 Should you haven't reached it yet, you may have a look at the [Chapter
-6](https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/ch06.md) which presents a
+6](https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/ch06-ru.md) which presents a
 simple flickr application.
 Other examples are likely to come later on. By the way, feel free to share with us your
 experience!
@@ -86,7 +86,7 @@ more insights about the reduce function.
 The book is written in its own style which contributes to make it consistent as a whole. If
 you're not familiar with English, see it as good training. Nevertheless, should you need help
 to understand the meaning sometimes, there are now [several
-translations](https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/TRANSLATIONS.md)
+translations](https://github.com/MostlyAdequate/mostly-adequate-guide/blob/master/TRANSLATIONS-ru.md)
 available that could probably help you.
 
 ### What is Either? What is Future? What is Task?
@@ -103,8 +103,8 @@ A glossary/vade mecum will come at the end to synthesize all these notions.
 > see [#198]
 
 Most of the time, those methods are defined in specific vendor libraries such as `ramda` or
-`underscore`. You should also have a look at [Appendix A](./appendix_a.md), 
-[Appendix B](./appendix_b.md) and [Appendix C](./appendix_c.md) in which we define
+`underscore`. You should also have a look at [Appendix A](./appendix_a-ru.md), 
+[Appendix B](./appendix_b-ru.md) and [Appendix C](./appendix_c-ru.md) in which we define
 several implementations used for the exercises. Those functions are really
 common in functional programming and even though their implementations may vary a bit, their
 meanings remain fairly consistent between libraries.

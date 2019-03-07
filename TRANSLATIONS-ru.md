@@ -13,4 +13,4 @@
 
 ## Creating new Translations
 
-See [Creating new translations](CONTRIBUTING.md#Translations)
+See [Creating new translations](CONTRIBUTING-ru.md#Translations)
