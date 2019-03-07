@@ -7,7 +7,7 @@ most efficient implementation out there; they *solely serve an educational purpo
 In order to find functions that are more production-ready, have a peek at
 [ramda](https://ramdajs.com/), [lodash](https://lodash.com/), or [folktale](http://folktale.origamitower.com/).
 
-Note that some functions also refer to algebraic structures defined in the [Appendix B](./appendix_b.md)
+Note that some functions also refer to algebraic structures defined in the [Appendix B](./appendix_b-ru.md)
 
 ## always
 

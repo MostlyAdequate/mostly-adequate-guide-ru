@@ -8,7 +8,7 @@ the most efficient implementation out there; they *solely serve an educational p
 In order to find functions that are more production-ready, have a peek at
 [ramda](https://ramdajs.com/), [lodash](https://lodash.com/), or [folktale](http://folktale.origamitower.com/).
 
-Note that functions refer to the `curry` & `compose` functions defined in [Appendix A](./appendix_a.md)
+Note that functions refer to the `curry` & `compose` functions defined in [Appendix A](./appendix_a-ru.md)
 
 ## add 
 

@@ -48,7 +48,7 @@ or in code:
 compose(map(f), nt) === compose(nt, map(f));
 ```
 
-Both the diagram and the code say the same thing: We can run our natural transformation then `map` or `map` then run our natural transformation and get the same result. Incidentally, that follows from a [free theorem](ch07.md#free-as-in-theorem) though natural transformations (and functors) are not limited to functions on types.
+Both the diagram and the code say the same thing: We can run our natural transformation then `map` or `map` then run our natural transformation and get the same result. Incidentally, that follows from a [free theorem](ch07-ru.md#free-as-in-theorem) though natural transformations (and functors) are not limited to functions on types.
 
 ## Principled Type Conversions
 
@@ -181,7 +181,7 @@ So what do we have here? We've simply added `chain(maybeToTask)` and `chain(eith
 
 This continual and tedious sorting of types is the price we pay for having materialized them - summoned them from the ether. Of course, implicit effects are much more insidious and so here we are fighting the good fight. We'll need a few more tools in our tackle before we can reel in the larger type amalgamations. Next up, we'll look at reordering our types with *Traversable*.
 
-[Chapter 12: Traversing the Stone](ch12.md)
+[Chapter 12: Traversing the Stone](ch12-ru.md)
 
 
 ## Exercises

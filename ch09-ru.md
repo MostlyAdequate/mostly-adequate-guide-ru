@@ -381,7 +381,7 @@ Yes, monads are very powerful, yet we still find ourselves needing some extra co
 
 In the next chapter, we'll see how applicative functors fit into the container world and why we prefer them to monads in many cases.
 
-[Chapter 10: Applicative Functors](ch10.md)
+[Chapter 10: Applicative Functors](ch10-ru.md)
 
 
 ## Exercises
