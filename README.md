@@ -62,19 +62,19 @@ npm run generate-epub
 
 # Оглавление
 
-[SUMMARY-ru.md](SUMMARY.md)
+[SUMMARY-ru.md](SUMMARY-ru.md)
 
 ### Contributing
 
-[CONTRIBUTING-ru.md](CONTRIBUTING.md)
+[CONTRIBUTING-ru.md](CONTRIBUTING-ru.md)
 
 ### Переводы
 
-[TRANSLATIONS-ru.md](TRANSLATIONS.md)
+[TRANSLATIONS-ru.md](TRANSLATIONS-ru.md)
 
 ### FAQ
 
-[FAQ-ru.md](FAQ.md)
+[FAQ-ru.md](FAQ-ru.md)
 
 # Plans for the future
 
