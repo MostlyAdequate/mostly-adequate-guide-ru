@@ -9,6 +9,12 @@ By opening a pull request to this repository, you agree to provide your work und
 
 Errata and basic clarifications will be accepted if we agree that they improve the content. You can also open an issue so we can figure out how or if it needs to be addressed. If you've never done this before, the [flow guide](https://guides.github.com/introduction/flow/) might be useful.
 
+В русском переводе мы придерживаемся менее строгих правил: мы не ждём принятия PR с исправлением очевидных ошибок и неточностей, а также дополняем текст своими комментариями всюду, где сочтём уместным. Такое отношение ускоряет работу и повышает качество итогового продукта. Однако, во избежание беспорядка, мы следуем своим собственным правилам:
+
+1. Текст и код оригиналов изменять не следует. Они позволяют проследить за изменениями спустя время.
+1. Любое исправление должно быть отражено в каком-то PR в основной (английский) репозиторий.
+1. Исправленные фрагменты следует сопровождать комментарием со ссылкой на PR в основной репозиторий, например: `<!-- https://github.com/MostlyAdequate/mostly-adequate-guide/pull/508 -->`, что послужит обоснованием для исправлений и позволит легко проследить за их состоянием. Ссылки на принятые PR следует удалять, а оригиналы - обновлять.
+
 ## Questions or Clarifications
 
 Please, have a look at the [FAQ](FAQ-ru.md) before you open an issue. Your question may already
