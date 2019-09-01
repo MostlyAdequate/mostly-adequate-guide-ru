@@ -150,7 +150,7 @@ const trace = curry((tag, x) => {
 });
 
 const dasherize = compose(
-  join('-'),
+  intercalate('-'),
   toLower,
   split(' '),
   replace(/\s{2,}/ig, ' '),
@@ -164,7 +164,7 @@ dasherize('The world is a vampire');
 
 ```js
 const dasherize = compose(
-  join('-'),
+  intercalate('-'),
   toLower,
   trace('after split'),
   split(' '),
@@ -179,7 +179,7 @@ dasherize('The world is a vampire');
 
 ```js
 const dasherize = compose(
-  join('-'),
+  intercalate('-'),
   map(toLower),
   split(' '),
   replace(/\s{2,}/ig, ' '),

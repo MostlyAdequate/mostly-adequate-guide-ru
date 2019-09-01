@@ -507,7 +507,7 @@ class Maybe {
   }
 
   sequence(of) {
-    this.traverse(of, x => x);
+    return this.traverse(of, x => x);
   }
 
   traverse(of, fn) {
@@ -559,6 +559,16 @@ class Task {
   }
 }
 
+// In nodejs the existance of a class method named `inspect` will trigger a deprecation warning
+// when passing an instance to `console.log`:
+// `(node:3845) [DEP0079] DeprecationWarning: Custom inspection function on Objects via .inspect() is deprecated`
+// The solution is to alias the existing inspect method with the special inspect symbol exported by node
+if (typeof module !== 'undefined' && typeof this !== 'undefined' && this.module !== module) {
+  const customInspect = require('util').inspect.custom;
+  const assignCustomInspect = it => it.prototype[customInspect] = it.prototype.inspect;
+  [Left, Right, Identity, IO, Map, List, Maybe, Task].forEach(assignCustomInspect);
+}
+
 const identity = function identity(x) { return x; };
 
 const either = curry(function either(f, g, e) {
@@ -579,7 +589,7 @@ const maybe = curry(function maybe(v, f, m) {
   return f(m.$value);
 });
 
-const nothing = function nothing() { return Maybe.of(null); };
+const nothing = Maybe.of(null);
 
 const reject = function reject(x) { return Task.rejected(x); };
 
@@ -953,7 +963,7 @@ const validateUser = curry(function validateUser(validate, user) {
 
 /* ---------- Chapter 9 ---------- */
 
-const getFile = function getFile() { return IO.of('/home/mostly-adequate/ch09.md'); };
+const getFile = IO.of('/home/mostly-adequate/ch09.md');
 
 const pureLog = function pureLog(str) { return new IO(() => str); };
 
