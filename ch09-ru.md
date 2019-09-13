@@ -1,12 +1,12 @@
-# Chapter 09: Monadic Onions
+# Глава 09: Монадические луковицы
 
-## Pointy Functor Factory
+## Функторы и минимальный контекст
 
-Before we go any further, I have a confession to make: I haven't been fully honest about that `of` method we've placed on each of our types. Turns out, it is not there to avoid the `new` keyword, but rather to place values in what's called a *default minimal context*. Yes, `of` does not actually take the place of a constructor - it is part of an important interface we call *Pointed*.
+Прежде чем мы пойдем дальше, я должен признаться: я кое-что умолчал о методе `of`, который мы поместили в каждый из наших типов. На самом деле он нужен не для того, чтобы избежать использования ключевого слова `new`, а для того, чтобы поместить значения в так называемый **минимальный контекст** определённого функтора _(чистый контекст, default minimal context)_. Да-да, `of` не имеет своей целью заменить конструктор — вместо этого он является частью важного интерфейса **Pointed**.
 
-> A *pointed functor* is a functor with an `of` method
+> *pointed функтор* — это функтор, для которого реализована функция `of` — то есть операция помещения в минимальный контекст (метод это будет или функция — не существенно — прим. пер.).
 
-What's important here is the ability to drop any value in our type and start mapping away.
+Здесь важна возможность вбросить любое значение в наш тип и начать `map`ить.
 
 ```js
 IO.of('tetris').map(concat(' master'));
@@ -22,20 +22,21 @@ Either.of('The past, present and future walk into a bar...').map(concat('it was 
 // Right('The past, present and future walk into a bar...it was tense.')
 ```
 
-If you recall, `IO` and `Task`'s constructors expect a function as their argument, but `Maybe` and `Either` do not. The motivation for this interface is a common, consistent way to place a value into our functor without the complexities and specific demands of constructors. The term "default minimal context" lacks precision, yet captures the idea well: we'd like to lift any value in our type and `map` away per usual with the expected behaviour of whichever functor.
+Если вы помните, конструкторы значений `IO` и` Task` ожидают в качестве аргумента функцию, но `Maybe` и` Either` этого не требуют. Назначение интерфейса *Pointed* — предоставить обобщённый и унифицированный способ поместить значение в какой-либо функтор, не требуя знать особенности конструкторов какого-либо из них. Пусть термин «минимальный контекст» звучит не слишком точно, зато он хорошо отражает идею: мы хотели бы иметь возможность поднимать на уровень нужного типа любое произвольное значение, производить вычисления, применяя `map`, и получать предсказуемый и ожидаемый результат c любым функтором.
 
-One important correction I must make at this point, pun intended, is that `Left.of` doesn't make any sense. Each functor must have one way to place a value inside it and with `Either`, that's `new Right(x)`. We define `of` using `Right` because if our type *can* `map`, it *should* `map`. Looking at the examples above, we should have an intuition about how `of` will usually work and `Left` breaks that mold.
+Сейчас я должен сделать важное замечание о реализации `of`. Например, реализовывать `Left.of` не имеет никакого смысла. У каждого *pointed* функтора должен быть единственный универсальный способ поместить значение внутрь него, и в случае с `Either`, `of` будет реализован как `new Right(x)`. Мы определяем `of` через `Right`, потому что если для нашего типа определён `map`, то `of` для этого типа должен быть реализован так, чтобы `map` в произведенном им значении фактически применял функции. Из приведённых примеров нам должно быть интуитивно понятно, как будет работать `of`, а `Left` такое поведение обеспечить не сможет.
 
-You may have heard of functions such as `pure`, `point`, `unit`, and `return`. These are various monikers for our `of` method, international function of mystery. `of` will become important when we start using monads because, as we will see, it's our responsibility to place values back into the type manually.
+Вы могли слышать о таких функциях, как `pure`,`point`, `unit` и `return`. Так вот, все они являются синонимами `of`. Важность `of` вы оцените, когда мы начнем использовать монады, потому что нам придётся часто возвращать значение в контекст вручную.
 
-To avoid the `new` keyword, there are several standard JavaScript tricks or libraries so let's use them and use `of` like a responsible adult from here on out. I recommend using functor instances from `folktale`, `ramda` or `fantasy-land` as they provide the correct `of` method as well as nice constructors that don't rely on `new`.
+Для того, чтобы обходиться без ключевого слова `new`, в JavaScript существует ряд стандартных трюков/инструментов, а ставить `of` в один ряд с ними мы не будем, потому что его предназначение отличается. Что же касается библиотечных реализаций функторов, то я рекомендую `folktale`, `ramda` и спецификацию `fantasy-land`, поскольку они предоставляют корректную реализацию `of` и конструкторы, которые не рассчитывают на `new`.
 
+_Стоит также обратить внимание на серьёзнейшую библиотеку `sanctuary`, разработанную David Chambers (активным контрибьютором `ramda` и `fantasy-land`), и библиотеку `fp-ts`. С ними можно извлечь максимальную пользу из идей, изложенных в данной книге — прим. пер._
 
-## Mixing Metaphors
+## Соединяем метафоры
 
 <img src="images/onion.png" alt="onion" />
 
-You see, in addition to space burritos (if you've heard the rumors), monads are like onions. Allow me to demonstrate with a common situation:
+Видите ли, в дополнение к буррито (если до вас доходили слухи), монады похожи на лук. Позвольте продемонстрировать типовую ситуацию:
 
 ```js
 const fs = require('fs');
@@ -56,7 +57,7 @@ cat('.git/config');
 // IO(IO('[core]\nrepositoryformatversion = 0\n'))
 ```
 
-What we've got here is an `IO` trapped inside another `IO` because `print` introduced a second `IO` during our `map`. To continue working with our string, we must `map(map(f))` and to observe the effect, we must `unsafePerformIO().unsafePerformIO()`.
+Так у нас получилась `IO`, пойманная внутрь другой `IO`, поскольку функция `print` привнёсла ещё один слой `IO` _(что разумно, ведь это «эффектное» действие)_, когда применялась с `map`. И теперь, чтобы добраться до полученной строки, нам нужно делать `map(map(f))`, а чтобы выполнить эти эффекты, нам придётся сделать `unsafePerformIO().unsafePerformIO()`.
 
 ```js
 // cat :: String -> IO (IO String)
@@ -69,7 +70,7 @@ catFirstChar('.git/config');
 // IO(IO('['))
 ```
 
-While it is nice to see that we have two effects packaged up and ready to go in our application, it feels a bit like working in two hazmat suits and we end up with an uncomfortably awkward API. Let's look at another situation:
+Хоть это и удобно — иметь два эффекта, упакованных и готовых к использованию — в сейчас это напоминает работу в двух костюмах, и API получается ужасно неудобным. Давайте рассмотрим ещё одну ситуацию: 
 
 ```js
 // safeProp :: Key -> {Key: a} -> Maybe a
@@ -91,9 +92,9 @@ firstAddressStreet({
 // Maybe(Maybe(Maybe({name: 'Mulburry', number: 8402})))
 ```
 
-Again, we see this nested functor situation where it's neat to see there are three possible failures in our function, but it's a little presumptuous to expect a caller to `map` three times to get at the value - we'd only just met. This pattern will arise time and time again and it is the primary situation where we'll need to shine the mighty monad symbol into the night sky.
+Мы снова наблюдаем эту ситуацию с вложенными функторами, в которой обрабатываются 3 различных причины неудачи, но было бы самонадеянно ожидать, что клиентский код будет применять `map` трижды, пользуясь результатом работы нашей функции. Такие ситуации будут складываться раз за разом, и именно они порождают для нас потребность в монадах.
 
-I said monads are like onions because tears well up as we peel back each layer of the nested functor with `map` to get at the inner value. We can dry our eyes, take a deep breath, and use a method called `join`.
+Я заявил, что монады похожи на лук, потому что слёзы текут ручьём, когда мы снимаем очередной слой с вложенных друг в друга функторов, пытаясь выполнять свою работу с помощью `map`. Пора вытереть глаза, сделать глубокий вдох и воспользоваться `join`.
 
 ```js
 const mmo = Maybe.of(Maybe.of('nunchucks'));
@@ -115,11 +116,11 @@ ttt.join();
 // Task(Task('sewers'))
 ```
 
-If we have two layers of the same type, we can smash them together with `join`. This ability to join together, this functor matrimony, is what makes a monad a monad. Let's inch toward the full definition with something a little more accurate:
+Если у нас есть два слоя одного типа, мы можем объединить их в один при помощи `join`. Эта способность соединяться вместе (такое «функторное бракосочетание») делает монаду монадой. Давайте сформулируем это чуть более аккуратно:
 
-> Monads are pointed functors that can flatten
+> Монады — это pointed функторы, которые могут быть выровнены _(flatten)_.
 
-Any functor which defines a `join` method, has an `of` method, and obeys a few laws is a monad. Defining `join` is not too difficult so let's do so for `Maybe`:
+Любой функтор, для которого определены операции `join` и `of` и который подчиняется нескольким законам, является монадой. Определение `join` совсем несложное. Давайте напишем его для `Maybe`:
 
 ```js
 Maybe.prototype.join = function join() {
@@ -127,9 +128,9 @@ Maybe.prototype.join = function join() {
 };
 ```
 
-There, simple as consuming one's twin in the womb. If we have a `Maybe(Maybe(x))` then `.$value` will just remove the unnecessary extra layer and we can safely `map` from there. Otherwise, we'll just have the one `Maybe` as nothing would have been mapped in the first place.
+Если наш `Maybe(Maybe(x))` представляет собой `Just(Nothing)` или `Just(Just(x))`, то мы возвращаем в качестве результата то, что содержится в `.$value`, чем бы оно ни было (оно будет либо `Nothing`, либо `Just(x)` соответственно). В противном случае, если поверхностный слой — это `Nothing`, то и объединять там нечего, и мы возвращаем его как есть.
 
-Now that we have a `join` method, let's sprinkle some magic monad dust over the `firstAddressStreet` example and see it in action:
+Теперь, когда у нас есть `join`, давайте бросим щепотку магического монадного пороха в пример `firstAddressStreet` и посмотрим, что из этого выйдет:
 
 ```js
 // join :: Monad m => m (m a) -> m a
@@ -149,13 +150,13 @@ firstAddressStreet({
 // Maybe({name: 'Mulburry', number: 8402})
 ```
 
-We added `join` wherever we encountered the nested `Maybe`'s to keep them from getting out of hand. Let's do the same with `IO` to give us a feel for that.
+Мы добавили `join` везде, где нам встретились вложенные` Maybe`, чтобы вложенность не выходила из-под контроля. Давайте проделаем то же самое с `IO`, чтобы чувствовать себя уверенно.
 
 ```js
 IO.prototype.join = () => this.unsafePerformIO();
 ```
 
-Again, we simply remove one layer. Mind you, we have not thrown out purity, but merely removed one layer of excess shrink wrap.
+Как и в прошлый раз, мы просто снимаем один слой. Уверяю, мы не обращаем нашу функцию в нечистую, а просто удаляем один избыточный слой.
 
 ```js
 // log :: a -> IO a
@@ -186,25 +187,25 @@ applyPreferences('preferences').unsafePerformIO();
 // <div style="background-color: 'green'"/>
 ```
 
-`getItem` returns an `IO String` so we `map` to parse it. Both `log` and `setStyle` return `IO`'s themselves so we must `join` to keep our nesting under control.
+`getItem` возвращает `IO String`, и мы применяем `map`, чтобы распарсить результат. Функции `log` и` setStyle` тоже возвращают `IO`, поэтому мы должны делать `join`, чтобы держать вложенность под контролем.
 
-## My Chain Hits My Chest
+## Цепочки монадических вычислений
 
 <img src="images/chain.jpg" alt="chain" />
 
-You might have noticed a pattern. We often end up calling `join` right after a `map`. Let's abstract this into a function called `chain`.
+Вы наверняка заметили повторяющийся приём: мы применяем `join` сразу после `map`. Давайте абстрагируем это в функцию `chain`.
 
 ```js
 // chain :: Monad m => (a -> m b) -> m a -> m b
 const chain = curry((f, m) => m.map(f).join());
 
-// or
+// или
 
 // chain :: Monad m => (a -> m b) -> m a -> m b
 const chain = f => compose(join, map(f));
 ```
 
-We'll just bundle up this map/join combo into a single function. If you've read about monads previously, you might have seen `chain` called `>>=` (pronounced bind) or `flatMap` which are all aliases for the same concept. I personally think `flatMap` is the most accurate name, but we'll stick with `chain` as it's the widely accepted name in JS. Let's refactor the two examples above with `chain`:
+Мы просто композируем `map` и `join` в одну функцию. Если ранее вам доводилось читать о монадах, то вы встречали `chain` под именем `flatMap` или `>>=`(читается как `bind`), которые являются псевдонимами для одного и того же понятия — «монадического связывания». Я считаю, что `flatMap` — это самое точное название, но мы будем придерживаться `chain`, поскольку такое название более распространено в JS. Давайте отрефакторим предыдущие примеры, используя `chain`:
 
 ```js
 // map/join
@@ -242,7 +243,7 @@ const applyPreferences = compose(
 );
 ```
 
-I swapped out any `map/join` with our new `chain` function to tidy things up a bit. Cleanliness is nice and all, but there's more to `chain` than meets the eye - it's more of a tornado than a vacuum. Because `chain` effortlessly nests effects, we can capture both *sequence* and *variable assignment* in a purely functional way.
+Я заменил все сочетания `map/join` нашей новой функцией `chain` и тем самым навёл в коде порядок. Красивые строчки кода — это, конечно, хорошо, но `chain` — это нечто большее, чем кажется на первый взгляд. Это скорее торнадо, нежели вакуум. Поскольку `chain` легко вкладывает «эффектные» вычисления друг в друга, мы можем охватить такие понятия как **последовательное выполнение** и **присваивание значений** в чистом функциональном стиле.
 
 ```js
 // getJSON :: Url -> Params -> Task JSON
@@ -266,11 +267,11 @@ Maybe.of(null)
 // Maybe(null);
 ```
 
-We could have written these examples with `compose`, but we'd need a few helper functions and this style lends itself to explicit variable assignment via closure anyhow. Instead we're using the infix version of `chain` which, incidentally, can be derived from `map` and `join` for any type automatically: `t.prototype.chain = function(f) { return this.map(f).join(); }`. We can also define `chain` manually if we'd like a false sense of performance, though we must take care to maintain the correct functionality - that is, it must equal `map` followed by `join`. An interesting fact is that we can derive `map` for free if we've created `chain` simply by bottling the value back up when we're finished with `of`. With `chain`, we can also define `join` as `chain(id)`. It may feel like playing Texas Hold em' with a rhinestone magician in that I'm just pulling things out of my behind, but, as with most mathematics, all of these principled constructs are interrelated. Lots of these derivations are mentioned in the [fantasyland](https://github.com/fantasyland/fantasy-land) repo, which is the official specification for algebraic data types in JavaScript.
+Мы могли бы написать эти примеры с помощью `compose`, но нам потребовалось бы несколько вспомогательных функций, и это всё равно подтолкнуло бы нас к переприсваиванию переменных, добираясь до них через замыкание. Вместо этого мы используем `chain`, которая, кстати, может быть выведена из `map` и `join` для любого типа: `t.prototype.chain = function(f) { return this.map(f).join(); }`. Мы могли бы также написать `chain` вручную (например, если бы нам захотелось потешить себя иллюзией производительности). Но в таком случае нам придётся позаботиться о корректности своей реализации — она должна давать в точности такой же результат, как `map` и `join`. Интересный факт: мы можем «бесплатно» получить `map`, если у нас уже есть реализация `chain`, для этого нужно композировать применяемую функцию с `of`, чтобы поместить значение обратно в контекст. Также, имея `chain`, мы можем определить `join` как `chain(id)`. Это может напоминать игру в Холдем с магом-иллюзионистом, будто я просто достаю все эти комбинации из-за спины, но, как и большая часть математики, все основные конструкции взаимосвязаны. Множество таких операций, опирающихся друг на друга, описаны в [fantasyland](https://github.com/fantasyland/fantasy-land) — общепризнанной спецификации алгебраических типов данных для JavaScript.
 
-Anyways, let's get to the examples above. In the first example, we see two `Task`'s chained in a sequence of asynchronous actions - first it retrieves the `user`, then it finds the friends with that user's id. We use `chain` to avoid a `Task(Task([Friend]))` situation.
+Давайте всё-таки обсудим вышеприведённые примеры. В первом примере два `Task`, соединены в последовательность асинхронных действий — сначала получаем `user`, а затем запрашиваем его друзей (по идентификатору этого пользователя). Мы используем `chain`, чтобы не городить `Task(Task([Friend]))`.
 
-Next, we use `querySelector` to find a few different inputs and create a welcoming message. Notice how we have access to both `uname` and `email` at the innermost function - this is functional variable assignment at its finest. Since `IO` is graciously lending us its value, we are in charge of putting it back how we found it - we wouldn't want to break its trust (and our program). `IO.of` is the perfect tool for the job and it's why Pointed is an important prerequisite to the Monad interface. However, we could choose to `map` as that would also return the correct type:
+Далее мы используем `querySelector`, чтобы собрать необходимые исходные данные и составить из них приветствие. Обратите внимание, у нас есть доступ и к `uname`, и к` email` в самой вложенной функции — это функциональное назначение переменных во всей красе (и никаких присваиваний). Поскольку `IO` любезно предоставляет нам значение, то и новое значение мы должны вернуть в подобном обёрнутом виде — мы ведь не хотим нарушать доверие к `IO` (а заодно и к нашей программе). `IO.of` — идеальный инструмент для этого шага, вот почему Pointed является важной составляющей интерфейса Monad. Хотя на этом шаге мы могли бы выбрать `map` и получить на выходе значение нужного типа:
 
 ```js
 querySelector('input.username').chain(({ value: uname }) =>
@@ -279,19 +280,19 @@ querySelector('input.username').chain(({ value: uname }) =>
 // IO('Welcome Olivia prepare for spam at olivia@tremorcontrol.net');
 ```
 
-Finally, we have two examples using `Maybe`. Since `chain` is mapping under the hood, if any value is `null`, we stop the computation dead in its tracks.
+Ещё два примера используют `Maybe`. Поскольку `chain` реализован подобно `map`, вычисление «засохнет» и не будет продолжено, если на каком-то шаге встретится `Nothing`.
 
-Don't worry if these examples are hard to grasp at first. Play with them. Poke them with a stick. Smash them to bits and reassemble. Remember to `map` when returning a "normal" value and `chain` when we're returning another functor. In the next chapter, we'll approach `Applicatives` and see nice tricks to make this kind of expressions nicer and highly readable. 
+Не беспокойтесь, если эти примеры поначалу сложно понять. Поиграйте с ними. Ткните их палкой. Разберите их на части и соберите снова. Помните, что вам нужен `map` для применения некоторой функции, если она возвращает обычное значение, и `chain`, если она возвращает значение, обёрнутое в монаду того же типа. В следующей главе мы задействуем аппликативные функторы и рассмотрим полезные трюки, с которыми составлять и читать подобные выражения станет легко и приятно.
 
-As a reminder, this does not work with two different nested types. Functor composition and later, monad transformers, can help us in that situation.
+Напоминаю, что `chain` не работает с двумя разными функторами, вложенными друг в друга. Для этого существует композиция функторов и трансформеры монад _(композиция рассматривается в этой книге, а трансформеры монад — нет. Изучить эту тему можно в языке Haskell, а потом, при желании, сделать что-то похожее в JS — прим. пер.)_.
 
-## Power Trip
+## В полную силу
 
-Container style programming can be confusing at times. We sometimes find ourselves struggling to understand how many containers deep a value is or if we need `map` or `chain` (soon we'll see more container methods). We can greatly improve debugging with tricks like implementing `inspect` and we'll learn how to create a "stack" that can handle whatever effects we throw at it, but there are times when we question if it's worth the hassle.
+Программирование с контейнерами иногда может сбивать с толку. Иногда бывает сложно понять, на какой глубине находится вложенное значение, или сделать выбор между `map` и `chain` (а скоро мы изучим ещё больше функций для работы с контейнерами). Мы можем значительно улучшить свою производительность за счёт подходящих инструментов отладки. Для этого мы реализуем `inspect` и узнаем, как организовать для себя подобие «стека», в который мы сможем бросать всё, что может пригодиться при отладке позднее. Хотя нередко разработчики обходятся без этого (потому что нет желания возиться).
 
-I'd like to swing the fiery monadic sword for a moment to exhibit the power of programming this way.
+Сейчас я взмахну огненным монадическим мечом продемонстрирую силу такого стиля программирования.
 
-Let's read a file, then upload it directly afterward:
+Давайте прочитаем файл, и сразу после этого загрузим его:
 
 ```js
 // readFile :: Filename -> Either String (Task Error String)
@@ -300,11 +301,15 @@ Let's read a file, then upload it directly afterward:
 const upload = compose(map(chain(httpPost('/uploads'))), readFile);
 ```
 
-Here, we are branching our code several times. Looking at the type signatures I can see that we protect against 3 errors - `readFile` uses `Either` to validate the input (perhaps ensuring the filename is present), `readFile` may error when accessing the file as expressed in the first type parameter of `Task`, and the upload may fail for whatever reason which is expressed by the `Error` in `httpPost`. We casually pull off two nested, sequential asynchronous actions with `chain`.
+Здесь мы разветвляем наш код несколько раз. Глядя на сигнатуры типов, я вижу, что мы защищаемся от 3 ошибок 
+- `readFile` использует `Either` для проверки ввода (видимо, удостоверяясь, что имя файла было предоставлено).
+- `readFile` может завершиться с ошибкой при получении доступа к файлу, тогда это будет выражено типом `Error`
+- загрузка файла может быть прервана по любой причине, и это выражает тип `Error` в `httpPost`
+И при этом мы, как обычно, последовательно выполняем два вложенных асинхронных действия с помощью `chain`.
 
-All of this is achieved in one linear left to right flow. This is all pure and declarative. It holds equational reasoning and reliable properties. We aren't forced to add needless and confusing variable names. Our `upload` function is written against generic interfaces and not specific one-off apis. It's one bloody line for goodness sake.
+Всего этого мы добиваемся линейно, слева направо. Всё это чисто и декларативно, поддаётся эквациональным рассуждениям и обладает надежными свойствами. Нам не приходится добавлять ненужные и запутанные имена переменных. Наша функция `upload` написана для универсальных интерфейсов, а не под чей-то конкретный одноразовый API. Одной строкой кода.
 
-For contrast, let's look at the standard imperative way to pull this off:
+Для контраста, давайте рассмотрим типичную императивную реализацию того же самого:
 
 ```js
 // upload :: String -> (String -> a) -> Void
@@ -323,71 +328,75 @@ const upload = (filename, callback) => {
 };
 ```
 
-Well isn't that the devil's arithmetic. We're pinballed through a volatile maze of madness. Imagine if it were a typical app that also mutated variables along the way! We'd be in the tar pit indeed.
+Ну разве это не дьявольская арифметика? Какой-то пинбол в переменчивом лабиринте безумия. А теперь представьте, что это типичное реальное приложение, которое помимо этой функции мутирует переменные всюду. Мы бы действительно были в битумной яме.
 
-## Theory
+## Теория
 
-The first law we'll look at is associativity, but perhaps not in the way you're used to it.
+Первый закон, который мы рассмотрим, это закон ассоциативности, хоть он, возможно, и выглядит непривычно.
 
 ```js
-// associativity
+// закон ассоциативности
 compose(join, map(join)) === compose(join, join);
 ```
 
-These laws get at the nested nature of monads so associativity focuses on joining the inner or outer types first to achieve the same result. A picture might be more instructive:
+Эти законы нацелены на вложенную природу монад, поэтому ассоциативность проявляется в том, что порядок соединения слоёв — изнутри или снаружи — не имеет значения, и приводит к одному и тому же результату.
+
+_Обычно закон ассоциативности для монад записывается в [другом виде](https://wiki.haskell.org/Monad_laws), через `chain` и несколько функций. Но пусть это вас не слишком смущает, так как `join` — это `chain(id)` — прим. пер._
+
+Схема будет нагляднее:
 
 <img src="images/monad_associativity.png" alt="monad associativity law" />
 
-Starting with the top left moving downward, we can `join` the outer two `M`'s of `M(M(M a))` first then cruise over to our desired `M a` with another `join`. Alternatively, we can pop the hood and flatten the inner two `M`'s with `map(join)`. We end up with the same `M a` regardless of if we join the inner or outer `M`'s first and that's what associativity is all about. It's worth noting that `map(join) != join`. The intermediate steps can vary in value, but the end result of the last `join` will be the same.
+Начиная с верхнего левого угла, двигаясь вниз, мы можем «соединить» сначала внешние два `M` из `M(M(M a))`, а затем перейти к желаемому `M a`, ещё раз применив `join`. Другой путь — соединить внутренние два `M` «под капотом» с помощью `map(join)`. В итоге мы получаем один и тот же `M a`, независимо от того, соединяем ли мы сначала внутренние или внешние `M`, и в этом вся суть ассоциативности. Стоит отметить, что `map(join) != join`. Промежуточные шаги могут различаться по значению, но конечный результат последнего `join` будет одним и тем же.
 
-The second law is similar:
+Второй закон похож:
 
 ```js
-// identity for all (M a)
+// закон идентичности для всех (M a)
 compose(join, of) === compose(join, map(of)) === id;
 ```
 
-It states that, for any monad `M`, `of` and `join` amounts to `id`. We can also `map(of)` and attack it from the inside out. We call this "triangle identity" because it makes such a shape when visualized:
+Этот закон гласит, что для любой монады `M`, последовательное применение `of` и `join` равны `id`. Мы также можем вооружиться `map(of)` и атаковать её изнутри. Некоторые называют этот закон «треугольной идентичностью», потому что он производит такую ​​форму при визуализации:
 
 <img src="images/triangle_identity.png" alt="monad identity law" />
 
-If we start at the top left heading right, we can see that `of` does indeed drop our `M a` in another `M` container. Then if we move downward and `join` it, we get the same as if we just called `id` in the first place. Moving right to left, we see that if we sneak under the covers with `map` and call `of` of the plain `a`, we'll still end up with `M (M a)` and `join`ing will bring us back to square one.
+Если мы отправимся из левого верхнего угла направо, то увидим, что `of` помещает наш `M a` в другой контейнер `M`. Затем, если мы направимся вниз и соединим слои, то получим то же самое, как если бы сразу применили `id`. Двигаясь справа налево, мы видим, что если мы прокрадёмся изнутри с помощью `map` и применим `of` к `a`, мы все равно получим `M(M a)`, и `join` вернёт всё на круги своя.
 
-I should mention that I've just written `of`, however, it must be the specific `M.of` for whatever monad we're using.
+Важно понимать, что `of`, о которой мы рассуждаем — это функция `M.of`, которая для каждой монады `M` реализована по-разному.
 
-Now, I've seen these laws, identity and associativity, somewhere before... Hold on, I'm thinking...Yes of course! They are the laws for a category. But that would mean we need a composition function to complete the definition. Behold:
+Постойте, где-то я уже видел эти законы идентичности и ассоциативности... Я думаю... Да, конечно! Это законы для категории. Значит нам нужна функция композиции, чтобы завершить определение. Вот:
 
 ```js
 const mcompose = (f, g) => compose(chain(f), g);
 
-// left identity
-mcompose(M, f) === f;
+// идентичность слева
+mcompose(M.of, f) === f;
 
-// right identity
-mcompose(f, M) === f;
+// идентичность справа
+mcompose(f, M.of) === f;
 
-// associativity
+// ассоциативность
 mcompose(mcompose(f, g), h) === mcompose(f, mcompose(g, h));
 ```
 
-They are the category laws after all. Monads form a category called the "Kleisli category" where all objects are monads and morphisms are chained functions. I don't mean to taunt you with bits and bobs of category theory without much explanation of how the jigsaw fits together. The intention is to scratch the surface enough to show the relevance and spark some interest while focusing on the practical properties we can use each day.
+В конце концов, они являются законами категории. Монады образуют категорию, называемую «категорией Клейсли», в которой объекты — это монады, а морфизмы — монадические функции. Я не ставлю перед собой цель посмеяться над вами с помощью теории категорий без объяснения того, как кусочки головоломки сочетаются между собой. Моё намерение состоит в том, чтобы в достаточной степени поцарапать поверхность, показать релевантность и пробудить интерес, при этом не отрываться практических свойств, которыми мы с вами пользуемся ежедневно.
+
+_Идентичностью закон называется потому, что подчиняющиеся ему функции `of` не должны делать ничего, кроме помещения значения в минимальный контекст монады, то есть вести себя как тождественный морфизм в категории Клейсли, ведь `chain(of)` — это `id` — прим. пер._
+
+## Итог
+
+Монады позволяют нам углубляться во вложенные вычисления. Мы можем назначать переменные, запускать последовательные эффекты, выполнять асинхронные задачи, и все это — не устраивая callback hell. Они приходят на помощь, когда значение оказывается заточённым в нескольких однотипных слоях. Благодаря верному помощнику «Pointed» монады могут предоставлять нам значение без упаковки и знают, что мы сможем сами завернуть его обратно, когда закончим свои дела.
+
+Да, монады очень мощные, но нам потребуются ещё некоторые дополнительные функции для полноценной работы с контейнерами. Например, что если мы хотим запустить множество вызовов API за один раз, а затем собрать результаты? Мы можем выполнить эту задачу с помощью монад, но нам придется ждать завершения каждого вызова, прежде чем перейти к следующему. А как насчет объединения результатов нескольких валидаций? Если бы мы захотели продолжить проверку, чтобы собрать все возникшие ошибки, а монады остановили бы шоу после первого `Left`?
+
+В следующей главе мы увидим, какое место аппликативные функторы занимают в мире контейнеров, и почему во многих случаях мы предпочитаем их монадам.
+
+[Глава 10: Аппликативные функторы](ch10-ru.md)
 
 
-## In Summary
+## Упражнения
 
-Monads let us drill downward into nested computations. We can assign variables, run sequential effects, perform asynchronous tasks, all without laying one brick in a pyramid of doom. They come to the rescue when a value finds itself jailed in multiple layers of the same type. With the help of the trusty sidekick "pointed", monads are able to lend us an unboxed value and know we'll be able to place it back in when we're done.
-
-Yes, monads are very powerful, yet we still find ourselves needing some extra container functions. For instance, what if we wanted to run a list of api calls at once, then gather the results? We can accomplish this task with monads, but we'd have to wait for each one to finish before calling the next. What about combining several validations? We'd like to continue validating to gather the list of errors, but monads would stop the show after the first `Left` entered the picture.
-
-In the next chapter, we'll see how applicative functors fit into the container world and why we prefer them to monads in many cases.
-
-[Chapter 10: Applicative Functors](ch10-ru.md)
-
-
-## Exercises
-
-
-Considering a User object as follow:
+Используя следующий объект пользователя:
 
 ```js  
 const user = {  
@@ -402,26 +411,18 @@ const user = {
 };  
 ```  
   
-{% exercise %}  
-Use `safeProp` and `map/join` or `chain` to safely get the street name when given a user  
-  
-{% initial src="./exercises/ch09/exercise_a.js#L16;" %}  
+### Упражнение A
+
+Используйте `safeProp` и` map/join` или `chain`, чтобы безопасно получить название улицы из данных о пользователе.
+
 ```js  
 // getStreetName :: User -> Maybe String  
 const getStreetName = undefined;  
 ```  
-  
-  
-{% solution src="./exercises/ch09/solution_a.js" %}  
-{% validation src="./exercises/ch09/validation_a.js" %}  
-{% context src="./exercises/support.js" %}  
-{% endexercise %}  
 
+### Упражнение B
 
----
-
-
-We now consider the following functions
+Используя следующие вспомогательные функции:
 
 ```js
 // getFile :: () -> IO String
@@ -431,28 +432,16 @@ const getFile = () => IO.of('/home/mostly-adequate/ch09.md');
 const pureLog = str => new IO(() => console.log(str));
 ```
 
-{% exercise %}  
-Use getFile to get the filepath, remove the directory and keep only the basename,  
-then purely log it. Hint: you may want to use `split` and `last` to obtain the  
-basename from a filepath.  
-  
-{% initial src="./exercises/ch09/exercise_b.js#L13;" %}  
+Используйте `getFile`, чтобы получить путь к файлу, удалить из него директорию и оставить только имя файла, а затем просто залогировать его. Подсказка: вы можете использовать `split` и `last` для получения имени из пути к файлу.
+
 ```js  
 // logFilename :: IO ()  
-const logFilename = undefined;  
-  
-```  
-  
-  
-{% solution src="./exercises/ch09/solution_b.js" %}  
-{% validation src="./exercises/ch09/validation_b.js" %}  
-{% context src="./exercises/support.js" %}  
-{% endexercise %}  
+const logFilename = undefined;
+```
 
+### Упражнение C
 
----
-
-For this exercise, we consider helpers with the following signatures:
+В этом упражнении у нас будут вспомогательные функции с такими сигнатурами:
 
 ```js
 // validateEmail :: Email -> Either String Email
@@ -460,19 +449,9 @@ For this exercise, we consider helpers with the following signatures:
 // emailBlast :: [Email] -> IO ()
 ```
 
-{% exercise %}  
-Use `validateEmail`, `addToMailingList` and `emailBlast` to create a function  
-which adds a new email to the mailing list if valid, and then notify the whole  
-list.  
+Используйте `validateEmail`, `addToMailingList` и `emailBlast`, чтобы создать функцию, которая добавляет новое адрес в список рассылки, если он действителен, и затем уведомляет весь список.
   
-{% initial src="./exercises/ch09/exercise_c.js#L11;" %}  
 ```js  
 // joinMailingList :: Email -> Either String (IO ())  
-const joinMailingList = undefined;  
-```  
-  
-  
-{% solution src="./exercises/ch09/solution_c.js" %}  
-{% validation src="./exercises/ch09/validation_c.js" %}  
-{% context src="./exercises/support.js" %}  
-{% endexercise %}  
+const joinMailingList = undefined;
+```
