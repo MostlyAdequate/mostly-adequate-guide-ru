@@ -1,7 +1,7 @@
-# Available Translations
+# Существующие переводы
 
 * [中文版 (Chinese)](https://github.com/llh911001/mostly-adequate-guide-chinese)  by Linghao Li @llh911001
-* [Русский (Russian)](https://github.com/MostlyAdequate/mostly-adequate-guide-ru)  by Maksim Filippov @maksimf
+* [Русский (Russian)](https://github.com/MostlyAdequate/mostly-adequate-guide-ru), выполненный [Maksim Filippov](https://github.com/maksimf), [Vladimir Logachev](https://github.com/VladimirLogachev), [Sakayama](https://github.com/Sakayama) и другими [участниками](https://github.com/MostlyAdequate/mostly-adequate-guide-ru/graphs/contributors)
 * [Українська (Ukrainian)](https://github.com/ivanzusko/mostly-adequate-guide-uk) by Ivan Zusko @ivanzusko
 * [Français (French)](https://github.com/MostlyAdequate/mostly-adequate-guide-fr) by Benkort Matthias @KtorZ
 * [Português (Portuguese)](https://github.com/MostlyAdequate/mostly-adequate-guide-pt-BR) by Palmer Oliveira @expalmer
@@ -11,6 +11,6 @@
 * [bahasa Indonesia (Indonesian)](https://github.com/MostlyAdequate/mostly-adequate-guide-id) by Ahmad Naufal Mukhtar @anaufalm
 
 
-## Creating new Translations
+## Как создать новый перевод
 
-See [Creating new translations](CONTRIBUTING-ru.md#Translations)
+Смотрите [Как создать новый перевод](CONTRIBUTING-ru.md#Translations)
