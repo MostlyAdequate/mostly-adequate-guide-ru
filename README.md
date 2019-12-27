@@ -60,6 +60,26 @@ npm run generate-epub
 
 > Важно! Для создания ebook-версии вам необходимо установить `ebook-convert`. [Инструкции](https://toolchain.gitbook.com/ebook.html#installing-ebook-convert).
 
+### Инструкция для Windows:
+```
+git clone https://github.com/MostlyAdequate/mostly-adequate-guide-ru.git
+cd mostly-adequate-guide-ru/
+npm install
+npm install gitbook-cli -g
+Set-ExecutionPolicy RemoteSigned (опционально) *
+gitbook install
+Установить [calibre](https://calibre-ebook.com/download_windows64) **
+Установить переменные среды `ebook-convert` `C:\Program Files\Calibre2` ***
+npm run generate-pdf
+npm run generate-epub
+```
+
+\* [Снимает запрет](https://sysadmin.ru/articles/powershell-ne-udaetsya-zagruzit-fajl-tak-kak-vypolnenie-skriptov-zapreshheno-dlya-dannoj-sistemy#___PowerShell-2) на выполнение сторонних скриптов
+
+** Настройки по генерации книг задаются в этой программе
+
+*** [Инструкция](https://lumpics.ru/environment-variables-in-windows-10/) по установке переменых среды
+
 # Оглавление
 
 [SUMMARY-ru.md](SUMMARY-ru.md)
