@@ -12,7 +12,7 @@
 // readFile :: FileName -> Task Error String
 
 // firstWords :: String -> String
-const firstWords = compose(join(' '), take(3), split(' '));
+const firstWords = compose(intercalate(' '), take(3), split(' '));
 
 // tldr :: FileName -> Task Error String
 const tldr = compose(map(firstWords), readFile);
@@ -151,7 +151,7 @@ traverse(of, fn) {
 // readFile :: FileName -> Task Error String
 
 // firstWords :: String -> String
-const firstWords = compose(join(' '), take(3), split(' '));
+const firstWords = compose(intercalate(' '), take(3), split(' '));
 
 // tldr :: FileName -> Task Error String
 const tldr = compose(map(firstWords), readFile);
@@ -248,7 +248,7 @@ traverse(A.of, A.of) === A.of;
 
 ## Итог
 
-*Traversable* — это мощный интерфейс, который даёт нам возможность реорганизовывать типы так же легко, как если бы мы могли мыслями двигать мебель и менять интерьер. Мы можем получать различные эффекты в разном порядке, а также разглаживать неприятные «морщины» из типов, которые препятствуют применению `join`. В следующей главе мы изучим один из самых мощных интерфейсов в функциональном программировании, а может быть и во всей алгебре: [Глава 13: Monoids bring it all together](ch13-ru.md) _(ещё не опубликована в оригинальной книге)_.
+*Traversable* — это мощный интерфейс, который даёт нам возможность реорганизовывать типы так же легко, как если бы мы могли мыслями двигать мебель и менять интерьер. Мы можем получать различные эффекты в разном порядке, а также разглаживать неприятные «морщины» из типов, которые препятствуют применению `join`. В следующей главе мы изучим один из самых мощных интерфейсов в функциональном программировании, а может быть и во всей алгебре: [Глава 13: Monoids bring it all together](ch13-ru.md).
 
 ## Упражнения
 

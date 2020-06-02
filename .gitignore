@@ -4,7 +4,6 @@ less
 Gruntfile.js
 npm-debug.log
 .DS_Store
-.vscode
 *.md#*
 _book
 /book.pdf
