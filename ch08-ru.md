@@ -316,7 +316,7 @@ getAge(moment(), { birthDate: 'July 4, 2001' });
 
 ```js
 // fortune :: Number -> String
-const fortune = compose(append('If you survive, you will be '), toString, add(1));
+const fortune = compose(concat('If you survive, you will be '), toString, add(1));
 
 // zoltar :: User -> Either(String, _)
 const zoltar = compose(map(console.log), map(fortune), getAge(moment()));
@@ -462,7 +462,6 @@ const findParam = key => map(compose(Maybe.of, find(compose(eq(key), head)), par
 findParam('searchTerm').$value();
 // Just(['searchTerm', 'wafflehouse'])
 ```
-<!-- Исправлена сигнатура и имплементация findParam https://github.com/MostlyAdequate/mostly-adequate-guide/pull/538 -->
 
 Вот так мы отмазались от запуска «эффектных» вычислений, возвращая `url` завёрнутым в `IO` _(это является хорошим тоном при написании кода библиотек)_. Как вы могли заметить, мы легко можем содержать один контейнер в другом. В этом примере очень удобно оперировать `IO(Maybe([x]))` – он представляет из себя 3 функтора, вложенных один в другой _(`IO`, `Maybe` и `Array`, при этом нам вряд ли понадобится применять `map` к массиву, ведь он используется здесь для хранения **пары** значений, а не для того, чтобы выразить недетерминированность результата – прим. пер.)_, что обосновано и весьма выразительно.
 
