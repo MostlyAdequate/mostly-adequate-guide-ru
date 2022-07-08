@@ -1,13 +1,13 @@
-# Appendix A: Essential Functions Support
+# Приложение A: Поддержка Основных Функций
 
-In this appendix, you'll find some basic JavaScript implementations of various functions
-described in the book. Keep in mind that these implementations may not be the fastest or the
-most efficient implementation out there; they *solely serve an educational purpose*.
+В этом приложении вы найдете несколько базовых реализаций JavaScript различных функций
+описанных в книге. Имейте в виду, что эти реализации могут быть не самыми быстрыми и не самыми эффективными.
+они служат исключительно образовательным целям.
 
-In order to find functions that are more production-ready, have a peek at
-[ramda](https://ramdajs.com/), [lodash](https://lodash.com/), or [folktale](http://folktale.origamitower.com/).
+Чтобы найти функции, более пригодные для использования в производстве, загляните в раздел
+[ramda](https://ramdajs.com/), [lodash](https://lodash.com/), или [folktale](http://folktale.origamitower.com/).
 
-Note that some functions also refer to algebraic structures defined in the [Appendix B](./appendix_b-ru.md)
+Обратите внимание, что некоторые функции также ссылаются на алгебраические структуры, определенные в [Appendix B](./appendix_b-ru.md)
 
 ## always
 
