@@ -1,44 +1,44 @@
-# Chapter 13: Monoids bring it all together
+# Глава 13: Моноиды объединяют все вместе
 
-## Wild combination
+## Дикая комбинация
 
-In this chapter, we will examine *monoids* by way of *semigroup*. *Monoids* are the bubblegum in the hair of mathematical abstraction. They capture an idea that spans multiple disciplines, figuratively and literally bringing them all together. They are the ominous force that connects all that calculates. The oxygen in our code base, the ground on which it runs, quantum entanglement encoded.
+В этой главе мы рассмотрим *моноиды* на примере *семигрупп*. *Моноиды* - это жвачка в волосах математической абстракции. Они фиксируют идею, которая охватывает множество дисциплин, образно и буквально объединяя их все вместе. Они - зловещая сила, связывающая все, что вычисляется. Кислород в нашей кодовой базе, земля, на которой она работает, закодированная квантовая запутанность.
 
-*Monoids* are about combination. But what is combination? It can mean so many things from accumulation to concatenation to multiplication to choice, composition, ordering, even evaluation! We'll see many examples here, but we'll only tip-toe on the foothills of monoid mountain. The instances are plentiful and applications vast. The aim of this chapter is to provide a good intuition so you can make some *monoids* of your own.
+*Моноиды - это сочетание. Но что такое комбинация? Это может означать так много вещей: от накопления до конкатенации, от умножения до выбора, композиции, упорядочивания, даже оценки! Здесь мы увидим множество примеров, но мы лишь на цыпочках пройдемся по подножию горы моноидов. Примеров много, а приложений - огромное количество. Цель этой главы - дать хорошую интуицию, чтобы вы могли создать несколько собственных *моноидов*.
 
-## Abstracting addition
+## Абстрактное дополнение
 
-Addition has some interesting qualities I'd like to discuss. Let's have a look at it through our abstraction goggles.
+Сложение обладает некоторыми интересными свойствами, которые я хотел бы обсудить. Давайте посмотрим на него через очки абстракции.
 
-For starters, it's a binary operation, that is, an operation which takes two values and returns a value, all within the same set.
+Для начала, это бинарная операция, то есть операция, которая принимает два значения и возвращает одно значение, все в пределах одного набора.
 
 ```js
-// a binary operation
+// бинарный операции
 1 + 1 = 2
 ```
 
-See? Two values in the domain, one value in the codomain, all the same set - numbers, as it were. Some might say numbers are "closed under addition", meaning the type won't ever change no matter which ones get tossed into the mix. That means we can chain the operation since the result is always another number:
+Видите? Два значения в домене, одно значение в кодомене, все это один и тот же набор - числа, так сказать. Кто-то может сказать, что числа "замкнуты на сложение", то есть их тип никогда не изменится, независимо от того, какие числа будут добавлены. Это означает, что мы можем выполнять цепочку операций, поскольку результатом всегда будет другое число:
 
 ```js
-// we can run this on any amount of numbers
+// мы можем запустить это на любом количестве чисел
 1 + 7 + 5 + 4 + ...
 ```
 
-In addition to that (what a calculated pun...), we have associativity which buys us the ability to group operations however we please. Incidentally, an associative, binary operation is a recipe for parallel computation because we can chunk and distribute work.
+В дополнение к этому (какой каламбур...), у нас есть ассоциативность, которая дает нам возможность группировать операции по своему усмотрению. Кстати, ассоциативные, бинарные операции - это рецепт для параллельных вычислений, потому что мы можем разбивать и распределять работу.
 
 ```js
-// associativity
+// ассоциативность
 (1 + 2) + 3 = 6
 1 + (2 + 3) = 6
 ```
 
-Now, don't go confusing this with commutativity which allows us to rearrange the order. While that holds for addition, we're not particularly interested in that property at the moment - too specific for our abstraction needs.
+Не путайте это с коммутативностью, которая позволяет нам менять порядок. Это свойство справедливо и для сложения, но сейчас оно нас не особенно интересует - слишком специфично для наших абстракций.
 
-Come to think of it, what properties should be in our abstract superclass anyways? What traits are specific to addition and what ones can be generalized? Are there other abstractions amidst this hierarchy or is it all one chunk? It's this kind of thinking that our mathematical forefathers applied when conceiving the interfaces in abstract algebra.
+Если подумать, какие свойства вообще должны быть в нашем абстрактном суперклассе? Какие свойства специфичны для сложения, а какие могут быть обобщены? Есть ли среди этой иерархии другие абстракции или это все один кусок? Именно такие размышления применяли наши предки-математики, когда придумывали интерфейсы в абстрактной алгебре.
 
-As it happens, those old school abstractionists landed on the concept of a *group* when abstracting addition. A *group* has all the bells and whistles including the concept of negative numbers. Here, we're only interested in that associative binary operator so we'll choose the less specific interface *Semigroup*. A *Semigroup* is a type with a `concat` method which acts as our associative binary operator.
+Так получилось, что те абстракционисты старой школы при абстрагировании сложения остановились на концепции *группы*. У *группы* есть все возможности, включая концепцию отрицательных чисел. Здесь нас интересует только ассоциативный бинарный оператор, поэтому мы выберем менее специфичный интерфейс *Semigroup*. *Semigroup* - это тип с методом `concat`, который действует как наш ассоциативный двоичный оператор.
 
-Let's implement it for addition and call it `Sum`:
+Давайте реализуем его для сложения и назовем его `Sum`:
 
 ```js
 const Sum = x => ({
@@ -47,20 +47,22 @@ const Sum = x => ({
 })
 ```
 
-Note we `concat` with some other `Sum` and always return a `Sum`.
+Обратите внимание, что мы `concat` с некоторым другим `Sum` и всегда возвращаем `Sum`.
 
-I've used an object factory here instead of our typical prototype ceremony, primarily because `Sum` is not *pointed* and we don't want to have to type `new`. Anyways, here it is in action:
+Я использовал здесь фабрику объектов вместо нашей типичной церемонии прототипов, прежде всего потому, что `Sum` не *ориентирована* и мы не хотим вводить `new`. В любом случае, вот он в действии:
 
 ```js
 Sum(1).concat(Sum(3)) // Sum(4)
 Sum(4).concat(Sum(37)) // Sum(41)
 ```
 
-Just like that, we can program to an interface, not an implementation. Since this interface comes from group theory it has centuries of literature backing it up. Free docs!
+Вот так мы можем программировать на интерфейс, а не на реализацию. Поскольку этот интерфейс пришел из теории групп, он имеет многовековую литературу, поддерживающую его. Бесплатные документы!
 
-Now, as mentioned, `Sum` is not *pointed*, nor a *functor*. As an exercise, go back and check the laws to see why. Okay, I'll just tell you: it can only hold a number, so `map` does not make sense here as we cannot transform the underlying value to another type. That would be a very limited `map` indeed!
+Теперь, как уже упоминалось, `Sum` не является ни *ориентированным*, ни *функтором*. В качестве упражнения, вернитесь назад и проверьте законы, чтобы понять, почему. Хорошо, я просто скажу вам: она может хранить только число, поэтому `map` здесь не имеет смысла, так как мы не можем преобразовать базовое значение к другому типу. Это была бы очень ограниченная `map`!
 
-So why is this useful? Well, as with any interface, we can swap out our instance to achieve different results:
+Так почему же это полезно? Как и в случае с любым интерфейсом, мы можем менять местами наши экземпляры для достижения различных результатов:
+
+Переведено с помощью www.DeepL.com/Translator (бесплатная версия)
 
 ```js
 const Product = x => ({ x, concat: other => Product(x * other.x) })
@@ -70,7 +72,7 @@ const Min = x => ({ x, concat: other => Min(x < other.x ? x : other.x) })
 const Max = x => ({ x, concat: other => Max(x > other.x ? x : other.x) })
 ```
 
-This isn't limited to numbers, though. Let's see some other types:
+Однако это не ограничивается числами. Давайте посмотрим на другие типы:
 
 ```js
 const Any = x => ({ x, concat: other => Any(x || other.x) })
@@ -89,14 +91,14 @@ All(true).concat(All(true)) // All(true)
 Map({day: 'night'}).concat(Map({white: 'nikes'})) // Map({day: 'night', white: 'nikes'})
 ```
 
-If you stare at these long enough the pattern will pop out at you like a magic eye poster. It's everywhere. We're merging data structures, combining logic, building strings...it seems one can bludgeon almost any task into this combination based interface.
+Если долго смотреть на них, узор выскочит на вас, как волшебный плакат. Она повсюду. Мы объединяем структуры данных, комбинируем логику, строим строки... кажется, что почти любую задачу можно впихнуть в этот интерфейс, основанный на комбинациях.
 
-I've used `Map` a few times now. Pardon me if you two weren't properly introduced. `Map` simply wraps `Object` so we can embellish it with some extra methods without altering the fabric of the universe.
+Я уже несколько раз использовал `Map`. Прошу прощения, если вы не были должным образом представлены. `Map` просто оборачивает `Object`, чтобы мы могли приукрасить его некоторыми дополнительными методами, не изменяя ткань вселенной.
 
 
-## All my favourite functors are semigroups.
+## Все мои любимые функторы являются полугруппами
 
-The types we've seen so far which implement the functor interface all implement semigroup one as well. Let's look at `Identity` (the artist previously known as Container):
+Все типы, которые мы уже видели, реализующие интерфейс функтора, также реализуют интерфейс полугруппы. Давайте рассмотрим `Identity` (исполнитель, ранее известный как Container):
 
 ```js
 Identity.prototype.concat = function(other) {
@@ -107,21 +109,21 @@ Identity.of(Sum(4)).concat(Identity.of(Sum(1))) // Identity(Sum(5))
 Identity.of(4).concat(Identity.of(1)) // TypeError: this.__value.concat is not a function
 ```
 
-It is a *semigroup* if and only if its `__value` is a *semigroup*. Like a butterfingered hang glider, it is one whilst it holds one.
+Она является *полугруппой* тогда и только тогда, когда ее `__значение` является *полугруппой*. Подобно дельтаплану с масляными пальцами, он является таковым, пока удерживает его.
 
-Other types have similar behavior:
+Другие типы имеют аналогичное поведение:
 
 ```js
-// combine with error handling
+// сочетание с обработкой ошибок
 Right(Sum(2)).concat(Right(Sum(3))) // Right(Sum(5))
 Right(Sum(2)).concat(Left('some error')) // Left('some error')
 
 
-// combine async
+// комбинирование с асинхронностью
 Task.of([1,2]).concat(Task.of([3,4])) // Task([1,2,3,4])
 ```
 
-This gets particularly useful when we stack these semigroups into a cascading combination:
+Это становится особенно полезным, когда мы складываем эти полугруппы в каскадную комбинацию:
 
 ```js
 // formValues :: Selector -> IO (Map String String)
@@ -136,11 +138,11 @@ serverA.get('/friends').concat(serverB.get('/friends')) // Task([friend1, friend
 loadSetting('email').concat(loadSetting('general')) // Task(Maybe(Map({backgroundColor: true, autoSave: false})))
 ```
 
-In the top example, we've combined an `IO` holding an `Either` holding a `Map` to validate and merge form values. Next, we've hit a couple of different servers and combined their results in an async way using `Task` and `Array`. Lastly, we've stacked `Task`, `Maybe`, and `Map` to load, parse, and merge multiple settings.
+В верхнем примере мы объединили `IO` с `Either` и `Map` для проверки и объединения значений формы. Далее мы обратились к нескольким различным серверам и объединили их результаты асинхронным способом, используя `Task` и `Array`. Наконец, мы объединили `Task`, `Maybe` и `Map` для загрузки, разбора и объединения нескольких параметров.
 
-These can be `chain`ed or `ap`'d, but *semigroups* capture what we'd like to do much more concisely.
+Это могут быть `цепочки` или `ap`, но *полугруппы* передают то, что мы хотели бы сделать гораздо более лаконично.
 
-This extends beyond functors. In fact, it turns out that anything made up entirely of semigroups, is itself, a semigroup: if we can concat the kit, then we can concat the caboodle.
+Это выходит за рамки функторов. На самом деле, оказывается, что все, что полностью состоит из полугрупп, само является полугруппой: если мы можем объединить набор, то мы можем объединить и все остальное.
 
 ```js
 const Analytics = (clicks, path, idleTime) => ({
@@ -155,16 +157,16 @@ Analytics(Sum(2), ['/home', '/about'], Right(Max(2000))).concat(Analytics(Sum(1)
 // Analytics(Sum(3), ['/home', '/about', '/contact'], Right(Max(2000)))
 ```
 
-See, everything knows how to combine itself nicely. Turns out, we could do the same thing for free just by using the `Map` type:
+Видите, все знает, как красиво объединить себя. Оказывается, мы можем сделать то же самое бесплатно, просто используя тип `Map`:
 
 ```js
 Map({clicks: Sum(2), path: ['/home', '/about'], idleTime: Right(Max(2000))}).concat(Map({clicks: Sum(1), path: ['/contact'], idleTime: Right(Max(1000))}))
 // Map({clicks: Sum(3), path: ['/home', '/about', '/contact'], idleTime: Right(Max(2000))})
 ```
 
-We can stack and combine as many of these as we'd like. It's simply a matter of adding another tree to the forest, or another flame to the forest fire depending on your codebase.
+Мы можем складывать и комбинировать их столько, сколько захотим. Это просто вопрос добавления еще одного дерева в лес или еще одного пламени в лесной пожар, в зависимости от вашей кодовой базы.
 
-The default, intuitive behavior is to combine what a type is holding, however, there are cases where we ignore what's inside and combine the containers themselves. Consider a type like `Stream`:
+Интуитивно понятное поведение по умолчанию - объединять то, что содержит тип, однако есть случаи, когда мы игнорируем то, что находится внутри, и объединяем сами контейнеры. Рассмотрим такой тип, как `Stream`:
 
 ```js
 const submitStream = Stream.fromEvent('click', $('#submit'))
@@ -173,21 +175,21 @@ const enterStream = filter(x => x.key === 'Enter', Stream.fromEvent('keydown', $
 submitStream.concat(enterStream).map(submitForm) // Stream()
 ```
 
-We can combine event streams by capturing events from both as one new stream. Alternatively, we could have combined them by insisting they hold a semigroup. In fact, there are many possible instances for each type. Consider `Task`, we can combine them by choosing the earlier or later of the two. We can always chose the first `Right` instead of short circuiting on `Left` which has the effect of ignoring errors. There is an interface called *Alternative* which implements some of these, well, alternative instances, typically focused on choice rather than cascading combination. It is worth looking into if you are in need of such functionality.
+Мы можем объединить потоки событий, фиксируя события из обоих потоков как один новый поток. В качестве альтернативы мы могли бы объединить их, настаивая на том, что они содержат полугруппу. На самом деле, существует множество возможных экземпляров для каждого типа. Рассмотрим `Task`, мы можем объединить их, выбрав более ранний или более поздний из двух. Мы всегда можем выбрать первое `Право` вместо замыкания на `Лево`, что имеет эффект игнорирования ошибок. Существует интерфейс под названием *Alternative*, который реализует некоторые из этих, ну, альтернативных экземпляров, обычно ориентированных на выбор, а не на каскадное комбинирование. На него стоит обратить внимание, если вам нужна такая функциональность.
 
-## Monoids for nothing
+## Моноиды просто так
 
-We were abstracting addition, but like the Babylonians, we lacked the concept of zero (there were zero mentions of it).
+Мы абстрагировали сложение, но, подобно вавилонянам, нам не хватало понятия нуля (было ноль упоминаний о нем).
 
-Zero acts as *identity* meaning any element added to `0`, will return back that very same element. Abstraction-wise, it's helpful to think of `0` as a kind of neutral or *empty* element. It's important that it act the same way on the left and right side of our binary operation:
+Ноль действует как *идентичность*, то есть любой элемент, добавленный к `0`, вернет обратно тот же самый элемент. С точки зрения абстракции, полезно думать о `0` как о некоем нейтральном или *пустом* элементе. Важно, чтобы он действовал одинаково с левой и правой стороны нашей бинарной операции:
 
 ```js
-// identity
+// идентичность
 1 + 0 = 1
 0 + 1 = 1
 ```
 
-Let's call this concept `empty` and create a new interface with it. Like so many startups, we'll choose a heinously uninformative, yet conveniently googleable name: *Monoid*. The recipe for *Monoid* is to take any *semigroup* and add a special *identity* element. We'll implement that with an `empty` function on the type itself:
+Назовем эту концепцию `empty` и создадим с ее помощью новый интерфейс. Как и многие другие стартапы, мы выберем чудовищно неинформативное, но удобное для гугла название: *Monoid*. Рецепт *Monoid* заключается в том, чтобы взять любую *полугруппу* и добавить специальный элемент *идентичности*. Мы реализуем это с помощью функции `empty` для самого типа:
 
 ```js
 Array.empty = () => []
@@ -200,11 +202,11 @@ All.empty = () => All(true)
 Any.empty = () => Any(false)
 ```
 
-When might an empty, identity value prove useful? That's like asking why zero is useful. Like not asking anything at all...
+Когда пустая, тождественная величина может оказаться полезной? Это все равно, что спросить, почему ноль полезен. Как и вообще ничего не спрашивать...
 
-When we have nothing else, who can we count on? Zero. How many bugs do we want? Zero. It's our tolerance for unsafe code. A fresh start. The ultimate price tag. It can annihilate everything in its path or save us in a pinch. A golden life saver and a pit of despair.
+Когда у нас больше ничего нет, на кого мы можем рассчитывать? На ноль. Сколько жучков нам нужно? Ноль. Это наша терпимость к небезопасному коду. Свежий старт. Конечная цена. Он может уничтожить все на своем пути или спасти нас в трудную минуту. Золотой спасательный круг и яма отчаяния.
 
-Codewise, they correspond to sensible defaults:
+В кодовом отношении они соответствуют разумным значениям по умолчанию:
 
 ```js
 const settings = (prefix="", overrides=[], total=0) => ...
@@ -212,17 +214,17 @@ const settings = (prefix="", overrides=[], total=0) => ...
 const settings = (prefix=String.empty(), overrides=Array.empty(), total=Sum.empty()) => ...
 ```
 
-Or to return a useful value when we have nothing else:
+Или чтобы вернуть полезное значение, когда у нас больше ничего нет:
 
 ```js
 sum([]) // 0
 ```
 
-They are also the perfect initial value for an accumulator...
+Они также являются идеальным начальным значением для аккумулятора...
 
-## Folding down the house
+## Собираем всё вместе
 
-It just so happens that `concat` and `empty` fit perfectly in the first two slots of `reduce`. We can actually `reduce` an array of *semigroup*'s down by ignoring the *empty* value, but as you can see, that leads to a precarious situation:
+Так получилось, что `concat` и `empty` идеально вписываются в первые два слота `reduce`. На самом деле мы можем `reduce` массив *semigroup*, игнорируя значение *empty*, но, как вы видите, это приводит к опасной ситуации:
 
 ```js
 // concat :: Semigroup s => s -> s -> s
@@ -233,16 +235,16 @@ const concat = x => y => x.concat(y)
 [].reduce(concat) // TypeError: Reduce of empty array with no initial value
 ```
 
-Boom goes the dynamite. Like a twisted ankle in a marathon, we have ourselves a runtime exception. JavaScript is more than happy to let us strap pistols to our sneakers before running - it is a conservative sort of language, I suppose, but it stops us dead in our tracks when the array is barren. What could it return anyhow? `NaN`, `false`, `-1`? If we were to continue on in our program, we'd like a result of the right type. It could return a `Maybe` to indicate the possibility of failure, but we can do one better.
+Бум динамита. Как вывихнутая лодыжка в марафоне, мы получили исключение времени выполнения. JavaScript более чем счастлив позволить нам пристегнуть пистолеты к кроссовкам перед бегом - это консервативный язык, я полагаю, но он останавливает нас на месте, когда массив оказывается бесплодным. Что же он может вернуть? `NaN`, `false`, `-1`? Если бы мы продолжили работу в нашей программе, мы бы хотели получить результат нужного типа. Он мог бы вернуть `Maybe`, чтобы указать на возможность неудачи, но мы можем сделать кое-что получше.
 
-Let's use our curried `reduce` function and make a safe version where the `empty` value is not optional. It shall henceforth be known as `fold`:
+Давайте воспользуемся нашей каррированной функцией `reduce` и сделаем безопасную версию, в которой значение `empty` не является необязательным. Отныне она будет называться `fold`:
 
 ```js
 // fold :: Monoid m => m -> [m] -> m
 const fold = reduce(concat)
 ```
 
-The initial `m` is our `empty` value - our neutral, starting point, then we take an array of `m`'s and crush them down to one beautiful diamond like value.
+Начальное `m` - это наше `пустое` значение - наша нейтральная, отправная точка, затем мы берем массив `m` и дробим их до одного красивого значения, похожего на бриллиант.
 
 ```js
 fold(Sum.empty(), [Sum(1), Sum(2)]) // Sum(3)
@@ -258,11 +260,11 @@ fold(Either.of(Max.empty()), [Right(Max(3)), Left('error retrieving value'), Rig
 fold(IO.of([]), ['.link', 'a'].map($)) // IO([<a>, <button class="link"/>, <a>])
 ```
 
-We've provided a manual `empty` value for those last two since we can't define one on the type itself. That's totally fine. Typed languages can figure that out by themselves, but we have to pass it in here.
+Мы предоставили ручное значение `empty` для последних двух, поскольку мы не можем определить его в самом типе. Это совершенно нормально. Типизированные языки могут определить это сами, но мы должны передать его здесь.
 
-## Not quite a monoid
+## Не совсем моноид
 
-There are some *semigroups* that cannot become *monoids*, that is provide an initial value. Look at `First`:
+Есть некоторые *полугруппы*, которые не могут стать *моноидами*, то есть дать начальное значение. Посмотрите на `First`:
 
 ```js
 const First = x => ({ x, concat: other => First(x) })
@@ -271,20 +273,20 @@ Map({id: First(123), isPaid: Any(true), points: Sum(13)}).concat(Map({id: First(
 // Map({id: First(123), isPaid: Any(true), points: Sum(14)})
 ```
 
-We'll merge a couple of accounts and keep the `First` id. There is no way to define an `empty` value for it. Doesn't mean it's not useful.
+Мы объединим несколько счетов и сохраним идентификатор `First`. Не существует способа определить для него `пустое` значение. Но это не значит, что оно бесполезно.
 
 
-## Grand unifying theory
+## Великая объединяющая теория
 
-## Group theory or Category theory?
+## Теория групп или теория категорий?
 
-The notion of a binary operation is everywhere in abstract algebra. It is, in fact, the primary operation for a *category*. We cannot, however, model our operation in category theory without an *identity*. This is the reason we start with a semi-group from group theory, then jump to a monoid in category theory once we have *empty*.
+Понятие бинарной операции встречается повсюду в абстрактной алгебре. Фактически, это первичная операция для *категории*. Однако мы не можем моделировать нашу операцию в теории категорий без *идентичности*. По этой причине мы начинаем с полугруппы из теории групп, а затем переходим к моноиду в теории категорий, когда у нас появляется *пустота*.
 
-Monoids form a single object category where the morphism is `concat`, `empty` is the identity, and composition is guaranteed.
+Моноиды образуют однообъектную категорию, где морфизм - `concat`, `empty` - тождество, и композиция гарантирована.
 
-### Composition as a monoid
+### Композиция как моноид
 
-Functions of type `a -> a`, where the domain is in the same set as the codomain, are called *endomorphisms*. We can make a *monoid* called `Endo` which captures this idea:
+Функции типа `a -> a`, где домен находится в том же множестве, что и кодомен, называются *эндоморфизмами*. Мы можем создать *моноид* под названием `Endo`, который отражает эту идею:
 
 ```js
 const Endo = run => ({
@@ -296,7 +298,7 @@ const Endo = run => ({
 Endo.empty = () => Endo(identity)
 
 
-// in action
+// в действии
 
 // thingDownFlipAndReverse :: Endo [String] -> [String]
 const thingDownFlipAndReverse = fold(Endo(() => []), [Endo(reverse), Endo(sort), Endo(append('thing down')])
@@ -305,15 +307,15 @@ thingDownFlipAndReverse.run(['let me work it', 'is it worth it?'])
 // ['thing down', 'let me work it', 'is it worth it?']
 ```
 
-Since they are all the same type, we can `concat` via `compose` and the types always line up.
+Поскольку все они одного типа, мы можем `concat` через `compose`, и типы всегда совпадают.
 
-### Monad as a monoid
+### Монада как моноид
 
-You may have noticed that `join` is an operation which takes two (nested) monads and squashes them down to one in an associative fashion. It is also a natural transformation or "functor function". As previously stated, we can make a category of functors as objects with natural transformations as morphisms. Now, if we specialize it to *Endofunctors*, that is functors of the same type, then `join` provides us with a monoid in the category of Endofunctors also known as a Monad. To show the exact formulation in code takes a little finagling which I encourage you to google, but that's the general idea.
+Возможно, вы заметили, что `join` - это операция, которая берет две (вложенные) монады и ассоциативно сжимает их до одной. Это также естественное преобразование или "функция-функтор". Как уже говорилось ранее, мы можем создать категорию функторов как объектов с естественными преобразованиями в качестве морфизмов. Теперь, если мы специализируем ее до *Endofunctors*, то есть функторов одного типа, то `join` дает нам моноид в категории Endofunctors, также известный как монада. Чтобы показать точную формулировку в коде, нужно немного повозиться, и я советую вам погуглить, но общая идея такова.
 
-### Applicative as a monoid
+### Аппликатив как моноид
 
-Even applicative functors have a monoidal formulation known in the category theory as a *lax monoidal functor*. We can implement the interface as a monoid and recover `ap` from it:
+Даже аппликативные функции имеют моноидальную формулировку, известную в теории категорий как *лакс-моноидальный вектор*. Мы можем реализовать интерфейс как моноид и восстановить `ap` из него:
 
 ```js
 // concat :: f a -> f b -> f [a, b]
@@ -324,9 +326,9 @@ const ap = compose(map(([f, x]) => f(x)), concat)
 ```
 
 
-## In summary
+## Итог
 
-So you see, everything is connected, or can be. This profound realization makes *Monoids* a powerful modelling tool for broad swaths of app architecture to the tiniest pieces of datum. I encourage you to think of *monoids* whenever direct accumulation or combination is part of your application, then once you've got that down, start to stretch the definition to more applications (you'd be surprised how much one can model with a *monoid*).
+Итак, вы видите, что все связано или может быть связано. Это глубокое осознание делает *моноиды* мощным инструментом моделирования от широких областей архитектуры приложений до мельчайших фрагментов данных. Я призываю вас думать о *моноидах* всякий раз, когда прямое накопление или комбинация являются частью вашего приложения, а затем, когда вы освоите это, начните распространять определение на большее количество приложений (вы будете удивлены, как много можно смоделировать с помощью *моноида*).
 
-## Exercises
+## Упражнения
 
