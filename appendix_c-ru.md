@@ -1,14 +1,14 @@
-# Appendix C: Pointfree Utilities
+# Приложение C: Бесконечные Утилиты
 
-In this appendix, you'll find pointfree versions of rather classic JavaScript functions
-described in the book. All of the following functions are seemingly available in exercises, as
-part of the global context. Keep in mind that these implementations may not be the fastest or
-the most efficient implementation out there; they *solely serve an educational purpose*.
+В этом приложении вы найдете бессмысленные версии довольно классических функций JavaScript
+описанных в книге. Все перечисленные ниже функции доступны в упражнениях как
+как часть глобального контекста. Имейте в виду, что эти реализации могут быть не самыми быстрыми или
+наиболее эффективными; они служат исключительно образовательным целям.
 
-In order to find functions that are more production-ready, have a peek at
-[ramda](https://ramdajs.com/), [lodash](https://lodash.com/), or [folktale](http://folktale.origamitower.com/).
+Чтобы найти функции, более пригодные для использования в производстве, загляните в раздел
+[ramda](https://ramdajs.com/), [lodash](https://lodash.com/), или [folktale](http://folktale.origamitower.com/).
 
-Note that functions refer to the `curry` & `compose` functions defined in [Appendix A](./appendix_a-ru.md)
+Обратите внимание, что функции ссылаются на функции `curry` и `compose`, определенные в [Appendix A](./appendix_a-ru.md)
 
 ## add 
 
